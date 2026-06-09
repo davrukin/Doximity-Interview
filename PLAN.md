@@ -33,7 +33,7 @@ Key design points:
 - [x] CLAUDE.md project workflow section
 
 ### Phase 1 — required scope
-- [ ] Scaffold: Gradle 9.5.1, AGP 9.2.1, Kotlin 2.4.0, version catalog, ktlint
+- [x] Scaffold: Gradle 9.5.1, AGP 9.2.1, Kotlin 2.4.0, version catalog, ktlint
 - [ ] Presenter core: `Presenter`, `UiModel`, `UiEvent`, `EventHandler`, `launchUseCase` (R8)
 - [ ] Koin application setup + app scope + injected dispatchers/clock (R9)
 - [ ] Material 3 theme
@@ -64,4 +64,5 @@ Key design points:
 
 | Date | Change | Why |
 |------|--------|-----|
-| — | — | — |
+| 2026-06-09 | No standalone Kotlin Android plugin | AGP 9 ships built-in Kotlin support and rejects `org.jetbrains.kotlin.android` |
+| 2026-06-09 | compileSdk 37 (target stays 36) | Current androidx releases require compiling against android-37 |
