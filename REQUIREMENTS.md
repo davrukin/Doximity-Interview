@@ -16,7 +16,7 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 | R5  | Loading, empty, error, missing-price, stale, network-loss, and reconnecting states | — | — | ⬜ |
 | R6  | Watchlist persists across app launches (Room) | — | — | ⬜ |
 | R7  | Documented demo/fake-data mode (auto when no API key, runtime toggle) | — | — | ⬜ |
-| R8  | Screen state exposed safely for Compose observation (UDF, immutable models) | — | — | ⬜ |
+| R8  | Screen state exposed safely for Compose observation (UDF, immutable models) | `presentation/core/` (`Presenter`, `UiModel`, `UiEvent`, `EventHandler`, `launchUseCase`) | via presenter tests | 🔄 |
 | R9  | Dependency injection (Koin) | — | — | ⬜ |
 | R10 | Relevant unit tests | — | — | ⬜ |
 | R11 | README with setup, architecture notes, tradeoffs, and AI/tooling assistance | — | — | ⬜ |
