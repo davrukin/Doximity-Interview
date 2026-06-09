@@ -9,9 +9,9 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 
 | ID  | Requirement | Implementation | Tests | Status |
 |-----|-------------|----------------|-------|--------|
-| R1  | Search for instruments via REST (stocks + crypto) | — | — | ⬜ |
+| R1  | Search for instruments via REST (stocks + crypto) | `data/remote/FinnhubApi` (`/search`, `/crypto/symbol`) | mapper tests (pending) | 🔄 |
 | R2  | Add and remove instruments from the watchlist | — | — | ⬜ |
-| R3  | Latest known price per watchlist item (REST snapshot) | — | — | ⬜ |
+| R3  | Latest known price per watchlist item (REST snapshot) | `data/remote/FinnhubApi.quote`, `QuoteDto.toQuote` | mapper tests (pending) | 🔄 |
 | R4  | Live price updates via WebSocket while the app runs | — | — | ⬜ |
 | R5  | Loading, empty, error, missing-price, stale, network-loss, and reconnecting states | — | — | ⬜ |
 | R6  | Watchlist persists across app launches (Room) | `data/local/` (`WatchlistDatabase`, `WatchlistDao`, `WatchlistItemEntity`) | `WatchlistDaoTest` (pending) | 🔄 |
