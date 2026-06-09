@@ -36,7 +36,7 @@ Key design points:
 - [x] Scaffold: Gradle 9.5.1, AGP 9.2.1, Kotlin 2.4.0, version catalog, ktlint
 - [x] Presenter core: `Presenter`, `UiModel`, `UiEvent`, `EventHandler`, `launchUseCase` (R8)
 - [x] Koin application setup + app scope + injected dispatchers/clock (R9)
-- [ ] Material 3 theme
+- [x] Material 3 theme
 - [ ] Domain models, repository interfaces, use cases
 - [ ] Room watchlist persistence with cached last quotes (R6)
 - [ ] Finnhub REST client + mappers (R1, R3)
