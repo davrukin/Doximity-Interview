@@ -2,6 +2,21 @@
 
 This file defines the engineering conventions for this project. All code — human- or AI-authored — must follow them.
 
+## Project & workflow
+
+This is a real-time financial watchlist app on Finnhub (REST search/snapshots + WebSocket live
+prices), with Room persistence and a demo/fake-data mode.
+
+- Before starting any work, read [PLAN.md](PLAN.md) and [REQUIREMENTS.md](REQUIREMENTS.md).
+- Update both documents in the same commit as the work they track: tick PLAN.md checkboxes, fill
+  REQUIREMENTS.md implementation/test columns and statuses, and log plan deviations with a one-line
+  rationale.
+- Commit bodies cite the requirement IDs they advance, e.g. `Req: R4, R5`. Infrastructure-only
+  commits cite none.
+- Optional enhancements (O1–O7) are tackled only after every required row (R1–R11) is done.
+- The Finnhub API key lives in `local.properties` as `FINNHUB_API_KEY` and is never committed.
+  When no key is configured the app runs in demo mode.
+
 ## Architecture: Composable Presenter
 
 This project uses the Composable Presenter pattern, as described in Doximity's engineering blog

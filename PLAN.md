@@ -30,7 +30,7 @@ Key design points:
 
 ### Phase 0 — docs first
 - [x] REQUIREMENTS.md + PLAN.md committed alongside the assignment brief
-- [ ] CLAUDE.md project workflow section
+- [x] CLAUDE.md project workflow section
 
 ### Phase 1 — required scope
 - [ ] Scaffold: Gradle 9.5.1, AGP 9.2.1, Kotlin 2.4.0, version catalog, ktlint
