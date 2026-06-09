@@ -17,7 +17,7 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 | R6  | Watchlist persists across app launches (Room) | — | — | ⬜ |
 | R7  | Documented demo/fake-data mode (auto when no API key, runtime toggle) | — | — | ⬜ |
 | R8  | Screen state exposed safely for Compose observation (UDF, immutable models) | `presentation/core/` (`Presenter`, `UiModel`, `UiEvent`, `EventHandler`, `launchUseCase`) | via presenter tests | 🔄 |
-| R9  | Dependency injection (Koin) | — | — | ⬜ |
+| R9  | Dependency injection (Koin) | `app/WatchlistApplication`, `app/di/AppModule` | exercised by all presenter/data tests | 🔄 |
 | R10 | Relevant unit tests | — | — | ⬜ |
 | R11 | README with setup, architecture notes, tradeoffs, and AI/tooling assistance | — | — | ⬜ |
 
