@@ -37,7 +37,7 @@ Key design points:
 - [x] Presenter core: `Presenter`, `UiModel`, `UiEvent`, `EventHandler`, `launchUseCase` (R8)
 - [x] Koin application setup + app scope + injected dispatchers/clock (R9)
 - [x] Material 3 theme
-- [ ] Domain models, repository interfaces, use cases
+- [x] Domain models, repository interfaces, use cases
 - [ ] Room watchlist persistence with cached last quotes (R6)
 - [ ] Finnhub REST client + mappers (R1, R3)
 - [ ] WebSocket price stream with basic reconnect (R4, R5)
