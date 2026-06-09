@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.ktlint)
 }
 
@@ -49,6 +50,10 @@ android {
         buildConfig = true
     }
 
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -66,6 +71,10 @@ dependencies {
 
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     testImplementation(libs.junit)
 }

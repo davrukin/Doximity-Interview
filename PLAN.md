@@ -38,7 +38,7 @@ Key design points:
 - [x] Koin application setup + app scope + injected dispatchers/clock (R9)
 - [x] Material 3 theme
 - [x] Domain models, repository interfaces, use cases
-- [ ] Room watchlist persistence with cached last quotes (R6)
+- [x] Room watchlist persistence with cached last quotes (R6)
 - [ ] Finnhub REST client + mappers (R1, R3)
 - [ ] WebSocket price stream with basic reconnect (R4, R5)
 - [ ] Demo-mode data sources (R7)
