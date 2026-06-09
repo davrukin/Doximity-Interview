@@ -36,15 +36,15 @@ class ReconnectingPriceStream(
             launch {
                 symbols.collect { latestSymbols.value = it }
             }
-            var attempt = 0
+            var failedAttempts = 0
+            send(PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTING))
             while (true) {
-                send(PriceStreamEvent.ConnectionChanged(state = stateForAttempt(attempt)))
                 var subscriptionJob: Job? = null
                 try {
                     socket.connect().collect { event ->
                         when (event) {
                             is PriceSocketEvent.Opened -> {
-                                attempt = 0
+                                failedAttempts = 0
                                 send(PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTED))
                                 subscriptionJob =
                                     launch {
@@ -65,16 +65,17 @@ class ReconnectingPriceStream(
                 } finally {
                     subscriptionJob?.cancel()
                 }
-                attempt++
+                failedAttempts++
+                send(PriceStreamEvent.ConnectionChanged(state = stateForFailedAttempts(failedAttempts)))
                 delay(retryDelay)
             }
         }
 
-    private fun stateForAttempt(attempt: Int): ConnectionState =
-        when {
-            attempt == 0 -> ConnectionState.CONNECTING
-            attempt < offlineAfterAttempts -> ConnectionState.RECONNECTING
-            else -> ConnectionState.OFFLINE
+    private fun stateForFailedAttempts(failedAttempts: Int): ConnectionState =
+        if (failedAttempts < offlineAfterAttempts) {
+            ConnectionState.RECONNECTING
+        } else {
+            ConnectionState.OFFLINE
         }
 
     private suspend fun manageSubscriptions(
