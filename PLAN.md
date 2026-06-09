@@ -40,7 +40,7 @@ Key design points:
 - [x] Domain models, repository interfaces, use cases
 - [x] Room watchlist persistence with cached last quotes (R6)
 - [x] Finnhub REST client + mappers (R1, R3)
-- [ ] WebSocket price stream with basic reconnect (R4, R5)
+- [x] WebSocket price stream with basic reconnect (R4, R5)
 - [ ] Demo-mode data sources (R7)
 - [ ] Repositories with live/demo switching (R7)
 - [ ] Data layer tests (R10)
