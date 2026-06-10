@@ -43,7 +43,7 @@ Key design points:
 - [x] WebSocket price stream with basic reconnect (R4, R5)
 - [x] Demo-mode data sources (R7)
 - [x] Repositories with live/demo switching (R7)
-- [ ] Data layer tests (R10)
+- [x] Data layer tests (R10)
 - [ ] Watchlist presenter + tests (R2–R5, R8, R10)
 - [ ] Search presenter + tests (R1, R2, R8, R10)
 - [ ] Watchlist screen + previews (R5)
