@@ -7,7 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class ObserveWatchlistUseCase(
     private val repository: WatchlistRepository,
 ) {
-    operator fun invoke(): Flow<List<WatchlistItem>> {
-        return repository.observeWatchlist()
-    }
+    operator fun invoke(): Flow<List<WatchlistItem>> = repository.observeWatchlist()
 }

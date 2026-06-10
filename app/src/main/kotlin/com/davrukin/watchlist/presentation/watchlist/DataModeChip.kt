@@ -24,29 +24,31 @@ fun DataModeChip(
         enabled = isLiveAvailable,
         label = {
             Text(
-                text = when (dataMode) {
-                    MarketDataMode.LIVE -> {
-                        "Live"
-                    }
+                text =
+                    when (dataMode) {
+                        MarketDataMode.LIVE -> {
+                            "Live"
+                        }
 
-                    MarketDataMode.DEMO -> {
-                        "Demo"
-                    }
-                },
+                        MarketDataMode.DEMO -> {
+                            "Demo"
+                        }
+                    },
             )
         },
-        colors = when (dataMode) {
-            MarketDataMode.LIVE -> {
-                AssistChipDefaults.assistChipColors()
-            }
+        colors =
+            when (dataMode) {
+                MarketDataMode.LIVE -> {
+                    AssistChipDefaults.assistChipColors()
+                }
 
-            MarketDataMode.DEMO -> {
-                AssistChipDefaults.assistChipColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                )
-            }
-        },
+                MarketDataMode.DEMO -> {
+                    AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    )
+                }
+            },
         modifier = modifier.padding(end = 12.dp),
     )
 }

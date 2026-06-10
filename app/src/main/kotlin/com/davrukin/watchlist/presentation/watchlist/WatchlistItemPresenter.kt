@@ -32,21 +32,25 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
     override fun present(params: Params): WatchlistRowUiModel {
         val instrument: Instrument = params.item.instrument
         val quote: Quote? = params.liveQuote ?: params.item.cachedQuote
-        val isStale: Boolean = quote != null &&
-            (quote.isStale || params.connectionState != ConnectionState.CONNECTED)
+        val isStale: Boolean =
+            quote != null &&
+                (quote.isStale || params.connectionState != ConnectionState.CONNECTED)
 
         val livePrice: Double = params.liveQuote?.price ?: Double.NaN
         var previousPrice: Double by remember { mutableDoubleStateOf(value = Double.NaN) }
-        var movement: WatchlistRowUiModel.PriceMovement? by remember { mutableStateOf<WatchlistRowUiModel.PriceMovement?>(value = null) }
+        var movement: WatchlistRowUiModel.PriceMovement? by remember {
+            mutableStateOf<WatchlistRowUiModel.PriceMovement?>(value = null)
+        }
         LaunchedEffect(key1 = livePrice) {
             val previous: Double = previousPrice
             previousPrice = livePrice
             if (!livePrice.isNaN() && !previous.isNaN() && livePrice != previous) {
-                movement = if (livePrice > previous) {
-                    WatchlistRowUiModel.PriceMovement.UP
-                } else {
-                    WatchlistRowUiModel.PriceMovement.DOWN
-                }
+                movement =
+                    if (livePrice > previous) {
+                        WatchlistRowUiModel.PriceMovement.UP
+                    } else {
+                        WatchlistRowUiModel.PriceMovement.DOWN
+                    }
             }
         }
 
@@ -54,27 +58,31 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             symbol = instrument.symbol,
             displaySymbol = instrument.displaySymbol,
             description = instrument.description,
-            price = quote?.let { quoteValue: Quote ->
-                priceFormat.format(quoteValue.price)
-            },
-            change = quote?.let { quoteValue: Quote ->
-                formatChange(quote = quoteValue)
-            },
-            isGain = quote?.let { quoteValue: Quote ->
-                if (quoteValue.change.isNaN()) {
-                    null
-                } else {
-                    quoteValue.change >= 0
-                }
-            },
-            isStale = isStale,
-            staleAsOf = if (isStale) {
+            price =
                 quote?.let { quoteValue: Quote ->
-                    timeFormat.format(quoteValue.lastUpdated.atZone(zoneId))
-                }
-            } else {
-                null
-            },
+                    priceFormat.format(quoteValue.price)
+                },
+            change =
+                quote?.let { quoteValue: Quote ->
+                    formatChange(quote = quoteValue)
+                },
+            isGain =
+                quote?.let { quoteValue: Quote ->
+                    if (quoteValue.change.isNaN()) {
+                        null
+                    } else {
+                        quoteValue.change >= 0
+                    }
+                },
+            isStale = isStale,
+            staleAsOf =
+                if (isStale) {
+                    quote?.let { quoteValue: Quote ->
+                        timeFormat.format(quoteValue.lastUpdated.atZone(zoneId))
+                    }
+                } else {
+                    null
+                },
             movement = movement,
         )
     }
@@ -83,11 +91,12 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
         if (quote.change.isNaN()) {
             return null
         }
-        val sign: String = if (quote.change >= 0) {
-            "+"
-        } else {
-            ""
-        }
+        val sign: String =
+            if (quote.change >= 0) {
+                "+"
+            } else {
+                ""
+            }
         val formatted: String = "$sign${priceFormat.format(quote.change)}"
         if (quote.percentChange.isNaN()) {
             return formatted

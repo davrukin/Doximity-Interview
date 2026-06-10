@@ -57,49 +57,52 @@ class WatchlistPresenter(
         val dataMode: MarketDataMode by observeMarketDataMode().collectAsState(initial = MarketDataMode.LIVE)
         var isRefreshing: Boolean by remember { mutableStateOf(value = false) }
 
-        val items: List<WatchlistRowUiModel> = (watchlist ?: emptyList()).map { item: WatchlistItem ->
-            key(item.instrument.symbol) {
-                itemPresenter.present(
-                    params = WatchlistItemPresenter.Params(
-                        item = item,
-                        liveQuote = quotes[item.instrument.symbol],
-                        connectionState = connectionState,
-                    ),
-                )
+        val items: List<WatchlistRowUiModel> =
+            (watchlist ?: emptyList()).map { item: WatchlistItem ->
+                key(item.instrument.symbol) {
+                    itemPresenter.present(
+                        params =
+                            WatchlistItemPresenter.Params(
+                                item = item,
+                                liveQuote = quotes[item.instrument.symbol],
+                                connectionState = connectionState,
+                            ),
+                    )
+                }
             }
-        }
 
-        val eventHandler: EventHandler<WatchlistUiModel.Event> = remember(key1 = params) {
-            EventHandler<WatchlistUiModel.Event> { event: WatchlistUiModel.Event ->
-                when (event) {
-                    is WatchlistUiModel.Event.Remove -> {
-                        appScope.launch {
-                            removeFromWatchlist(symbol = event.symbol)
-                        }
-                    }
-
-                    WatchlistUiModel.Event.Refresh -> {
-                        appScope.launch {
-                            isRefreshing = true
-                            try {
-                                refreshQuotes()
-                                delay(duration = REFRESH_SPINNER_MINIMUM)
-                            } finally {
-                                isRefreshing = false
+        val eventHandler: EventHandler<WatchlistUiModel.Event> =
+            remember(key1 = params) {
+                EventHandler<WatchlistUiModel.Event> { event: WatchlistUiModel.Event ->
+                    when (event) {
+                        is WatchlistUiModel.Event.Remove -> {
+                            appScope.launch {
+                                removeFromWatchlist(symbol = event.symbol)
                             }
                         }
-                    }
 
-                    WatchlistUiModel.Event.ToggleDataMode -> {
-                        toggleMarketDataMode()
-                    }
+                        WatchlistUiModel.Event.Refresh -> {
+                            appScope.launch {
+                                isRefreshing = true
+                                try {
+                                    refreshQuotes()
+                                    delay(duration = REFRESH_SPINNER_MINIMUM)
+                                } finally {
+                                    isRefreshing = false
+                                }
+                            }
+                        }
 
-                    WatchlistUiModel.Event.OpenSearch -> {
-                        params.onOpenSearch()
+                        WatchlistUiModel.Event.ToggleDataMode -> {
+                            toggleMarketDataMode()
+                        }
+
+                        WatchlistUiModel.Event.OpenSearch -> {
+                            params.onOpenSearch()
+                        }
                     }
                 }
             }
-        }
 
         return WatchlistUiModel(
             items = items,

@@ -15,9 +15,10 @@ import kotlinx.coroutines.flow.Flow
 fun <T> launchUseCase(
     initial: T,
     useCase: () -> Flow<T>,
-): State<T> = produceState(initialValue = initial) {
-    useCase()
-        .collect {
-            value = it
-        }
-}
+): State<T> =
+    produceState(initialValue = initial) {
+        useCase()
+            .collect {
+                value = it
+            }
+    }

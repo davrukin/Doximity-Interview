@@ -1,6 +1,5 @@
 package com.davrukin.watchlist.domain.usecase
 
-import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.Quote
 import com.davrukin.watchlist.domain.repository.PriceRepository
 import com.davrukin.watchlist.domain.repository.WatchlistRepository
@@ -15,18 +14,16 @@ class ObserveQuotesUseCase(
     private val priceRepository: PriceRepository,
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    operator fun invoke(): Flow<Map<String, Quote>> {
-        return watchlistRepository
+    operator fun invoke(): Flow<Map<String, Quote>> =
+        watchlistRepository
             .observeWatchlist()
             .map { items ->
                 items.map { it.instrument }
-            }
-            .flatMapLatest { instruments ->
+            }.flatMapLatest { instruments ->
                 if (instruments.isEmpty()) {
                     flowOf(emptyMap())
                 } else {
                     priceRepository.observeQuotes(instruments = instruments)
                 }
             }
-    }
 }

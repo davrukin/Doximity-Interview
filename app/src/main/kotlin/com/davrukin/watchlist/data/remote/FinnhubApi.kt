@@ -20,7 +20,6 @@ interface FinnhubApi {
     ): List<CryptoSymbolDto>
 
     companion object {
-        // TODO: is this the correct/best places for this? should it be remote config? built-in?
         const val BASE_URL: String = "https://finnhub.io/api/v1/"
     }
 }

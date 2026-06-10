@@ -20,35 +20,37 @@ fun ConnectionBanner(
         return
     }
     Surface(
-        color = when (connectionState) {
-            ConnectionState.OFFLINE -> {
-                MaterialTheme.colorScheme.errorContainer
-            }
+        color =
+            when (connectionState) {
+                ConnectionState.OFFLINE -> {
+                    MaterialTheme.colorScheme.errorContainer
+                }
 
-            else -> {
-                MaterialTheme.colorScheme.secondaryContainer
-            }
-        },
+                else -> {
+                    MaterialTheme.colorScheme.secondaryContainer
+                }
+            },
         modifier = modifier,
         content = {
             Text(
-                text = when (connectionState) {
-                    ConnectionState.CONNECTING -> {
-                        "Connecting to live prices…"
-                    }
+                text =
+                    when (connectionState) {
+                        ConnectionState.CONNECTING -> {
+                            "Connecting to live prices…"
+                        }
 
-                    ConnectionState.RECONNECTING -> {
-                        "Connection lost — reconnecting…"
-                    }
+                        ConnectionState.RECONNECTING -> {
+                            "Connection lost — reconnecting…"
+                        }
 
-                    ConnectionState.OFFLINE -> {
-                        "Offline — retrying. Prices may be out of date."
-                    }
+                        ConnectionState.OFFLINE -> {
+                            "Offline — retrying. Prices may be out of date."
+                        }
 
-                    ConnectionState.CONNECTED -> {
-                        ""
-                    }
-                },
+                        ConnectionState.CONNECTED -> {
+                            ""
+                        }
+                    },
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )

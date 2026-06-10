@@ -7,7 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class ObserveConnectionStateUseCase(
     private val repository: PriceRepository,
 ) {
-    operator fun invoke(): Flow<ConnectionState> {
-        return repository.observeConnectionState()
-    }
+    operator fun invoke(): Flow<ConnectionState> = repository.observeConnectionState()
 }

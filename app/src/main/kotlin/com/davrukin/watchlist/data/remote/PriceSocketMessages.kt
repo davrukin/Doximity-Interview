@@ -5,7 +5,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.Instant
 
-// TODO: separate files
 @Serializable
 data class SubscriptionMessageDto(
     val type: String,

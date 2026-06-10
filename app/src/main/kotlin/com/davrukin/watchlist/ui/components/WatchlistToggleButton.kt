@@ -20,26 +20,30 @@ fun WatchlistToggleButton(
 ) {
     IconButton(
         onClick = onClick,
-        colors = IconButtonDefaults.iconButtonColors(
-            contentColor = if (isOnWatchlist) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            },
-        ),
+        colors =
+            IconButtonDefaults.iconButtonColors(
+                contentColor =
+                    if (isOnWatchlist) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+            ),
         modifier = modifier,
     ) {
         Icon(
-            imageVector = if (isOnWatchlist) {
-                Icons.Filled.Check
-            } else {
-                Icons.Filled.Add
-            },
-            contentDescription = if (isOnWatchlist) {
-                "Remove from watchlist"
-            } else {
-                "Add to watchlist"
-            },
+            imageVector =
+                if (isOnWatchlist) {
+                    Icons.Filled.Check
+                } else {
+                    Icons.Filled.Add
+                },
+            contentDescription =
+                if (isOnWatchlist) {
+                    "Remove from watchlist"
+                } else {
+                    "Add to watchlist"
+                },
         )
     }
 }

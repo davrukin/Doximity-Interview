@@ -55,15 +55,17 @@ fun SearchResultRow(
 private fun SearchResultRowOnWatchlistPreview() {
     WatchlistTheme {
         SearchResultRow(
-            result = SearchUiModel.Result(
-                instrument = Instrument(
-                    symbol = "AAPL",
-                    displaySymbol = "AAPL",
-                    description = "APPLE INC",
-                    type = InstrumentType.STOCK,
+            result =
+                SearchUiModel.Result(
+                    instrument =
+                        Instrument(
+                            symbol = "AAPL",
+                            displaySymbol = "AAPL",
+                            description = "APPLE INC",
+                            type = InstrumentType.STOCK,
+                        ),
+                    isOnWatchlist = true,
                 ),
-                isOnWatchlist = true,
-            ),
             onToggle = {},
         )
     }
@@ -74,15 +76,17 @@ private fun SearchResultRowOnWatchlistPreview() {
 private fun SearchResultRowOffWatchlistPreview() {
     WatchlistTheme {
         SearchResultRow(
-            result = SearchUiModel.Result(
-                instrument = Instrument(
-                    symbol = "BINANCE:BTCUSDT",
-                    displaySymbol = "BTC/USDT",
-                    description = "Binance BTCUSDT",
-                    type = InstrumentType.CRYPTO,
+            result =
+                SearchUiModel.Result(
+                    instrument =
+                        Instrument(
+                            symbol = "BINANCE:BTCUSDT",
+                            displaySymbol = "BTC/USDT",
+                            description = "Binance BTCUSDT",
+                            type = InstrumentType.CRYPTO,
+                        ),
+                    isOnWatchlist = false,
                 ),
-                isOnWatchlist = false,
-            ),
             onToggle = {},
         )
     }

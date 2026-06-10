@@ -18,15 +18,17 @@ fun MovementIndicator(
         return
     }
 
-    val color: Color = when (movement) {
-        WatchlistRowUiModel.PriceMovement.UP -> WatchlistDesignSystem.GainColor
-        WatchlistRowUiModel.PriceMovement.DOWN -> WatchlistDesignSystem.LossColor
-    }
+    val color: Color =
+        when (movement) {
+            WatchlistRowUiModel.PriceMovement.UP -> WatchlistDesignSystem.GainColor
+            WatchlistRowUiModel.PriceMovement.DOWN -> WatchlistDesignSystem.LossColor
+        }
 
-    val icon: String = when (movement) {
-        WatchlistRowUiModel.PriceMovement.UP -> "▲"
-        WatchlistRowUiModel.PriceMovement.DOWN -> "▼"
-    }
+    val icon: String =
+        when (movement) {
+            WatchlistRowUiModel.PriceMovement.UP -> "▲"
+            WatchlistRowUiModel.PriceMovement.DOWN -> "▼"
+        }
 
     Text(
         text = icon,

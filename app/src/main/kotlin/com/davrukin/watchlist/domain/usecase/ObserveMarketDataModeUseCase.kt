@@ -12,7 +12,5 @@ class ObserveMarketDataModeUseCase(
             return repository.isLiveAvailable
         }
 
-    operator fun invoke(): Flow<MarketDataMode> {
-        return repository.mode
-    }
+    operator fun invoke(): Flow<MarketDataMode> = repository.mode
 }

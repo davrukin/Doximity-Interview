@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
  * Implemented by the live Finnhub socket ([ReconnectingPriceStream]) and the demo generator, so
  * everything above this interface is mode-agnostic.
  */
-// TODO: separate files
 interface PriceStreamSource {
     fun events(symbols: Flow<Set<String>>): Flow<PriceStreamEvent>
 }

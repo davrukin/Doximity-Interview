@@ -4,7 +4,6 @@ import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.InstrumentType
 import kotlinx.serialization.Serializable
 
-// TODO: separate files, maybe into their own package?
 @Serializable
 data class SearchResponseDto(
     val count: Int = 0,
@@ -18,12 +17,11 @@ data class SearchResultDto(
     val description: String = "",
     val type: String = "",
 ) {
-    fun toInstrument(): Instrument {
-        return Instrument(
+    fun toInstrument(): Instrument =
+        Instrument(
             symbol = symbol,
             displaySymbol = displaySymbol,
             description = description,
             type = InstrumentType.STOCK,
         )
-    }
 }

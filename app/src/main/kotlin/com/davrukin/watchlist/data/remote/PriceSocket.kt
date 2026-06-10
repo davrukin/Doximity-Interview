@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
  * server closes the connection and emit [PriceSocketEvent.Failed] on transport errors; reconnect
  * policy lives above this interface in [com.davrukin.watchlist.data.stream.ReconnectingPriceStream] so it can be tested with a fake.
  */
-// TODO: should these be separate files?
 interface PriceSocket {
     fun connect(): Flow<PriceSocketEvent>
 }

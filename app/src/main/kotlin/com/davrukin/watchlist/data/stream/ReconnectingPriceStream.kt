@@ -119,9 +119,7 @@ class ReconnectingPriceStream(
     private fun subscriptionMessage(
         type: String,
         symbol: String,
-    ): String {
-        return json.encodeToString(value = SubscriptionMessageDto(type = type, symbol = symbol))
-    }
+    ): String = json.encodeToString(value = SubscriptionMessageDto(type = type, symbol = symbol))
 
     private fun parseTicks(text: String): List<PriceTick> {
         val message =

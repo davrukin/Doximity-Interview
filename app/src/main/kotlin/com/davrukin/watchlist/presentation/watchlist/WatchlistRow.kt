@@ -68,9 +68,10 @@ fun WatchlistRow(
                     when {
                         row.isStale && row.price != null -> {
                             Text(
-                                text = row.staleAsOf?.let { asOf: String ->
-                                    "stale · $asOf"
-                                } ?: "stale",
+                                text =
+                                    row.staleAsOf?.let { asOf: String ->
+                                        "stale · $asOf"
+                                    } ?: "stale",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -80,19 +81,20 @@ fun WatchlistRow(
                             Text(
                                 text = row.change,
                                 style = MaterialTheme.typography.labelMedium,
-                                color = when (row.isGain) {
-                                    true -> {
-                                        WatchlistDesignSystem.GainColor
-                                    }
+                                color =
+                                    when (row.isGain) {
+                                        true -> {
+                                            WatchlistDesignSystem.GainColor
+                                        }
 
-                                    false -> {
-                                        WatchlistDesignSystem.LossColor
-                                    }
+                                        false -> {
+                                            WatchlistDesignSystem.LossColor
+                                        }
 
-                                    null -> {
-                                        MaterialTheme.colorScheme.onSurfaceVariant
-                                    }
-                                },
+                                        null -> {
+                                            MaterialTheme.colorScheme.onSurfaceVariant
+                                        }
+                                    },
                             )
                         }
                     }
@@ -117,15 +119,16 @@ fun WatchlistRow(
 private fun WatchlistRowGainPreview() {
     WatchlistTheme {
         WatchlistRow(
-            row = WatchlistRowUiModel(
-                symbol = "AAPL",
-                displaySymbol = "AAPL",
-                description = "Apple Inc.",
-                price = "$150.00",
-                change = "+2.50 (1.69%)",
-                isGain = true,
-                isStale = false,
-            ),
+            row =
+                WatchlistRowUiModel(
+                    symbol = "AAPL",
+                    displaySymbol = "AAPL",
+                    description = "Apple Inc.",
+                    price = "$150.00",
+                    change = "+2.50 (1.69%)",
+                    isGain = true,
+                    isStale = false,
+                ),
             onRemove = {},
         )
     }
@@ -136,15 +139,16 @@ private fun WatchlistRowGainPreview() {
 private fun WatchlistRowLossPreview() {
     WatchlistTheme {
         WatchlistRow(
-            row = WatchlistRowUiModel(
-                symbol = "TSLA",
-                displaySymbol = "TSLA",
-                description = "Tesla, Inc.",
-                price = "$240.00",
-                change = "-5.20 (2.12%)",
-                isGain = false,
-                isStale = false,
-            ),
+            row =
+                WatchlistRowUiModel(
+                    symbol = "TSLA",
+                    displaySymbol = "TSLA",
+                    description = "Tesla, Inc.",
+                    price = "$240.00",
+                    change = "-5.20 (2.12%)",
+                    isGain = false,
+                    isStale = false,
+                ),
             onRemove = {},
         )
     }

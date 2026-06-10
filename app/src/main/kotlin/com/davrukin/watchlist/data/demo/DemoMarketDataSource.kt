@@ -13,9 +13,7 @@ class DemoMarketDataSource(
     private val random: Random = Random.Default,
     override val priceStream: PriceStreamSource,
 ) : MarketDataSource {
-    override suspend fun search(query: String): Result<List<Instrument>> {
-        return Result.success(catalog.search(query = query))
-    }
+    override suspend fun search(query: String): Result<List<Instrument>> = Result.success(catalog.search(query = query))
 
     override suspend fun quoteSnapshot(instrument: Instrument): Result<Quote?> {
         val base: Double = catalog.basePrice(symbol = instrument.symbol)
@@ -25,13 +23,14 @@ class DemoMarketDataSource(
         val price: Double = base * (1 + random.nextDouble(from = -SNAPSHOT_SPREAD, until = SNAPSHOT_SPREAD))
         val change: Double = price - base
         return Result.success(
-            value = Quote(
-                price = price,
-                change = change,
-                percentChange = change / base * 100,
-                lastUpdated = clock.instant(),
-                isStale = false,
-            ),
+            value =
+                Quote(
+                    price = price,
+                    change = change,
+                    percentChange = change / base * 100,
+                    lastUpdated = clock.instant(),
+                    isStale = false,
+                ),
         )
     }
 

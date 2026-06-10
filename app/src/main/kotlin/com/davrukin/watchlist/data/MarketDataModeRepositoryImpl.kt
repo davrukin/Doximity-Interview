@@ -14,11 +14,12 @@ class MarketDataModeRepositoryImpl(
 
     private val mutableMode =
         MutableStateFlow(
-            value = if (isLiveAvailable) {
-                MarketDataMode.LIVE
-            } else {
-                MarketDataMode.DEMO
-            },
+            value =
+                if (isLiveAvailable) {
+                    MarketDataMode.LIVE
+                } else {
+                    MarketDataMode.DEMO
+                },
         )
 
     override val mode: StateFlow<MarketDataMode> = mutableMode.asStateFlow()

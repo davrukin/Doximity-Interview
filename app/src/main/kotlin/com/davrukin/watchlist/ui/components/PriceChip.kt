@@ -26,32 +26,35 @@ fun PriceChip(
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor: Color by animateColorAsState(
-        targetValue = when {
-            isStale -> WatchlistDesignSystem.StaleColor.copy(alpha = 0.1f)
-            isGain == true -> WatchlistDesignSystem.GainColor.copy(alpha = 0.1f)
-            isGain == false -> WatchlistDesignSystem.LossColor.copy(alpha = 0.1f)
-            else -> MaterialTheme.colorScheme.surfaceVariant
-        },
+        targetValue =
+            when {
+                isStale -> WatchlistDesignSystem.StaleColor.copy(alpha = 0.1f)
+                isGain == true -> WatchlistDesignSystem.GainColor.copy(alpha = 0.1f)
+                isGain == false -> WatchlistDesignSystem.LossColor.copy(alpha = 0.1f)
+                else -> MaterialTheme.colorScheme.surfaceVariant
+            },
         animationSpec = tween(durationMillis = 500),
         label = "PriceChipBackground",
     )
 
     val contentColor: Color by animateColorAsState(
-        targetValue = when {
-            isStale -> WatchlistDesignSystem.StaleColor
-            isGain == true -> WatchlistDesignSystem.GainColor
-            isGain == false -> WatchlistDesignSystem.LossColor
-            else -> MaterialTheme.colorScheme.onSurfaceVariant
-        },
+        targetValue =
+            when {
+                isStale -> WatchlistDesignSystem.StaleColor
+                isGain == true -> WatchlistDesignSystem.GainColor
+                isGain == false -> WatchlistDesignSystem.LossColor
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
+            },
         animationSpec = tween(durationMillis = 500),
         label = "PriceChipContent",
     )
 
     Box(
-        modifier = modifier
-            .clip(shape = RoundedCornerShape(size = 8.dp))
-            .background(color = backgroundColor)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+        modifier =
+            modifier
+                .clip(shape = RoundedCornerShape(size = 8.dp))
+                .background(color = backgroundColor)
+                .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
         Text(
             text = price,

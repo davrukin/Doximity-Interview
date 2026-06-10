@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -65,9 +64,10 @@ fun SearchScreen(
         },
         content = { paddingValues: androidx.compose.foundation.layout.PaddingValues ->
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = paddingValues),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues = paddingValues),
                 content = {
                     OutlinedTextField(
                         value = model.query,
@@ -99,9 +99,10 @@ fun SearchScreen(
                                 )
                             }
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                     )
                     when (model.phase) {
                         SearchUiModel.Phase.IDLE -> {
@@ -147,9 +148,10 @@ fun SearchScreen(
                                                 result = result,
                                                 onToggle = {
                                                     model.eventHandler.onEvent(
-                                                        event = SearchUiModel.Event.ToggleWatchlist(
-                                                            instrument = result.instrument,
-                                                        ),
+                                                        event =
+                                                            SearchUiModel.Event.ToggleWatchlist(
+                                                                instrument = result.instrument,
+                                                            ),
                                                     )
                                                 },
                                                 modifier = Modifier.fillMaxWidth(),
@@ -176,33 +178,35 @@ private class SearchPreviewProvider : PreviewParameterProvider<SearchUiModel> {
             previewModel().copy(results = emptyList(), phase = SearchUiModel.Phase.ERROR),
         )
 
-    private fun previewModel(): SearchUiModel {
-        return SearchUiModel(
+    private fun previewModel(): SearchUiModel =
+        SearchUiModel(
             query = "ap",
-            results = listOf(
-                SearchUiModel.Result(
-                    instrument = Instrument(
-                        symbol = "AAPL",
-                        displaySymbol = "AAPL",
-                        description = "APPLE INC",
-                        type = InstrumentType.STOCK,
+            results =
+                listOf(
+                    SearchUiModel.Result(
+                        instrument =
+                            Instrument(
+                                symbol = "AAPL",
+                                displaySymbol = "AAPL",
+                                description = "APPLE INC",
+                                type = InstrumentType.STOCK,
+                            ),
+                        isOnWatchlist = true,
                     ),
-                    isOnWatchlist = true,
-                ),
-                SearchUiModel.Result(
-                    instrument = Instrument(
-                        symbol = "BINANCE:APTUSDT",
-                        displaySymbol = "APT/USDT",
-                        description = "Binance APTUSDT",
-                        type = InstrumentType.CRYPTO,
+                    SearchUiModel.Result(
+                        instrument =
+                            Instrument(
+                                symbol = "BINANCE:APTUSDT",
+                                displaySymbol = "APT/USDT",
+                                description = "Binance APTUSDT",
+                                type = InstrumentType.CRYPTO,
+                            ),
+                        isOnWatchlist = false,
                     ),
-                    isOnWatchlist = false,
                 ),
-            ),
             phase = SearchUiModel.Phase.RESULTS,
             eventHandler = {},
         )
-    }
 }
 
 @Preview(showBackground = true)

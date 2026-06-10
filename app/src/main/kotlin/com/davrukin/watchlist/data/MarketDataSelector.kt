@@ -24,6 +24,5 @@ class MarketDataSelector(
         modeRepository.mode
             .map { mode ->
                 sourceFor(mode = mode)
-            }
-            .distinctUntilChanged()
+            }.distinctUntilChanged()
 }

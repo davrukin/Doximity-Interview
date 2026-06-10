@@ -27,35 +27,36 @@ fun WatchlistApp() {
         onBack = {
             backStack.removeLastOrNull()
         },
-        entryProvider = entryProvider {
-            entry<WatchlistKey> {
-                val presenter = koinInject<WatchlistPresenter>()
-                val params =
-                    remember(backStack) {
-                        WatchlistPresenter.Params(
-                            onOpenSearch = {
-                                backStack.add(SearchKey)
-                            },
-                        )
-                    }
-                WatchlistScreen(
-                    model = presenter.present(params = params),
-                )
-            }
-            entry<SearchKey> {
-                val presenter = koinInject<SearchPresenter>()
-                val params =
-                    remember(backStack) {
-                        SearchPresenter.Params(
-                            onBack = {
-                                backStack.removeLastOrNull()
-                            },
-                        )
-                    }
-                SearchScreen(
-                    model = presenter.present(params = params),
-                )
-            }
-        },
+        entryProvider =
+            entryProvider {
+                entry<WatchlistKey> {
+                    val presenter: WatchlistPresenter = koinInject<WatchlistPresenter>()
+                    val params: WatchlistPresenter.Params =
+                        remember(key1 = backStack) {
+                            WatchlistPresenter.Params(
+                                onOpenSearch = {
+                                    backStack.add(SearchKey)
+                                },
+                            )
+                        }
+                    WatchlistScreen(
+                        model = presenter.present(params = params),
+                    )
+                }
+                entry<SearchKey> {
+                    val presenter: SearchPresenter = koinInject<SearchPresenter>()
+                    val params: SearchPresenter.Params =
+                        remember(key1 = backStack) {
+                            SearchPresenter.Params(
+                                onBack = {
+                                    backStack.removeLastOrNull()
+                                },
+                            )
+                        }
+                    SearchScreen(
+                        model = presenter.present(params = params),
+                    )
+                }
+            },
     )
 }

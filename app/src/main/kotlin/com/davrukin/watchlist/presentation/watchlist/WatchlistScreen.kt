@@ -69,9 +69,10 @@ fun WatchlistScreen(
         },
         content = { paddingValues: androidx.compose.foundation.layout.PaddingValues ->
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = paddingValues),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues = paddingValues),
                 content = {
                     ConnectionBanner(
                         connectionState = model.connectionState,
@@ -109,9 +110,10 @@ fun WatchlistScreen(
                                                         row = row,
                                                         onRemove = {
                                                             model.eventHandler.onEvent(
-                                                                event = WatchlistUiModel.Event.Remove(
-                                                                    symbol = row.symbol,
-                                                                ),
+                                                                event =
+                                                                    WatchlistUiModel.Event.Remove(
+                                                                        symbol = row.symbol,
+                                                                    ),
                                                             )
                                                         },
                                                         modifier = Modifier.fillMaxWidth(),
@@ -141,29 +143,30 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
             previewModel().copy(isRefreshing = true),
         )
 
-    private fun previewModel(): WatchlistUiModel {
-        return WatchlistUiModel(
-            items = listOf(
-                WatchlistRowUiModel(
-                    symbol = "AAPL",
-                    displaySymbol = "AAPL",
-                    description = "APPLE INC",
-                    price = "228.40",
-                    change = "+2.15 (0.95%)",
-                    isGain = true,
-                    isStale = false,
+    private fun previewModel(): WatchlistUiModel =
+        WatchlistUiModel(
+            items =
+                listOf(
+                    WatchlistRowUiModel(
+                        symbol = "AAPL",
+                        displaySymbol = "AAPL",
+                        description = "APPLE INC",
+                        price = "228.40",
+                        change = "+2.15 (0.95%)",
+                        isGain = true,
+                        isStale = false,
+                    ),
+                    WatchlistRowUiModel(
+                        symbol = "BINANCE:BTCUSDT",
+                        displaySymbol = "BTC/USDT",
+                        description = "Binance BTCUSDT",
+                        price = "104,250.00",
+                        change = "-1,200.50 (1.14%)",
+                        isGain = false,
+                        isStale = true,
+                        staleAsOf = "Jun 9, 8:05 PM",
+                    ),
                 ),
-                WatchlistRowUiModel(
-                    symbol = "BINANCE:BTCUSDT",
-                    displaySymbol = "BTC/USDT",
-                    description = "Binance BTCUSDT",
-                    price = "104,250.00",
-                    change = "-1,200.50 (1.14%)",
-                    isGain = false,
-                    isStale = true,
-                    staleAsOf = "Jun 9, 8:05 PM",
-                ),
-            ),
             connectionState = ConnectionState.CONNECTED,
             isLoading = false,
             isRefreshing = false,
@@ -171,7 +174,6 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
             isLiveAvailable = true,
             eventHandler = {},
         )
-    }
 }
 
 @Preview(showBackground = true)

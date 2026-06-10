@@ -68,9 +68,10 @@ class DemoPriceStreamSource(
         if (base.isNaN()) {
             return null
         }
-        val current: Double = prices.getOrPut(key = symbol) {
-            base
-        }
+        val current: Double =
+            prices.getOrPut(key = symbol) {
+                base
+            }
         val drift: Double = current * (random.nextDouble(from = -STEP_FRACTION, until = STEP_FRACTION))
         val next: Double = (current + drift).coerceAtLeast(minimumValue = 0.01)
         prices[symbol] = next

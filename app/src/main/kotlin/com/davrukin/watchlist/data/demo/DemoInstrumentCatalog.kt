@@ -38,25 +38,24 @@ class DemoInstrumentCatalog {
         return entries
             .map { entry ->
                 entry.instrument
-            }
-            .filter { instrument ->
+            }.filter { instrument ->
                 instrument.displaySymbol.contains(other = trimmed, ignoreCase = true) ||
                     instrument.description.contains(other = trimmed, ignoreCase = true)
             }
     }
 
-    fun basePrice(symbol: String): Double {
-        return entries.firstOrNull { entry: Entry ->
-            entry.instrument.symbol == symbol
-        }?.basePrice ?: Double.NaN
-    }
+    fun basePrice(symbol: String): Double =
+        entries
+            .firstOrNull { entry: Entry ->
+                entry.instrument.symbol == symbol
+            }?.basePrice ?: Double.NaN
 
     private fun stock(
         symbol: String,
         description: String,
         basePrice: Double,
-    ): Entry {
-        return Entry(
+    ): Entry =
+        Entry(
             instrument =
                 Instrument(
                     symbol = symbol,
@@ -66,15 +65,14 @@ class DemoInstrumentCatalog {
                 ),
             basePrice = basePrice,
         )
-    }
 
     private fun crypto(
         pair: String,
         display: String,
         description: String,
         basePrice: Double,
-    ): Entry {
-        return Entry(
+    ): Entry =
+        Entry(
             instrument =
                 Instrument(
                     symbol = "BINANCE:$pair",
@@ -84,5 +82,4 @@ class DemoInstrumentCatalog {
                 ),
             basePrice = basePrice,
         )
-    }
 }
