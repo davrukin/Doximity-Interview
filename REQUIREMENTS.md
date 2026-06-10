@@ -32,3 +32,4 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 | O5 | Offline cache display | cached quotes render immediately on launch (R6 design); stale label now shows last-updated time | `WatchlistPresenterTest`, `WatchlistDaoTest` | ✅ |
 | O6 | Compose UI tests | `app/src/androidTest/` (10 tests) | `./gradlew connectedDebugAndroidTest`; green on device | ✅ |
 | O7 | Advanced retry/backoff (exponential backoff with jitter) | `ReconnectingPriceStream.retryDelayFor` (1s base, x2, 30s cap, ±20% jitter) | `ReconnectingPriceStreamTest` | ✅ |
+| O8 | Custom Design System components (developer addition; not in initial brief) | `ui/components/DesignSystem.kt`, `PriceChip`, `WatchlistToggleButton` | — | ✅ |
