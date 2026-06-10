@@ -16,18 +16,25 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlin.math.pow
+import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * Maintains one socket connection, resubscribing the current symbol set after every (re)connect
- * and retrying dropped connections after [retryDelay]. Reports [ConnectionState.OFFLINE] once
+ * and retrying dropped connections with exponential backoff plus jitter: delays double from
+ * [baseRetryDelay] up to [maxRetryDelay], each randomized by ±[jitterFraction] so simultaneous
+ * clients don't reconnect in lockstep. Reports [ConnectionState.OFFLINE] once
  * [offlineAfterAttempts] consecutive attempts have failed, while continuing to retry.
  */
 class ReconnectingPriceStream(
     private val socket: PriceSocket,
     private val json: Json,
-    private val retryDelay: Duration = 5.seconds,
+    private val baseRetryDelay: Duration = 1.seconds,
+    private val maxRetryDelay: Duration = 30.seconds,
+    private val jitterFraction: Double = 0.2,
+    private val random: Random = Random.Default,
     private val offlineAfterAttempts: Int = 3,
 ) : PriceStreamSource {
     override fun events(symbols: Flow<Set<String>>): Flow<PriceStreamEvent> =
@@ -67,7 +74,7 @@ class ReconnectingPriceStream(
                 }
                 failedAttempts++
                 send(PriceStreamEvent.ConnectionChanged(state = stateForFailedAttempts(failedAttempts)))
-                delay(retryDelay)
+                delay(retryDelayFor(failedAttempts = failedAttempts))
             }
         }
 
@@ -77,6 +84,15 @@ class ReconnectingPriceStream(
         } else {
             ConnectionState.OFFLINE
         }
+
+    private fun retryDelayFor(failedAttempts: Int): Duration {
+        val exponential = baseRetryDelay * 2.0.pow(n = failedAttempts - 1)
+        val capped = minOf(exponential, maxRetryDelay)
+        if (jitterFraction == 0.0) {
+            return capped
+        }
+        return capped * (1 + random.nextDouble(from = -jitterFraction, until = jitterFraction))
+    }
 
     private suspend fun manageSubscriptions(
         session: PriceSocketSession,

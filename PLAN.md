@@ -54,7 +54,7 @@ Key design points:
 ### Phase 2 — optional enhancements (in priority order)
 - [x] O1 price movement indicators
 - [x] O6 Compose UI tests
-- [ ] O7 exponential backoff + jitter
+- [x] O7 exponential backoff + jitter
 - [ ] O5 offline cache display surfacing
 - [ ] O4 pull to refresh
 - [ ] O2 sorting

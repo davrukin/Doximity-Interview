@@ -31,4 +31,4 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 | O4 | Pull to refresh | — | — | ⬜ |
 | O5 | Offline cache display | — | — | ⬜ |
 | O6 | Compose UI tests | `app/src/androidTest/` (10 tests) | `./gradlew connectedDebugAndroidTest`; green on device | ✅ |
-| O7 | Advanced retry/backoff (exponential backoff with jitter) | — | — | ⬜ |
+| O7 | Advanced retry/backoff (exponential backoff with jitter) | `ReconnectingPriceStream.retryDelayFor` (1s base, x2, 30s cap, ±20% jitter) | `ReconnectingPriceStreamTest` | ✅ |

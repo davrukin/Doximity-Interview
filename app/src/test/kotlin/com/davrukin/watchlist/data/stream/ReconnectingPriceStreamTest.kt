@@ -26,7 +26,7 @@ class ReconnectingPriceStreamTest {
     fun `connects subscribes and parses ticks`() =
         runTest {
             val socket = FakePriceSocket()
-            val stream = ReconnectingPriceStream(socket = socket, json = json, retryDelay = 1.seconds)
+            val stream = ReconnectingPriceStream(socket = socket, json = json, jitterFraction = 0.0)
             val symbols = MutableStateFlow(setOf("AAPL"))
 
             stream.events(symbols = symbols).test {
@@ -49,7 +49,7 @@ class ReconnectingPriceStreamTest {
     fun `ignores non-trade messages`() =
         runTest {
             val socket = FakePriceSocket()
-            val stream = ReconnectingPriceStream(socket = socket, json = json, retryDelay = 1.seconds)
+            val stream = ReconnectingPriceStream(socket = socket, json = json, jitterFraction = 0.0)
 
             stream.events(symbols = MutableStateFlow(setOf("AAPL"))).test {
                 awaitItem()
@@ -66,7 +66,7 @@ class ReconnectingPriceStreamTest {
     fun `diffs symbol changes into subscribe and unsubscribe messages`() =
         runTest {
             val socket = FakePriceSocket()
-            val stream = ReconnectingPriceStream(socket = socket, json = json, retryDelay = 1.seconds)
+            val stream = ReconnectingPriceStream(socket = socket, json = json, jitterFraction = 0.0)
             val symbols = MutableStateFlow(setOf("AAPL"))
 
             stream.events(symbols = symbols).test {
@@ -93,7 +93,7 @@ class ReconnectingPriceStreamTest {
     fun `reconnects after a drop and resubscribes current symbols`() =
         runTest {
             val socket = FakePriceSocket()
-            val stream = ReconnectingPriceStream(socket = socket, json = json, retryDelay = 1.seconds)
+            val stream = ReconnectingPriceStream(socket = socket, json = json, jitterFraction = 0.0)
 
             stream.events(symbols = MutableStateFlow(setOf("AAPL"))).test {
                 awaitItem()
@@ -125,7 +125,7 @@ class ReconnectingPriceStreamTest {
                 ReconnectingPriceStream(
                     socket = socket,
                     json = json,
-                    retryDelay = 1.seconds,
+                    jitterFraction = 0.0,
                     offlineAfterAttempts = 2,
                 )
 
@@ -143,9 +143,41 @@ class ReconnectingPriceStreamTest {
                 socket.fail()
                 assertEquals(connectionChanged(ConnectionState.OFFLINE), awaitItem())
 
-                advanceTimeBy(1.5.seconds)
+                advanceTimeBy(2.5.seconds)
                 runCurrent()
                 assertTrue(socket.connectCount >= 3)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `backs off exponentially between retries`() =
+        runTest {
+            val socket = FakePriceSocket()
+            val stream = ReconnectingPriceStream(socket = socket, json = json, jitterFraction = 0.0)
+
+            stream.events(symbols = MutableStateFlow(setOf("AAPL"))).test {
+                awaitItem()
+                socket.open()
+                awaitItem()
+                runCurrent()
+
+                socket.fail()
+                awaitItem()
+                advanceTimeBy(1.1.seconds)
+                runCurrent()
+                assertEquals(2, socket.connectCount)
+
+                socket.fail()
+                awaitItem()
+                advanceTimeBy(1.1.seconds)
+                runCurrent()
+                assertEquals(2, socket.connectCount)
+
+                advanceTimeBy(1.1.seconds)
+                runCurrent()
+                assertEquals(3, socket.connectCount)
 
                 cancelAndIgnoreRemainingEvents()
             }
