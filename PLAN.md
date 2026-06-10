@@ -49,7 +49,7 @@ Key design points:
 - [x] Watchlist screen + previews (R5)
 - [x] Search screen + previews (R1, R5)
 - [x] Navigation 3 wiring + MainActivity
-- [ ] README + ARCHITECTURE.md (R11)
+- [x] README + ARCHITECTURE.md (R11)
 
 ### Phase 2 — optional enhancements (in priority order)
 - [ ] O1 price movement indicators
