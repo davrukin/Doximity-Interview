@@ -127,6 +127,7 @@ class WatchlistScreenTest {
         WatchlistUiModel(
             items = items,
             isLoading = false,
+            isRefreshing = false,
             connectionState = connectionState,
             dataMode = MarketDataMode.DEMO,
             isLiveAvailable = false,

@@ -43,6 +43,7 @@ fun SearchResultRow(
                 },
             )
             WatchlistToggleButton(
+                displaySymbol = result.instrument.displaySymbol,
                 isOnWatchlist = result.isOnWatchlist,
                 onClick = onToggle,
             )

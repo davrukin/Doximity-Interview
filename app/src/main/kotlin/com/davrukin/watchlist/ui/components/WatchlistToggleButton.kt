@@ -14,6 +14,7 @@ import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
 fun WatchlistToggleButton(
+    displaySymbol: String,
     isOnWatchlist: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -40,9 +41,9 @@ fun WatchlistToggleButton(
                 },
             contentDescription =
                 if (isOnWatchlist) {
-                    "Remove from watchlist"
+                    "Remove $displaySymbol from watchlist"
                 } else {
-                    "Add to watchlist"
+                    "Add $displaySymbol to watchlist"
                 },
         )
     }
@@ -52,7 +53,7 @@ fun WatchlistToggleButton(
 @Composable
 private fun WatchlistToggleButtonOnPreview() {
     WatchlistTheme {
-        WatchlistToggleButton(isOnWatchlist = true, onClick = {})
+        WatchlistToggleButton(displaySymbol = "AAPL", isOnWatchlist = true, onClick = {})
     }
 }
 
@@ -60,6 +61,6 @@ private fun WatchlistToggleButtonOnPreview() {
 @Composable
 private fun WatchlistToggleButtonOffPreview() {
     WatchlistTheme {
-        WatchlistToggleButton(isOnWatchlist = false, onClick = {})
+        WatchlistToggleButton(displaySymbol = "AAPL", isOnWatchlist = false, onClick = {})
     }
 }
