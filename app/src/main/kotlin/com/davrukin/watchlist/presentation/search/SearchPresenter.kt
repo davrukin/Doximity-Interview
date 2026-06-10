@@ -6,9 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.davrukin.watchlist.domain.model.Instrument
+import com.davrukin.watchlist.domain.model.WatchlistItem
 import com.davrukin.watchlist.domain.usecase.AddToWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.RemoveFromWatchlistUseCase
@@ -50,9 +52,14 @@ class SearchPresenter(
         var query: String by rememberSaveable { mutableStateOf(value = "") }
         var retryToken: Int by remember { mutableIntStateOf(value = 0) }
         var searchState: SearchState by remember { mutableStateOf<SearchState>(value = SearchState.Idle) }
-        val watchlist: List<com.davrukin.watchlist.domain.model.WatchlistItem> by launchUseCase(initial = emptyList()) {
+        
+        // currentWatchlist is updated by produceState. 
+        // We use rememberUpdatedState so the eventHandler (which is remembered) 
+        // can always access the freshest list without being recreated itself.
+        val currentWatchlist: List<WatchlistItem> by launchUseCase(initial = emptyList()) {
             observeWatchlist()
         }
+        val latestWatchlist: List<WatchlistItem> by rememberUpdatedState(newValue = currentWatchlist)
 
         LaunchedEffect(key1 = query, key2 = retryToken) {
             if (query.isBlank()) {
@@ -71,7 +78,7 @@ class SearchPresenter(
             )
         }
 
-        val watchlistSymbols: Set<String> = watchlist.map { item: com.davrukin.watchlist.domain.model.WatchlistItem ->
+        val watchlistSymbols: Set<String> = currentWatchlist.map { item: WatchlistItem ->
             item.instrument.symbol
         }.toSet()
 
@@ -98,9 +105,12 @@ class SearchPresenter(
                     }
 
                     is SearchUiModel.Event.ToggleWatchlist -> {
-                        val onWatchlist: Boolean = watchlist.any { item: com.davrukin.watchlist.domain.model.WatchlistItem ->
-                            item.instrument.symbol == event.instrument.symbol
-                        }
+                        // Access latestWatchlist via the State wrapper to get the fresh data
+                        val symbols: Set<String> = latestWatchlist.map { item: WatchlistItem ->
+                            item.instrument.symbol
+                        }.toSet()
+                        val onWatchlist: Boolean = event.instrument.symbol in symbols
+                        
                         appScope.launch {
                             if (onWatchlist) {
                                 removeFromWatchlist(symbol = event.instrument.symbol)
