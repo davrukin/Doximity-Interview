@@ -59,13 +59,18 @@ val dataModule: Module =
                 .build()
                 .create(FinnhubApi::class.java)
         }
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+...
         single {
             Room
                 .databaseBuilder(
-                    androidContext(),
-                    WatchlistDatabase::class.java,
-                    "watchlist.db",
-                ).build()
+                    context = androidContext(),
+                    klass = WatchlistDatabase::class.java,
+                    name = "watchlist.db",
+                )
+                .addMigrations(WatchlistDatabase.MIGRATION_1_2)
+                .build()
         }
         single {
             get<WatchlistDatabase>().watchlistDao()
