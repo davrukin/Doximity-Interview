@@ -6,5 +6,7 @@ import com.davrukin.watchlist.domain.repository.WatchlistRepository
 class AddToWatchlistUseCase(
     private val repository: WatchlistRepository,
 ) {
-    suspend operator fun invoke(instrument: Instrument): Unit = repository.add(instrument)
+    suspend operator fun invoke(instrument: Instrument) {
+        return repository.add(instrument = instrument)
+    }
 }
