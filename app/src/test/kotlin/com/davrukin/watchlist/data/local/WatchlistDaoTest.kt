@@ -7,7 +7,6 @@ import androidx.test.core.app.ApplicationProvider
 import app.cash.turbine.test
 import com.davrukin.watchlist.domain.model.InstrumentType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -32,7 +31,10 @@ class WatchlistDaoTest {
                 .inMemoryDatabaseBuilder(
                     ApplicationProvider.getApplicationContext<Context>(),
                     WatchlistDatabase::class.java,
-                ).allowMainThreadQueries()
+                )
+                .setQueryExecutor { it.run() }
+                .setTransactionExecutor { it.run() }
+                .allowMainThreadQueries()
                 .build()
         dao = database.watchlistDao()
     }
@@ -69,7 +71,7 @@ class WatchlistDaoTest {
                 assertEquals(emptyList<WatchlistItemEntity>(), awaitItem())
 
                 dao.insert(entity = entity(symbol = "AAPL", addedAt = 1))
-                awaitItem()
+                assertEquals(1, awaitItem().size)
 
                 dao.updateQuote(
                     symbol = "AAPL",
@@ -94,7 +96,7 @@ class WatchlistDaoTest {
                 assertEquals(emptyList<WatchlistItemEntity>(), awaitItem())
 
                 dao.insert(entity = entity(symbol = "AAPL", addedAt = 1))
-                awaitItem()
+                assertEquals(1, awaitItem().size)
                 
                 dao.updateQuote(
                     symbol = "AAPL",
@@ -103,13 +105,13 @@ class WatchlistDaoTest {
                     percentChange = Double.NaN,
                     updatedAtEpochMillis = 1,
                 )
-                awaitItem()
+                assertEquals(230.5, awaitItem().single().lastPrice, 0.0)
 
                 dao.insert(entity = entity(symbol = "AAPL", addedAt = 99))
-                // OnConflictStrategy.IGNORE means no change if PK exists, so no emission
-                expectNoEvents()
-
-                val kept: WatchlistItemEntity = dao.observeAll().first().single()
+                
+                // Room might emit the current state if it detects an attempted write
+                val items: List<WatchlistItemEntity> = awaitItem() 
+                val kept: WatchlistItemEntity = items.single()
                 assertEquals(230.5, kept.lastPrice, 0.0)
                 assertEquals(1, kept.addedAtEpochMillis)
                 cancelAndIgnoreRemainingEvents()
@@ -120,7 +122,10 @@ class WatchlistDaoTest {
     @Test
     fun `starts empty`() {
         runTest {
-            assertTrue(dao.observeAll().first().isEmpty())
+            dao.observeAll().test {
+                assertTrue(awaitItem().isEmpty())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
     }
 

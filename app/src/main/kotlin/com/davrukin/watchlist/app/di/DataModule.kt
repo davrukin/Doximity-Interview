@@ -59,9 +59,7 @@ val dataModule: Module =
                 .build()
                 .create(FinnhubApi::class.java)
         }
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
-...
+
         single {
             Room
                 .databaseBuilder(
