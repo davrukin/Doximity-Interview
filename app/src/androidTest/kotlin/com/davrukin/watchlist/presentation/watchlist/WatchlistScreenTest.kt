@@ -59,7 +59,7 @@ class WatchlistScreenTest {
     }
 
     @Test
-    fun removeButtonDispatchesRemoveEvent() {
+    fun removeButtonRequestsConfirmation() {
         val events = mutableListOf<WatchlistUiModel.Event>()
         composeRule.setContent {
             WatchlistScreen(
@@ -69,7 +69,7 @@ class WatchlistScreenTest {
 
         composeRule.onNodeWithContentDescription(label = "Remove AAPL").performClick()
 
-        assertEquals(listOf<WatchlistUiModel.Event>(WatchlistUiModel.Event.Remove(symbol = "AAPL")), events)
+        assertEquals(listOf<WatchlistUiModel.Event>(WatchlistUiModel.Event.RequestRemove(symbol = "AAPL")), events)
     }
 
     @Test

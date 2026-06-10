@@ -60,6 +60,9 @@ class WatchlistPresenter(
         var sortOrder: WatchlistUiModel.SortOrder by rememberSaveable {
             mutableStateOf(value = WatchlistUiModel.SortOrder.ADDED)
         }
+        var pendingRemovalSymbol: String? by rememberSaveable {
+            mutableStateOf(value = null)
+        }
 
         val items: List<WatchlistRowUiModel> =
             sortItems(
@@ -83,10 +86,22 @@ class WatchlistPresenter(
             remember(key1 = params) {
                 EventHandler<WatchlistUiModel.Event> { event: WatchlistUiModel.Event ->
                     when (event) {
-                        is WatchlistUiModel.Event.Remove -> {
-                            appScope.launch {
-                                removeFromWatchlist(symbol = event.symbol)
+                        is WatchlistUiModel.Event.RequestRemove -> {
+                            pendingRemovalSymbol = event.symbol
+                        }
+
+                        WatchlistUiModel.Event.ConfirmRemoval -> {
+                            val symbol: String? = pendingRemovalSymbol
+                            pendingRemovalSymbol = null
+                            if (symbol != null) {
+                                appScope.launch {
+                                    removeFromWatchlist(symbol = symbol)
+                                }
                             }
+                        }
+
+                        WatchlistUiModel.Event.DismissRemoval -> {
+                            pendingRemovalSymbol = null
                         }
 
                         WatchlistUiModel.Event.Refresh -> {
@@ -116,11 +131,24 @@ class WatchlistPresenter(
                 }
             }
 
+        val pendingRemoval: WatchlistUiModel.PendingRemoval? =
+            pendingRemovalSymbol?.let { symbol: String ->
+                items
+                    .firstOrNull { it.symbol == symbol }
+                    ?.let { row: WatchlistRowUiModel ->
+                        WatchlistUiModel.PendingRemoval(
+                            symbol = row.symbol,
+                            displaySymbol = row.displaySymbol,
+                        )
+                    }
+            }
+
         return WatchlistUiModel(
             items = items,
             isLoading = watchlist == null,
             isRefreshing = isRefreshing,
             sortOrder = sortOrder,
+            pendingRemoval = pendingRemoval,
             connectionState = connectionState,
             dataMode = dataMode,
             isLiveAvailable = observeMarketDataMode.isLiveAvailable,

@@ -9,11 +9,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -121,7 +123,7 @@ fun WatchlistScreen(
                                                         onRemove = {
                                                             model.eventHandler.onEvent(
                                                                 event =
-                                                                    WatchlistUiModel.Event.Remove(
+                                                                    WatchlistUiModel.Event.RequestRemove(
                                                                         symbol = row.symbol,
                                                                     ),
                                                             )
@@ -140,6 +142,51 @@ fun WatchlistScreen(
             )
         },
     )
+    val pendingRemoval: WatchlistUiModel.PendingRemoval? = model.pendingRemoval
+    if (pendingRemoval != null) {
+        RemoveConfirmationDialog(
+            pendingRemoval = pendingRemoval,
+            onConfirm = {
+                model.eventHandler.onEvent(event = WatchlistUiModel.Event.ConfirmRemoval)
+            },
+            onDismiss = {
+                model.eventHandler.onEvent(event = WatchlistUiModel.Event.DismissRemoval)
+            },
+        )
+    }
+}
+
+@Composable
+private fun RemoveConfirmationDialog(
+    pendingRemoval: WatchlistUiModel.PendingRemoval,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(id = R.string.remove_dialog_title, pendingRemoval.displaySymbol))
+        },
+        text = {
+            Text(text = stringResource(id = R.string.remove_dialog_message))
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm,
+                content = {
+                    Text(text = stringResource(id = R.string.remove_dialog_confirm))
+                },
+            )
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                content = {
+                    Text(text = stringResource(id = R.string.remove_dialog_cancel))
+                },
+            )
+        },
+    )
 }
 
 private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiModel> {
@@ -151,6 +198,13 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
             previewModel().copy(items = emptyList()),
             previewModel().copy(isLoading = true),
             previewModel().copy(isRefreshing = true),
+            previewModel().copy(
+                pendingRemoval =
+                    WatchlistUiModel.PendingRemoval(
+                        symbol = "AAPL",
+                        displaySymbol = "AAPL",
+                    ),
+            ),
         )
 
     private fun previewModel(): WatchlistUiModel =

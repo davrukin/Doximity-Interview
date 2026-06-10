@@ -37,4 +37,9 @@
 
     <string name="toggle_remove_from_watchlist">Remove %1$s from watchlist</string>
     <string name="toggle_add_to_watchlist">Add %1$s to watchlist</string>
+
+    <string name="remove_dialog_title">Remove %1$s?</string>
+    <string name="remove_dialog_message">It will be removed from your watchlist. Its cached prices are deleted too.</string>
+    <string name="remove_dialog_confirm">Remove</string>
+    <string name="remove_dialog_cancel">Cancel</string>
 </resources>

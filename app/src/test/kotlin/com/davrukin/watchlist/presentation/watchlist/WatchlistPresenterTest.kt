@@ -164,10 +164,44 @@ class WatchlistPresenterTest {
                 awaitItem()
                 val loaded = awaitItem()
 
-                loaded.eventHandler.onEvent(event = WatchlistUiModel.Event.Remove(symbol = "AAPL"))
+                loaded.eventHandler.onEvent(event = WatchlistUiModel.Event.RequestRemove(symbol = "AAPL"))
 
-                val updated = expectMostRecentItemWith { it.items.size == 1 }
+                val confirming = expectMostRecentItemWith { it.pendingRemoval != null }
+                assertEquals("AAPL", requireNotNull(confirming.pendingRemoval).displaySymbol)
+
+                confirming.eventHandler.onEvent(event = WatchlistUiModel.Event.ConfirmRemoval)
+
+                val updated = expectMostRecentItemWith { it.items.size == 1 && it.pendingRemoval == null }
                 assertEquals("MSFT", updated.items.single().symbol)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `dismissing the removal confirmation keeps the row`() =
+        runTest {
+            val fixture =
+                Fixture(
+                    scope = this,
+                    watchlist =
+                        listOf(
+                            WatchlistItem(instrument = instrument(symbol = "AAPL"), cachedQuote = null),
+                        ),
+                )
+
+            fixture.models().test {
+                awaitItem()
+                val loaded = awaitItem()
+
+                loaded.eventHandler.onEvent(event = WatchlistUiModel.Event.RequestRemove(symbol = "AAPL"))
+                val confirming = expectMostRecentItemWith { it.pendingRemoval != null }
+
+                confirming.eventHandler.onEvent(event = WatchlistUiModel.Event.DismissRemoval)
+
+                val dismissed = expectMostRecentItemWith { it.pendingRemoval == null }
+                assertEquals("AAPL", dismissed.items.single().symbol)
+                assertEquals(1, fixture.watchlistRepository.items.value.size)
 
                 cancelAndIgnoreRemainingEvents()
             }

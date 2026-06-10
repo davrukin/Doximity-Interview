@@ -16,6 +16,7 @@ data class WatchlistUiModel(
     val dataMode: MarketDataMode,
     val isLiveAvailable: Boolean,
     val sortOrder: SortOrder = SortOrder.ADDED,
+    val pendingRemoval: PendingRemoval? = null,
     val eventHandler: EventHandler<Event>,
 ) : UiModel {
     enum class SortOrder {
@@ -27,10 +28,20 @@ data class WatchlistUiModel(
         fun next(): SortOrder = entries[(ordinal + 1) % entries.size]
     }
 
+    @Immutable
+    data class PendingRemoval(
+        val symbol: String,
+        val displaySymbol: String,
+    )
+
     sealed interface Event : UiEvent {
-        data class Remove(
+        data class RequestRemove(
             val symbol: String,
         ) : Event
+
+        data object ConfirmRemoval : Event
+
+        data object DismissRemoval : Event
 
         data object Refresh : Event
 
