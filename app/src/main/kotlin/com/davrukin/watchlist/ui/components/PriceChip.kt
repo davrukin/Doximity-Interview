@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davrukin.watchlist.ui.theme.LocalExtendedColors
 import com.davrukin.watchlist.ui.theme.MotionTokens
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
@@ -29,9 +30,9 @@ fun PriceChip(
     val backgroundColor: Color by animateColorAsState(
         targetValue =
             when {
-                isStale -> WatchlistDesignSystem.StaleColor.copy(alpha = 0.1f)
-                isGain == true -> WatchlistDesignSystem.GainColor.copy(alpha = 0.1f)
-                isGain == false -> WatchlistDesignSystem.LossColor.copy(alpha = 0.1f)
+                isStale -> LocalExtendedColors.current.stale.copy(alpha = 0.1f)
+                isGain == true -> LocalExtendedColors.current.gain.copy(alpha = 0.1f)
+                isGain == false -> LocalExtendedColors.current.loss.copy(alpha = 0.1f)
                 else -> MaterialTheme.colorScheme.surfaceVariant
             },
         animationSpec = tween(durationMillis = MotionTokens.EMPHASIS_MILLIS),
@@ -41,9 +42,9 @@ fun PriceChip(
     val contentColor: Color by animateColorAsState(
         targetValue =
             when {
-                isStale -> WatchlistDesignSystem.StaleColor
-                isGain == true -> WatchlistDesignSystem.GainColor
-                isGain == false -> WatchlistDesignSystem.LossColor
+                isStale -> LocalExtendedColors.current.stale
+                isGain == true -> LocalExtendedColors.current.gain
+                isGain == false -> LocalExtendedColors.current.loss
                 else -> MaterialTheme.colorScheme.onSurfaceVariant
             },
         animationSpec = tween(durationMillis = MotionTokens.EMPHASIS_MILLIS),

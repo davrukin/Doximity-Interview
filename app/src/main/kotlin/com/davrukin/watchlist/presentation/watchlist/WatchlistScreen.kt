@@ -3,7 +3,9 @@ package com.davrukin.watchlist.presentation.watchlist
 import android.content.res.Configuration
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,6 +32,7 @@ import com.davrukin.watchlist.R
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.MarketDataMode
 import com.davrukin.watchlist.ui.components.LoadingState
+import com.davrukin.watchlist.ui.theme.Dimens
 import com.davrukin.watchlist.ui.theme.MotionTokens
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
@@ -124,6 +127,8 @@ fun WatchlistScreen(
                                     content = {
                                         LazyColumn(
                                             modifier = Modifier.fillMaxSize(),
+                                            contentPadding = PaddingValues(all = Dimens.RowPadding),
+                                            verticalArrangement = Arrangement.spacedBy(space = Dimens.ItemSpacing),
                                             content = {
                                                 items(
                                                     items = model.items,

@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.davrukin.watchlist.presentation.watchlist.WatchlistRowUiModel
+import com.davrukin.watchlist.ui.theme.LocalExtendedColors
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
@@ -20,8 +21,8 @@ fun MovementIndicator(
 
     val color: Color =
         when (movement) {
-            WatchlistRowUiModel.PriceMovement.UP -> WatchlistDesignSystem.GainColor
-            WatchlistRowUiModel.PriceMovement.DOWN -> WatchlistDesignSystem.LossColor
+            WatchlistRowUiModel.PriceMovement.UP -> LocalExtendedColors.current.gain
+            WatchlistRowUiModel.PriceMovement.DOWN -> LocalExtendedColors.current.loss
         }
 
     val icon: String =

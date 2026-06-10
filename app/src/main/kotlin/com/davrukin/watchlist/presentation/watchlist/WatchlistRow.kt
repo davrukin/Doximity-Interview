@@ -2,7 +2,6 @@ package com.davrukin.watchlist.presentation.watchlist
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -12,6 +11,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +25,8 @@ import com.davrukin.watchlist.R
 import com.davrukin.watchlist.ui.components.MovementIndicator
 import com.davrukin.watchlist.ui.components.PriceChip
 import com.davrukin.watchlist.ui.components.Sparkline
-import com.davrukin.watchlist.ui.components.WatchlistDesignSystem
+import com.davrukin.watchlist.ui.theme.Dimens
+import com.davrukin.watchlist.ui.theme.LocalExtendedColors
 import com.davrukin.watchlist.ui.theme.MotionTokens
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
@@ -36,13 +37,28 @@ fun WatchlistRow(
     onRemove: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    Surface(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        modifier = modifier,
+        content = {
+            RowContent(row = row, onRemove = onRemove)
+        },
+    )
+}
+
+@Composable
+private fun RowContent(
+    row: WatchlistRowUiModel,
+    onRemove: () -> Unit,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            modifier
-                .clickable(onClick = onClick)
+            Modifier
                 .animateContentSize(animationSpec = tween(durationMillis = MotionTokens.STANDARD_MILLIS))
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .padding(horizontal = Dimens.ScreenPadding, vertical = Dimens.RowPadding),
         content = {
             Column(
                 modifier = Modifier.weight(weight = 1f),
@@ -66,9 +82,9 @@ fun WatchlistRow(
                     prices = row.sparkline,
                     color =
                         if (row.sparkline.last() >= row.sparkline.first()) {
-                            WatchlistDesignSystem.GainColor
+                            LocalExtendedColors.current.gain
                         } else {
-                            WatchlistDesignSystem.LossColor
+                            LocalExtendedColors.current.loss
                         },
                     modifier =
                         Modifier
@@ -112,11 +128,11 @@ fun WatchlistRow(
                                 color =
                                     when (row.isGain) {
                                         true -> {
-                                            WatchlistDesignSystem.GainColor
+                                            LocalExtendedColors.current.gain
                                         }
 
                                         false -> {
-                                            WatchlistDesignSystem.LossColor
+                                            LocalExtendedColors.current.loss
                                         }
 
                                         null -> {

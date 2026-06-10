@@ -68,7 +68,7 @@ Key design points:
 - [x] D1 delete confirmation dialog
 - [x] D5 instrument detail dialog
 - [x] D2 animations (banner, list items, state transitions)
-- [ ] D4 design-system visual polish
+- [x] D4 design-system visual polish
 - [ ] Developer-additions tracking restructure in REQUIREMENTS.md
 
 ## Deviations log

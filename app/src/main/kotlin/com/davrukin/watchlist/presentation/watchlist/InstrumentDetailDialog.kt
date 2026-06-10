@@ -18,7 +18,7 @@ import com.davrukin.watchlist.R
 import com.davrukin.watchlist.domain.model.InstrumentType
 import com.davrukin.watchlist.ui.components.PriceChip
 import com.davrukin.watchlist.ui.components.Sparkline
-import com.davrukin.watchlist.ui.components.WatchlistDesignSystem
+import com.davrukin.watchlist.ui.theme.LocalExtendedColors
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
@@ -66,8 +66,8 @@ fun InstrumentDetailDialog(
                             style = MaterialTheme.typography.labelMedium,
                             color =
                                 when (row.isGain) {
-                                    true -> WatchlistDesignSystem.GainColor
-                                    false -> WatchlistDesignSystem.LossColor
+                                    true -> LocalExtendedColors.current.gain
+                                    false -> LocalExtendedColors.current.loss
                                     null -> MaterialTheme.colorScheme.onSurfaceVariant
                                 },
                             modifier = Modifier.padding(top = 4.dp),
@@ -86,8 +86,8 @@ fun InstrumentDetailDialog(
                             prices = row.sparkline,
                             color =
                                 when (row.isGain) {
-                                    false -> WatchlistDesignSystem.LossColor
-                                    else -> WatchlistDesignSystem.GainColor
+                                    false -> LocalExtendedColors.current.loss
+                                    else -> LocalExtendedColors.current.gain
                                 },
                             modifier =
                                 Modifier
