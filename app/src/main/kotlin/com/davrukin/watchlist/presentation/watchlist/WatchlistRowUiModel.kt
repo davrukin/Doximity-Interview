@@ -18,6 +18,7 @@ data class WatchlistRowUiModel(
     val isStale: Boolean,
     val staleAsOf: String? = null,
     val movement: PriceMovement? = null,
+    val sparkline: List<Double> = emptyList(),
 ) : UiModel {
     enum class PriceMovement {
         UP,

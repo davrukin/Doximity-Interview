@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.Quote
@@ -41,6 +43,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
         var movement: WatchlistRowUiModel.PriceMovement? by remember {
             mutableStateOf<WatchlistRowUiModel.PriceMovement?>(value = null)
         }
+        val recentPrices: SnapshotStateList<Double> = remember { mutableStateListOf<Double>() }
         LaunchedEffect(key1 = livePrice) {
             val previous: Double = previousPrice
             previousPrice = livePrice
@@ -51,6 +54,12 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
                     } else {
                         WatchlistRowUiModel.PriceMovement.DOWN
                     }
+            }
+            if (!livePrice.isNaN()) {
+                recentPrices.add(livePrice)
+                if (recentPrices.size > SPARKLINE_CAPACITY) {
+                    recentPrices.removeAt(0)
+                }
             }
         }
 
@@ -84,6 +93,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
                     null
                 },
             movement = movement,
+            sparkline = recentPrices.toList(),
         )
     }
 
@@ -118,4 +128,8 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
 
     private val zoneId: ZoneId = ZoneId.systemDefault()
     private val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, h:mm a", Locale.US)
+
+    companion object {
+        private const val SPARKLINE_CAPACITY: Int = 40
+    }
 }

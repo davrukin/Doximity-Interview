@@ -250,6 +250,37 @@ class WatchlistPresenterTest {
         }
 
     @Test
+    fun `accumulates recent live prices into the sparkline`() =
+        runTest {
+            val fixture =
+                Fixture(
+                    scope = this,
+                    watchlist =
+                        listOf(
+                            WatchlistItem(instrument = instrument(symbol = "AAPL"), cachedQuote = null),
+                        ),
+                )
+
+            fixture.models().test {
+                expectMostRecentItemWith { it.items.size == 1 }
+
+                fixture.priceRepository.quotes.value = mapOf("AAPL" to quote(price = 100.0))
+                fixture.priceRepository.quotes.value = mapOf("AAPL" to quote(price = 101.0))
+                fixture.priceRepository.quotes.value = mapOf("AAPL" to quote(price = 100.5))
+
+                val charted =
+                    expectMostRecentItemWith {
+                        it.items
+                            .single()
+                            .sparkline.size == 3
+                    }
+                assertEquals(listOf(100.0, 101.0, 100.5), charted.items.single().sparkline)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun `open search event invokes navigation callback`() =
         runTest {
             var opened = false

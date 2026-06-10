@@ -3,6 +3,7 @@ package com.davrukin.watchlist.presentation.watchlist
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davrukin.watchlist.ui.components.MovementIndicator
 import com.davrukin.watchlist.ui.components.PriceChip
+import com.davrukin.watchlist.ui.components.Sparkline
 import com.davrukin.watchlist.ui.components.WatchlistDesignSystem
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
@@ -48,6 +50,21 @@ fun WatchlistRow(
                     )
                 },
             )
+            if (row.sparkline.size >= 2) {
+                Sparkline(
+                    prices = row.sparkline,
+                    color =
+                        if (row.sparkline.last() >= row.sparkline.first()) {
+                            WatchlistDesignSystem.GainColor
+                        } else {
+                            WatchlistDesignSystem.LossColor
+                        },
+                    modifier =
+                        Modifier
+                            .padding(end = 12.dp)
+                            .size(width = 56.dp, height = 22.dp),
+                )
+            }
             Column(
                 horizontalAlignment = Alignment.End,
                 content = {

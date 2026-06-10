@@ -59,7 +59,7 @@ Key design points:
 - [x] O4 pull to refresh
 - [x] O8 custom design system components (developer addition)
 - [x] O2 sorting
-- [ ] O3 sparkline
+- [x] O3 sparkline
 
 ## Deviations log
 
