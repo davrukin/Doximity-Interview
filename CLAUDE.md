@@ -32,6 +32,15 @@ This project uses the Composable Presenter pattern, as described in Doximity's e
 
 ## Kotlin / Compose style
 
+- Use block body for functions instead of expression body (e.g., `fun getX(): T { return x }` instead of `fun getX(): T = x`).
+- Specify explicit names for lambda parameters (avoid using `it`).
+- Avoid nullable "primitive" data types (e.g., `Int?`, `Long?`, `Boolean?`, `Double?`, `Float?`) to prevent unnecessary object wrapping. Use meaningful default values or constants (e.g., `-1.0`, `Long.MIN_VALUE`) where appropriate, or use wrapper types only if essential for API compatibility.
+- Specify data types for all public values and functions.
+- Specify parameter names explicitly when using annotations (e.g., `@SerialName(value = "name")`).
+- Do not use scoping functions (`let`, `run`, `apply`, `also`, `with`) on a single line.
+- Avoid placing the expression after an equals sign on a new line for assignments.
+- Use braces for all `if` and `else` statements, even if they contain only a single line.
+- Never use the non-null assertion operator (`!!`).
 - Use named arguments at every Compose call site, including trailing `content = { ... }` blocks.
 - Use trailing commas everywhere argument/parameter lists span multiple lines (enforced via `.editorconfig`).
 - Avoid extension functions; prefer member functions on the owning class, or top-level private functions where no class fits. Exception: extensions that are part of the Composable Presenter pattern itself (e.g. a `launchUseCase()` helper) are allowed.
