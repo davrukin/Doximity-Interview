@@ -52,7 +52,7 @@ Key design points:
 - [x] README + ARCHITECTURE.md (R11)
 
 ### Phase 2 — optional enhancements (in priority order)
-- [ ] O1 price movement indicators
+- [x] O1 price movement indicators
 - [ ] O6 Compose UI tests
 - [ ] O7 exponential backoff + jitter
 - [ ] O5 offline cache display surfacing

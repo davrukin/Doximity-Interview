@@ -25,7 +25,7 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 
 | ID | Enhancement | Implementation | Tests | Status |
 |----|-------------|----------------|-------|--------|
-| O1 | Price movement indicators | — | — | ⬜ |
+| O1 | Price movement indicators | `WatchlistItemPresenter` (tick direction), `WatchlistScreen` (▲/▼) | `WatchlistPresenterTest` | ✅ |
 | O2 | Sorting the watchlist | — | — | ⬜ |
 | O3 | Sparkline | — | — | ⬜ |
 | O4 | Pull to refresh | — | — | ⬜ |

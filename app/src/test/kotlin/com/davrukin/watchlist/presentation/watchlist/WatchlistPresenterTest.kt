@@ -91,6 +91,40 @@ class WatchlistPresenterTest {
         }
 
     @Test
+    fun `tick direction indicator follows live price movement`() =
+        runTest {
+            val fixture =
+                Fixture(
+                    scope = this,
+                    watchlist =
+                        listOf(
+                            WatchlistItem(instrument = instrument(symbol = "AAPL"), cachedQuote = null),
+                        ),
+                )
+
+            fixture.models().test {
+                awaitItem()
+                awaitItem()
+
+                fixture.priceRepository.quotes.value = mapOf("AAPL" to quote(price = 100.0))
+                expectMostRecentItemWith { it.items.single().price == "100.00" }
+
+                fixture.priceRepository.quotes.value = mapOf("AAPL" to quote(price = 101.0))
+                val up = expectMostRecentItemWith { it.items.single().movement != null }
+                assertEquals(WatchlistRowUiModel.PriceMovement.UP, up.items.single().movement)
+
+                fixture.priceRepository.quotes.value = mapOf("AAPL" to quote(price = 100.5))
+                val down =
+                    expectMostRecentItemWith {
+                        it.items.single().movement == WatchlistRowUiModel.PriceMovement.DOWN
+                    }
+                assertEquals(WatchlistRowUiModel.PriceMovement.DOWN, down.items.single().movement)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun `shows missing price when no quote exists anywhere`() =
         runTest {
             val fixture =

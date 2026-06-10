@@ -231,15 +231,37 @@ private fun WatchlistRow(
             Column(
                 horizontalAlignment = Alignment.End,
                 content = {
-                    Text(
-                        text = row.price ?: "—",
-                        style = MaterialTheme.typography.titleMedium,
-                        color =
-                            if (row.isStale || row.price == null) {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            } else {
-                                MaterialTheme.colorScheme.onSurface
-                            },
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        content = {
+                            when (row.movement) {
+                                WatchlistRowUiModel.PriceMovement.UP ->
+                                    Text(
+                                        text = "▲",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = GainColor,
+                                        modifier = Modifier.padding(end = 4.dp),
+                                    )
+                                WatchlistRowUiModel.PriceMovement.DOWN ->
+                                    Text(
+                                        text = "▼",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.padding(end = 4.dp),
+                                    )
+                                null -> Unit
+                            }
+                            Text(
+                                text = row.price ?: "—",
+                                style = MaterialTheme.typography.titleMedium,
+                                color =
+                                    if (row.isStale || row.price == null) {
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurface
+                                    },
+                            )
+                        },
                     )
                     when {
                         row.isStale && row.price != null ->
@@ -300,6 +322,7 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
                         change = "+1.20 (+0.53%)",
                         isGain = true,
                         isStale = false,
+                        movement = WatchlistRowUiModel.PriceMovement.UP,
                     ),
                     WatchlistRowUiModel(
                         symbol = "TSLA",
@@ -309,6 +332,7 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
                         change = "-4.10 (-1.27%)",
                         isGain = false,
                         isStale = false,
+                        movement = WatchlistRowUiModel.PriceMovement.DOWN,
                     ),
                     WatchlistRowUiModel(
                         symbol = "MSFT",

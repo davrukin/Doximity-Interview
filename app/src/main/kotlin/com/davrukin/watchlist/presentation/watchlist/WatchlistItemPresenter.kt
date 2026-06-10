@@ -1,6 +1,11 @@
 package com.davrukin.watchlist.presentation.watchlist
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.Quote
 import com.davrukin.watchlist.domain.model.WatchlistItem
@@ -26,6 +31,23 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
         val isStale =
             quote != null &&
                 (quote.isStale || params.connectionState != ConnectionState.CONNECTED)
+
+        val livePrice = params.liveQuote?.price
+        var previousPrice by remember { mutableStateOf<Double?>(null) }
+        var movement by remember { mutableStateOf<WatchlistRowUiModel.PriceMovement?>(null) }
+        LaunchedEffect(livePrice) {
+            val previous = previousPrice
+            previousPrice = livePrice
+            if (livePrice != null && previous != null && livePrice != previous) {
+                movement =
+                    if (livePrice > previous) {
+                        WatchlistRowUiModel.PriceMovement.UP
+                    } else {
+                        WatchlistRowUiModel.PriceMovement.DOWN
+                    }
+            }
+        }
+
         return WatchlistRowUiModel(
             symbol = instrument.symbol,
             displaySymbol = instrument.displaySymbol,
@@ -34,6 +56,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             change = quote?.let { formatChange(quote = it) },
             isGain = quote?.change?.let { it >= 0 },
             isStale = isStale,
+            movement = movement,
         )
     }
 
