@@ -1,6 +1,8 @@
 package com.davrukin.watchlist.presentation.watchlist
 
 import android.content.res.Configuration
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +30,7 @@ import com.davrukin.watchlist.R
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.MarketDataMode
 import com.davrukin.watchlist.ui.components.LoadingState
+import com.davrukin.watchlist.ui.theme.MotionTokens
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,60 +93,74 @@ fun WatchlistScreen(
                         connectionState = model.connectionState,
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    when {
-                        model.isLoading -> {
-                            LoadingState(modifier = Modifier.fillMaxSize())
-                        }
+                    Crossfade(
+                        targetState =
+                            when {
+                                model.isLoading -> ContentPhase.LOADING
+                                model.items.isEmpty() -> ContentPhase.EMPTY
+                                else -> ContentPhase.LIST
+                            },
+                        animationSpec = tween(durationMillis = MotionTokens.STANDARD_MILLIS),
+                        label = "WatchlistContent",
+                    ) { phase: ContentPhase ->
+                        when (phase) {
+                            ContentPhase.LOADING -> {
+                                LoadingState(modifier = Modifier.fillMaxSize())
+                            }
 
-                        model.items.isEmpty() -> {
-                            EmptyState(modifier = Modifier.fillMaxSize())
-                        }
+                            ContentPhase.EMPTY -> {
+                                EmptyState(modifier = Modifier.fillMaxSize())
+                            }
 
-                        else -> {
-                            PullToRefreshBox(
-                                isRefreshing = model.isRefreshing,
-                                onRefresh = {
-                                    model.eventHandler.onEvent(
-                                        event = WatchlistUiModel.Event.Refresh,
-                                    )
-                                },
-                                modifier = Modifier.fillMaxSize(),
-                                content = {
-                                    LazyColumn(
-                                        modifier = Modifier.fillMaxSize(),
-                                        content = {
-                                            items(
-                                                items = model.items,
-                                                key = { row: WatchlistRowUiModel ->
-                                                    row.symbol
-                                                },
-                                                itemContent = { row: WatchlistRowUiModel ->
-                                                    WatchlistRow(
-                                                        row = row,
-                                                        onClick = {
-                                                            model.eventHandler.onEvent(
-                                                                event =
-                                                                    WatchlistUiModel.Event.RowClicked(
-                                                                        symbol = row.symbol,
-                                                                    ),
-                                                            )
-                                                        },
-                                                        onRemove = {
-                                                            model.eventHandler.onEvent(
-                                                                event =
-                                                                    WatchlistUiModel.Event.RequestRemove(
-                                                                        symbol = row.symbol,
-                                                                    ),
-                                                            )
-                                                        },
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                    )
-                                                },
-                                            )
-                                        },
-                                    )
-                                },
-                            )
+                            ContentPhase.LIST -> {
+                                PullToRefreshBox(
+                                    isRefreshing = model.isRefreshing,
+                                    onRefresh = {
+                                        model.eventHandler.onEvent(
+                                            event = WatchlistUiModel.Event.Refresh,
+                                        )
+                                    },
+                                    modifier = Modifier.fillMaxSize(),
+                                    content = {
+                                        LazyColumn(
+                                            modifier = Modifier.fillMaxSize(),
+                                            content = {
+                                                items(
+                                                    items = model.items,
+                                                    key = { row: WatchlistRowUiModel ->
+                                                        row.symbol
+                                                    },
+                                                    itemContent = { row: WatchlistRowUiModel ->
+                                                        WatchlistRow(
+                                                            row = row,
+                                                            onClick = {
+                                                                model.eventHandler.onEvent(
+                                                                    event =
+                                                                        WatchlistUiModel.Event.RowClicked(
+                                                                            symbol = row.symbol,
+                                                                        ),
+                                                                )
+                                                            },
+                                                            onRemove = {
+                                                                model.eventHandler.onEvent(
+                                                                    event =
+                                                                        WatchlistUiModel.Event.RequestRemove(
+                                                                            symbol = row.symbol,
+                                                                        ),
+                                                                )
+                                                            },
+                                                            modifier =
+                                                                Modifier
+                                                                    .fillMaxWidth()
+                                                                    .animateItem(),
+                                                        )
+                                                    },
+                                                )
+                                            },
+                                        )
+                                    },
+                                )
+                            }
                         }
                     }
                 },
@@ -204,6 +221,12 @@ private fun RemoveConfirmationDialog(
             )
         },
     )
+}
+
+private enum class ContentPhase {
+    LOADING,
+    EMPTY,
+    LIST,
 }
 
 private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiModel> {

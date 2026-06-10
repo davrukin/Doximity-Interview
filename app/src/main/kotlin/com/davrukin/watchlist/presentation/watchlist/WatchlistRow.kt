@@ -1,5 +1,7 @@
 package com.davrukin.watchlist.presentation.watchlist
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +26,7 @@ import com.davrukin.watchlist.ui.components.MovementIndicator
 import com.davrukin.watchlist.ui.components.PriceChip
 import com.davrukin.watchlist.ui.components.Sparkline
 import com.davrukin.watchlist.ui.components.WatchlistDesignSystem
+import com.davrukin.watchlist.ui.theme.MotionTokens
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
@@ -38,6 +41,7 @@ fun WatchlistRow(
         modifier =
             modifier
                 .clickable(onClick = onClick)
+                .animateContentSize(animationSpec = tween(durationMillis = MotionTokens.STANDARD_MILLIS))
                 .padding(horizontal = 16.dp, vertical = 10.dp),
         content = {
             Column(

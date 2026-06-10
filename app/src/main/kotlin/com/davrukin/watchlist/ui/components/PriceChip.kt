@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davrukin.watchlist.ui.theme.MotionTokens
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
@@ -33,7 +34,7 @@ fun PriceChip(
                 isGain == false -> WatchlistDesignSystem.LossColor.copy(alpha = 0.1f)
                 else -> MaterialTheme.colorScheme.surfaceVariant
             },
-        animationSpec = tween(durationMillis = 500),
+        animationSpec = tween(durationMillis = MotionTokens.EMPHASIS_MILLIS),
         label = "PriceChipBackground",
     )
 
@@ -45,7 +46,7 @@ fun PriceChip(
                 isGain == false -> WatchlistDesignSystem.LossColor
                 else -> MaterialTheme.colorScheme.onSurfaceVariant
             },
-        animationSpec = tween(durationMillis = 500),
+        animationSpec = tween(durationMillis = MotionTokens.EMPHASIS_MILLIS),
         label = "PriceChipContent",
     )
 
