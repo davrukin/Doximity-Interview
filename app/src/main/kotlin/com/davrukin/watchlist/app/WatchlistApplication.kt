@@ -4,6 +4,7 @@ import android.app.Application
 import com.davrukin.watchlist.app.di.appModule
 import com.davrukin.watchlist.app.di.dataModule
 import com.davrukin.watchlist.app.di.domainModule
+import com.davrukin.watchlist.app.di.presentationModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -16,6 +17,7 @@ class WatchlistApplication : Application() {
                 appModule,
                 dataModule,
                 domainModule,
+                presentationModule,
             )
         }
     }

@@ -44,8 +44,8 @@ Key design points:
 - [x] Demo-mode data sources (R7)
 - [x] Repositories with live/demo switching (R7)
 - [x] Data layer tests (R10)
-- [ ] Watchlist presenter + tests (R2–R5, R8, R10)
-- [ ] Search presenter + tests (R1, R2, R8, R10)
+- [x] Watchlist presenter + tests (R2–R5, R8, R10)
+- [x] Search presenter + tests (R1, R2, R8, R10)
 - [ ] Watchlist screen + previews (R5)
 - [ ] Search screen + previews (R1, R5)
 - [ ] Navigation 3 wiring + MainActivity
@@ -66,3 +66,4 @@ Key design points:
 |------|--------|-----|
 | 2026-06-09 | No standalone Kotlin Android plugin | AGP 9 ships built-in Kotlin support and rejects `org.jetbrains.kotlin.android` |
 | 2026-06-09 | compileSdk 37 (target stays 36) | Current androidx releases require compiling against android-37 |
+| 2026-06-09 | Watchlist + search presenters landed in one commit | They share the Koin presentation module and test fakes; splitting would have left an intermediate commit referencing missing classes |
