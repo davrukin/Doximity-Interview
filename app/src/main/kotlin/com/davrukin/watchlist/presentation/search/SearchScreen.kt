@@ -19,10 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import com.davrukin.watchlist.R
 import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.InstrumentType
 import com.davrukin.watchlist.ui.components.CenteredMessage
@@ -42,7 +44,7 @@ fun SearchScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Add to watchlist",
+                        text = stringResource(id = R.string.search_title),
                     )
                 },
                 navigationIcon = {
@@ -55,7 +57,7 @@ fun SearchScreen(
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back",
+                                contentDescription = stringResource(id = R.string.search_back),
                             )
                         },
                     )
@@ -78,7 +80,7 @@ fun SearchScreen(
                         },
                         placeholder = {
                             Text(
-                                text = "Symbol or name, e.g. AAPL or BTC",
+                                text = stringResource(id = R.string.search_query_hint),
                             )
                         },
                         singleLine = true,
@@ -93,7 +95,7 @@ fun SearchScreen(
                                     content = {
                                         Icon(
                                             imageVector = Icons.Filled.Clear,
-                                            contentDescription = "Clear query",
+                                            contentDescription = stringResource(id = R.string.search_clear_query),
                                         )
                                     },
                                 )
@@ -107,8 +109,8 @@ fun SearchScreen(
                     when (model.phase) {
                         SearchUiModel.Phase.IDLE -> {
                             CenteredMessage(
-                                title = "Search stocks and crypto",
-                                subtitle = "Results appear as you type",
+                                title = stringResource(id = R.string.search_idle_title),
+                                subtitle = stringResource(id = R.string.search_idle_subtitle),
                                 modifier = Modifier.fillMaxSize(),
                             )
                         }
@@ -119,8 +121,8 @@ fun SearchScreen(
 
                         SearchUiModel.Phase.EMPTY -> {
                             CenteredMessage(
-                                title = "No matches for \"${model.query}\"",
-                                subtitle = "Try a different symbol or name",
+                                title = stringResource(id = R.string.search_no_matches_title, model.query),
+                                subtitle = stringResource(id = R.string.search_no_matches_subtitle),
                                 modifier = Modifier.fillMaxSize(),
                             )
                         }

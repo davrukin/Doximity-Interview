@@ -1,4 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Watchlist</string>
+
+    <string name="watchlist_title">Watchlist</string>
+    <string name="watchlist_empty_title">Your watchlist is empty</string>
+    <string name="watchlist_empty_subtitle">Tap + to search for stocks and crypto</string>
+    <string name="watchlist_open_search">Search instruments</string>
+    <string name="watchlist_remove">Remove %1$s</string>
+
+    <string name="connection_connecting">Connecting to live prices…</string>
+    <string name="connection_reconnecting">Connection lost — reconnecting…</string>
+    <string name="connection_offline">Offline — retrying. Prices may be out of date.</string>
+
+    <string name="data_mode_live">Live</string>
+    <string name="data_mode_demo">Demo</string>
+
+    <string name="sort_added" formatted="false">Sort: Added</string>
+    <string name="sort_symbol" formatted="false">Sort: A–Z</string>
+    <string name="sort_change" formatted="false">Sort: Δ%</string>
+
+    <string name="price_missing">—</string>
+    <string name="price_stale">stale</string>
+    <string name="price_stale_as_of">stale · %1$s</string>
+
+    <string name="search_title">Add to watchlist</string>
+    <string name="search_back">Back</string>
+    <string name="search_query_hint">Symbol or name, e.g. AAPL or BTC</string>
+    <string name="search_clear_query">Clear query</string>
+    <string name="search_idle_title">Search stocks and crypto</string>
+    <string name="search_idle_subtitle">Results appear as you type</string>
+    <string name="search_no_matches_title">No matches for \"%1$s\"</string>
+    <string name="search_no_matches_subtitle">Try a different symbol or name</string>
+    <string name="search_error_title">Search failed</string>
+    <string name="search_error_subtitle">Check your connection and try again</string>
+    <string name="search_retry">Retry</string>
+
+    <string name="toggle_remove_from_watchlist">Remove %1$s from watchlist</string>
+    <string name="toggle_add_to_watchlist">Add %1$s to watchlist</string>
 </resources>

@@ -13,10 +13,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davrukin.watchlist.R
 import com.davrukin.watchlist.ui.components.MovementIndicator
 import com.davrukin.watchlist.ui.components.PriceChip
 import com.davrukin.watchlist.ui.components.Sparkline
@@ -76,7 +78,7 @@ fun WatchlistRow(
                                 modifier = Modifier.padding(end = 4.dp),
                             )
                             PriceChip(
-                                price = row.price ?: "—",
+                                price = row.price ?: stringResource(id = R.string.price_missing),
                                 isGain = row.isGain,
                                 isStale = row.isStale,
                             )
@@ -87,8 +89,8 @@ fun WatchlistRow(
                             Text(
                                 text =
                                     row.staleAsOf?.let { asOf: String ->
-                                        "stale · $asOf"
-                                    } ?: "stale",
+                                        stringResource(id = R.string.price_stale_as_of, asOf)
+                                    } ?: stringResource(id = R.string.price_stale),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -122,7 +124,7 @@ fun WatchlistRow(
                 content = {
                     Icon(
                         imageVector = Icons.Filled.Clear,
-                        contentDescription = "Remove ${row.displaySymbol}",
+                        contentDescription = stringResource(id = R.string.watchlist_remove, row.displaySymbol),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },

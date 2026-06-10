@@ -9,7 +9,9 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.davrukin.watchlist.R
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
@@ -41,9 +43,9 @@ fun WatchlistToggleButton(
                 },
             contentDescription =
                 if (isOnWatchlist) {
-                    "Remove $displaySymbol from watchlist"
+                    stringResource(id = R.string.toggle_remove_from_watchlist, displaySymbol)
                 } else {
-                    "Add $displaySymbol to watchlist"
+                    stringResource(id = R.string.toggle_add_to_watchlist, displaySymbol)
                 },
         )
     }

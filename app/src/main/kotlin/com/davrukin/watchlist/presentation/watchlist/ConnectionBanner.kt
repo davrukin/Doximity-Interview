@@ -6,8 +6,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davrukin.watchlist.R
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
@@ -36,15 +38,15 @@ fun ConnectionBanner(
                 text =
                     when (connectionState) {
                         ConnectionState.CONNECTING -> {
-                            "Connecting to live prices…"
+                            stringResource(id = R.string.connection_connecting)
                         }
 
                         ConnectionState.RECONNECTING -> {
-                            "Connection lost — reconnecting…"
+                            stringResource(id = R.string.connection_reconnecting)
                         }
 
                         ConnectionState.OFFLINE -> {
-                            "Offline — retrying. Prices may be out of date."
+                            stringResource(id = R.string.connection_offline)
                         }
 
                         ConnectionState.CONNECTED -> {

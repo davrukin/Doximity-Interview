@@ -18,9 +18,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.davrukin.watchlist.R
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.MarketDataMode
 import com.davrukin.watchlist.ui.components.LoadingState
@@ -37,7 +39,7 @@ fun WatchlistScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Watchlist")
+                    Text(text = stringResource(id = R.string.watchlist_title))
                 },
                 actions = {
                     SortOrderChip(
@@ -70,7 +72,7 @@ fun WatchlistScreen(
                 content = {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Search instruments",
+                        contentDescription = stringResource(id = R.string.watchlist_open_search),
                     )
                 },
             )

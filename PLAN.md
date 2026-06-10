@@ -64,7 +64,7 @@ Key design points:
 ### Phase 3 — hardening and developer additions
 - [x] Compiler warnings resolved (safe call, v2 compose test rule)
 - [x] Defensive round-trip regression tests for the silent-persistence bug class
-- [ ] D3 strings.xml extraction
+- [x] D3 strings.xml extraction
 - [ ] D1 delete confirmation dialog
 - [ ] D5 instrument detail dialog
 - [ ] D2 animations (banner, list items, state transitions)

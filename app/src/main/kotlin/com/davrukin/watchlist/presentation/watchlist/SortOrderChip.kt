@@ -5,8 +5,10 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davrukin.watchlist.R
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
@@ -21,9 +23,9 @@ fun SortOrderChip(
             Text(
                 text =
                     when (sortOrder) {
-                        WatchlistUiModel.SortOrder.ADDED -> "Sort: Added"
-                        WatchlistUiModel.SortOrder.SYMBOL -> "Sort: A–Z"
-                        WatchlistUiModel.SortOrder.CHANGE -> "Sort: Δ%"
+                        WatchlistUiModel.SortOrder.ADDED -> stringResource(id = R.string.sort_added)
+                        WatchlistUiModel.SortOrder.SYMBOL -> stringResource(id = R.string.sort_symbol)
+                        WatchlistUiModel.SortOrder.CHANGE -> stringResource(id = R.string.sort_change)
                     },
             )
         },
