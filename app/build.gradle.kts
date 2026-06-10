@@ -78,6 +78,9 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
 
+    implementation(libs.navigation3.runtime)
+    implementation(libs.navigation3.ui)
+
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
 

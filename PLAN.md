@@ -48,7 +48,7 @@ Key design points:
 - [x] Search presenter + tests (R1, R2, R8, R10)
 - [x] Watchlist screen + previews (R5)
 - [x] Search screen + previews (R1, R5)
-- [ ] Navigation 3 wiring + MainActivity
+- [x] Navigation 3 wiring + MainActivity
 - [ ] README + ARCHITECTURE.md (R11)
 
 ### Phase 2 — optional enhancements (in priority order)
