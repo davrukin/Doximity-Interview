@@ -1,10 +1,7 @@
 package com.davrukin.watchlist.presentation.search
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,32 +9,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.InstrumentType
+import com.davrukin.watchlist.presentation.watchlist.LoadingState
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
-
-import com.davrukin.watchlist.ui.components.WatchlistToggleButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,13 +111,7 @@ fun SearchScreen(
                         }
 
                         SearchUiModel.Phase.LOADING -> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center,
-                                content = {
-                                    CircularProgressIndicator()
-                                },
-                            )
+                            LoadingState(modifier = Modifier.fillMaxSize())
                         }
 
                         SearchUiModel.Phase.EMPTY -> {
@@ -180,96 +164,6 @@ fun SearchScreen(
     )
 }
 
-@Composable
-private fun CenteredMessage(
-    title: String,
-    subtitle: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        content = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-        },
-    )
-}
-
-@Composable
-private fun ErrorState(
-    onRetry: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        content = {
-            Text(
-                text = "Search failed",
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Text(
-                text = "Check your connection and try again",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-            Button(
-                onClick = onRetry,
-                modifier = Modifier.padding(top = 12.dp),
-                content = {
-                    Text(text = "Retry")
-                },
-            )
-        },
-    )
-}
-
-@Composable
-private fun SearchResultRow(
-    result: SearchUiModel.Result,
-    onToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-        content = {
-            Column(
-                modifier = Modifier.weight(weight = 1f),
-                content = {
-                    Text(
-                        text = result.instrument.displaySymbol,
-                        style = MaterialTheme.typography.titleSmall,
-                    )
-                    Text(
-                        text = result.instrument.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-            )
-            WatchlistToggleButton(
-                isOnWatchlist = result.isOnWatchlist,
-                onClick = onToggle,
-            )
-        },
-    )
-}
-
 private class SearchPreviewProvider : PreviewParameterProvider<SearchUiModel> {
     override val values: Sequence<SearchUiModel> =
         sequenceOf(
@@ -314,12 +208,9 @@ private class SearchPreviewProvider : PreviewParameterProvider<SearchUiModel> {
 private fun SearchScreenPreview(
     @PreviewParameter(provider = SearchPreviewProvider::class) model: SearchUiModel,
 ) {
-    WatchlistTheme(
-        dynamicColor = false,
-        content = {
-            SearchScreen(model = model)
-        },
-    )
+    WatchlistTheme {
+        SearchScreen(model = model)
+    }
 }
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

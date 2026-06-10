@@ -6,12 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,16 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-/**
- * A custom design system for the Watchlist app.
- */
-object WatchlistDesignSystem {
-    val GainColor: Color = Color(color = 0xFF1B873B)
-    val LossColor: Color = Color(color = 0xFFD32F2F)
-    val StaleColor: Color = Color(color = 0xFF757575)
-}
+import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
 fun PriceChip(
@@ -75,61 +62,41 @@ fun PriceChip(
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun MovementIndicator(
-    movement: com.davrukin.watchlist.presentation.watchlist.WatchlistRowUiModel.PriceMovement?,
-    modifier: Modifier = Modifier,
-) {
-    if (movement == null) {
-        return
+private fun PriceChipGainPreview() {
+    WatchlistTheme {
+        PriceChip(
+            price = "$150.00",
+            isGain = true,
+            isStale = false,
+            modifier = Modifier.padding(16.dp),
+        )
     }
-
-    val color: Color = when (movement) {
-        com.davrukin.watchlist.presentation.watchlist.WatchlistRowUiModel.PriceMovement.UP -> WatchlistDesignSystem.GainColor
-        com.davrukin.watchlist.presentation.watchlist.WatchlistRowUiModel.PriceMovement.DOWN -> WatchlistDesignSystem.LossColor
-    }
-
-    val icon: String = when (movement) {
-        com.davrukin.watchlist.presentation.watchlist.WatchlistRowUiModel.PriceMovement.UP -> "▲"
-        com.davrukin.watchlist.presentation.watchlist.WatchlistRowUiModel.PriceMovement.DOWN -> "▼"
-    }
-
-    Text(
-        text = icon,
-        style = MaterialTheme.typography.labelSmall,
-        color = color,
-        modifier = modifier,
-    )
 }
 
+@Preview(showBackground = true)
 @Composable
-fun WatchlistToggleButton(
-    isOnWatchlist: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    IconButton(
-        onClick = onClick,
-        colors = IconButtonDefaults.iconButtonColors(
-            contentColor = if (isOnWatchlist) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            },
-        ),
-        modifier = modifier,
-    ) {
-        Icon(
-            imageVector = if (isOnWatchlist) {
-                Icons.Filled.Check
-            } else {
-                Icons.Filled.Add
-            },
-            contentDescription = if (isOnWatchlist) {
-                "Remove from watchlist"
-            } else {
-                "Add to watchlist"
-            },
+private fun PriceChipLossPreview() {
+    WatchlistTheme {
+        PriceChip(
+            price = "$145.00",
+            isGain = false,
+            isStale = false,
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PriceChipStalePreview() {
+    WatchlistTheme {
+        PriceChip(
+            price = "$148.00",
+            isGain = null,
+            isStale = true,
+            modifier = Modifier.padding(16.dp),
         )
     }
 }
