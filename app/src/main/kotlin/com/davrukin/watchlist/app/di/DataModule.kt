@@ -5,6 +5,7 @@ import com.davrukin.watchlist.BuildConfig
 import com.davrukin.watchlist.data.InstrumentSearchRepositoryImpl
 import com.davrukin.watchlist.data.MarketDataModeRepositoryImpl
 import com.davrukin.watchlist.data.MarketDataSelector
+import com.davrukin.watchlist.data.MarketDataSource
 import com.davrukin.watchlist.data.PriceRepositoryImpl
 import com.davrukin.watchlist.data.WatchlistRepositoryImpl
 import com.davrukin.watchlist.data.demo.DemoInstrumentCatalog
@@ -64,7 +65,7 @@ val dataModule =
         }
         single { get<WatchlistDatabase>().watchlistDao() }
 
-        single(named(LIVE_SOURCE)) {
+        single<MarketDataSource>(named(LIVE_SOURCE)) {
             LiveMarketDataSource(
                 api = get(),
                 priceStream =
@@ -78,7 +79,7 @@ val dataModule =
                     ),
             )
         }
-        single(named(DEMO_SOURCE)) {
+        single<MarketDataSource>(named(DEMO_SOURCE)) {
             val catalog = DemoInstrumentCatalog()
             DemoMarketDataSource(
                 catalog = catalog,
