@@ -32,4 +32,14 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 | O5 | Offline cache display | cached quotes render immediately on launch (R6 design); stale label now shows last-updated time | `WatchlistPresenterTest`, `WatchlistDaoTest` | ✅ |
 | O6 | Compose UI tests | `app/src/androidTest/` (10 tests) | `./gradlew connectedDebugAndroidTest`; green on device | ✅ |
 | O7 | Advanced retry/backoff (exponential backoff with jitter) | `ReconnectingPriceStream.retryDelayFor` (1s base, x2, 30s cap, ±20% jitter) | `ReconnectingPriceStreamTest` | ✅ |
-| O8 | Custom Design System components (developer addition; not in initial brief) | `ui/components/DesignSystem.kt`, `PriceChip`, `WatchlistToggleButton` | — | ✅ |
+
+## Developer additions (not in the brief; O8 keeps its historical ID)
+
+| ID | Addition | Implementation | Tests | Status |
+|----|----------|----------------|-------|--------|
+| O8 | Custom design-system components | `ui/components/` (`PriceChip`, `MovementIndicator`, `WatchlistToggleButton`, `Sparkline`) | exercised via Compose UI tests | ✅ |
+| D1 | Confirm before removing a watchlist item | `WatchlistUiModel.PendingRemoval`, `RemoveConfirmationDialog` | `WatchlistPresenterTest` (confirm + dismiss paths) | ✅ |
+| D2 | Animations (banner, list items, state transitions) | `ConnectionBanner`, `WatchlistScreen` Crossfade/`animateItem`, `ui/theme/MotionTokens` | UI tests green on device | ✅ |
+| D3 | User-facing strings in resources | `res/values/strings.xml` + `stringResource` across all components | UI tests assert resource-backed text | ✅ |
+| D4 | Design-system polish (semantic colors, spacing scale, card rows) | `ui/theme/ExtendedColors`, `ui/theme/Dimens`, `WatchlistRow` | previews (light/dark); UI tests green | ✅ |
+| D5 | Instrument detail dialog on row tap | `InstrumentDetailDialog`, `WatchlistUiModel.detail` | `WatchlistPresenterTest` (open + dismiss) | ✅ |

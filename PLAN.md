@@ -69,7 +69,7 @@ Key design points:
 - [x] D5 instrument detail dialog
 - [x] D2 animations (banner, list items, state transitions)
 - [x] D4 design-system visual polish
-- [ ] Developer-additions tracking restructure in REQUIREMENTS.md
+- [x] Developer-additions tracking restructure in REQUIREMENTS.md
 
 ## Deviations log
 
