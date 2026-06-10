@@ -1,4 +1,4 @@
-package com.davrukin.watchlist.presentation.watchlist
+package com.davrukin.watchlist.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.CircularProgressIndicator

@@ -1,4 +1,4 @@
-package com.davrukin.watchlist.presentation.search
+package com.davrukin.watchlist.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

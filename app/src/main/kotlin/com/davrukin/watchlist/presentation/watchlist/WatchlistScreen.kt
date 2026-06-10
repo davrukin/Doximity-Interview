@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.MarketDataMode
+import com.davrukin.watchlist.ui.components.LoadingState
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

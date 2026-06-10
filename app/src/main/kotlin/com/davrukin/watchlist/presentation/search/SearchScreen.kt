@@ -26,7 +26,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.InstrumentType
-import com.davrukin.watchlist.presentation.watchlist.LoadingState
+import com.davrukin.watchlist.ui.components.CenteredMessage
+import com.davrukin.watchlist.ui.components.ErrorState
+import com.davrukin.watchlist.ui.components.LoadingState
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
