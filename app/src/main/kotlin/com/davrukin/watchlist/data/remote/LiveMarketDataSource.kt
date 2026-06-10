@@ -1,5 +1,6 @@
 package com.davrukin.watchlist.data.remote
 
+import com.davrukin.watchlist.common.resultOf
 import com.davrukin.watchlist.data.MarketDataSource
 import com.davrukin.watchlist.data.stream.PriceStreamSource
 import com.davrukin.watchlist.domain.model.Instrument
@@ -17,26 +18,27 @@ class LiveMarketDataSource(
     private val cryptoCatalogMutex: Mutex = Mutex()
     private var cryptoCatalog: List<Instrument>? = null
 
-    override suspend fun search(query: String): Result<List<Instrument>> {
-        return runCatching {
+    override suspend fun search(query: String): Result<List<Instrument>> =
+        resultOf {
             coroutineScope {
-                val stocks = async {
-                    api.search(query = query).result.map { result ->
-                        result.toInstrument()
+                val stocks =
+                    async {
+                        api.search(query = query).result.map { result ->
+                            result.toInstrument()
+                        }
                     }
-                }
-                val crypto = async {
-                    searchCrypto(query = query)
-                }
+                val crypto =
+                    async {
+                        searchCrypto(query = query)
+                    }
                 stocks.await().take(n = MAX_STOCK_RESULTS) + crypto.await().take(n = MAX_CRYPTO_RESULTS)
             }
         }
-    }
 
-    override suspend fun quoteSnapshot(instrument: Instrument): Result<Quote?> {
-        return when (instrument.type) {
+    override suspend fun quoteSnapshot(instrument: Instrument): Result<Quote?> =
+        when (instrument.type) {
             InstrumentType.STOCK -> {
-                runCatching {
+                resultOf {
                     api.quote(symbol = instrument.symbol).toQuote()
                 }
             }
@@ -45,26 +47,26 @@ class LiveMarketDataSource(
                 Result.success(value = null)
             }
         }
-    }
 
     private suspend fun searchCrypto(query: String): List<Instrument> {
-        val catalog: List<Instrument> = cryptoCatalogMutex.withLock {
-            val cached: List<Instrument>? = cryptoCatalog
-            if (cached != null) {
-                cached
-            } else {
-                val instruments: List<Instrument> = api
-                    .cryptoSymbols(exchange = BINANCE_EXCHANGE)
-                    .map { symbol ->
-                        symbol.toInstrument()
-                    }
-                    .filter { instrument ->
-                        instrument.displaySymbol.endsWith(suffix = USDT_SUFFIX, ignoreCase = true)
-                    }
-                cryptoCatalog = instruments
-                instruments
+        val catalog: List<Instrument> =
+            cryptoCatalogMutex.withLock {
+                val cached: List<Instrument>? = cryptoCatalog
+                if (cached != null) {
+                    cached
+                } else {
+                    val instruments: List<Instrument> =
+                        api
+                            .cryptoSymbols(exchange = BINANCE_EXCHANGE)
+                            .map { symbol ->
+                                symbol.toInstrument()
+                            }.filter { instrument ->
+                                instrument.displaySymbol.endsWith(suffix = USDT_SUFFIX, ignoreCase = true)
+                            }
+                    cryptoCatalog = instruments
+                    instruments
+                }
             }
-        }
         return catalog.filter { instrument ->
             instrument.displaySymbol.contains(other = query, ignoreCase = true) ||
                 instrument.description.contains(other = query, ignoreCase = true)

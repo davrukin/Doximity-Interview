@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.davrukin.watchlist.domain.model.Instrument
@@ -52,14 +51,10 @@ class SearchPresenter(
         var query: String by rememberSaveable { mutableStateOf(value = "") }
         var retryToken: Int by remember { mutableIntStateOf(value = 0) }
         var searchState: SearchState by remember { mutableStateOf<SearchState>(value = SearchState.Idle) }
-        
-        // currentWatchlist is updated by produceState. 
-        // We use rememberUpdatedState so the eventHandler (which is remembered) 
-        // can always access the freshest list without being recreated itself.
-        val currentWatchlist: List<WatchlistItem> by launchUseCase(initial = emptyList()) {
+
+        val watchlist: List<WatchlistItem> by launchUseCase(initial = emptyList()) {
             observeWatchlist()
         }
-        val latestWatchlist: List<WatchlistItem> by rememberUpdatedState(newValue = currentWatchlist)
 
         LaunchedEffect(key1 = query, key2 = retryToken) {
             if (query.isBlank()) {
@@ -68,93 +63,100 @@ class SearchPresenter(
             }
             searchState = SearchState.Loading
             delay(duration = DEBOUNCE)
-            searchState = searchInstruments(query = query.trim()).fold(
-                onSuccess = { instruments: List<Instrument> ->
-                    SearchState.Loaded(instruments = instruments)
-                },
-                onFailure = { _: Throwable ->
-                    SearchState.Failed
-                },
-            )
+            searchState =
+                searchInstruments(query = query.trim()).fold(
+                    onSuccess = { instruments: List<Instrument> ->
+                        SearchState.Loaded(instruments = instruments)
+                    },
+                    onFailure = { _: Throwable ->
+                        SearchState.Failed
+                    },
+                )
         }
 
-        val watchlistSymbols: Set<String> = currentWatchlist.map { item: WatchlistItem ->
-            item.instrument.symbol
-        }.toSet()
+        val watchlistSymbols: Set<String> =
+            watchlist
+                .map { item: WatchlistItem ->
+                    item.instrument.symbol
+                }.toSet()
 
-        val results: List<SearchUiModel.Result> = when (val state: SearchState = searchState) {
-            is SearchState.Loaded -> {
-                state.instruments.map { instrument: Instrument ->
-                    SearchUiModel.Result(
-                        instrument = instrument,
-                        isOnWatchlist = instrument.symbol in watchlistSymbols,
-                    )
+        val results: List<SearchUiModel.Result> =
+            when (val state: SearchState = searchState) {
+                is SearchState.Loaded -> {
+                    state.instruments.map { instrument: Instrument ->
+                        SearchUiModel.Result(
+                            instrument = instrument,
+                            isOnWatchlist = instrument.symbol in watchlistSymbols,
+                        )
+                    }
+                }
+
+                else -> {
+                    emptyList()
                 }
             }
 
-            else -> {
-                emptyList()
-            }
-        }
+        // Remembered so the same instance is reused across recompositions and model equality
+        // holds. Reading the `watchlist` State delegate inside the lambda is not a stale
+        // capture: the delegate resolves to the current value at invocation time.
+        val eventHandler: EventHandler<SearchUiModel.Event> =
+            remember(key1 = params) {
+                EventHandler<SearchUiModel.Event> { event: SearchUiModel.Event ->
+                    when (event) {
+                        is SearchUiModel.Event.QueryChanged -> {
+                            query = event.query
+                        }
 
-        val eventHandler: EventHandler<SearchUiModel.Event> = remember(key1 = params) {
-            EventHandler<SearchUiModel.Event> { event: SearchUiModel.Event ->
-                when (event) {
-                    is SearchUiModel.Event.QueryChanged -> {
-                        query = event.query
-                    }
-
-                    is SearchUiModel.Event.ToggleWatchlist -> {
-                        // Access latestWatchlist via the State wrapper to get the fresh data
-                        val symbols: Set<String> = latestWatchlist.map { item: WatchlistItem ->
-                            item.instrument.symbol
-                        }.toSet()
-                        val onWatchlist: Boolean = event.instrument.symbol in symbols
-                        
-                        appScope.launch {
-                            if (onWatchlist) {
-                                removeFromWatchlist(symbol = event.instrument.symbol)
-                            } else {
-                                addToWatchlist(instrument = event.instrument)
+                        is SearchUiModel.Event.ToggleWatchlist -> {
+                            val onWatchlist: Boolean =
+                                watchlist.any { item: WatchlistItem ->
+                                    item.instrument.symbol == event.instrument.symbol
+                                }
+                            appScope.launch {
+                                if (onWatchlist) {
+                                    removeFromWatchlist(symbol = event.instrument.symbol)
+                                } else {
+                                    addToWatchlist(instrument = event.instrument)
+                                }
                             }
                         }
-                    }
 
-                    SearchUiModel.Event.Retry -> {
-                        retryToken++
-                    }
+                        SearchUiModel.Event.Retry -> {
+                            retryToken++
+                        }
 
-                    SearchUiModel.Event.Back -> {
-                        params.onBack()
+                        SearchUiModel.Event.Back -> {
+                            params.onBack()
+                        }
                     }
                 }
             }
-        }
 
         return SearchUiModel(
             query = query,
             results = results,
-            phase = when (searchState) {
-                SearchState.Idle -> {
-                    SearchUiModel.Phase.IDLE
-                }
-
-                SearchState.Loading -> {
-                    SearchUiModel.Phase.LOADING
-                }
-
-                is SearchState.Loaded -> {
-                    if (results.isEmpty()) {
-                        SearchUiModel.Phase.EMPTY
-                    } else {
-                        SearchUiModel.Phase.RESULTS
+            phase =
+                when (searchState) {
+                    SearchState.Idle -> {
+                        SearchUiModel.Phase.IDLE
                     }
-                }
 
-                SearchState.Failed -> {
-                    SearchUiModel.Phase.ERROR
-                }
-            },
+                    SearchState.Loading -> {
+                        SearchUiModel.Phase.LOADING
+                    }
+
+                    is SearchState.Loaded -> {
+                        if (results.isEmpty()) {
+                            SearchUiModel.Phase.EMPTY
+                        } else {
+                            SearchUiModel.Phase.RESULTS
+                        }
+                    }
+
+                    SearchState.Failed -> {
+                        SearchUiModel.Phase.ERROR
+                    }
+                },
             eventHandler = eventHandler,
         )
     }

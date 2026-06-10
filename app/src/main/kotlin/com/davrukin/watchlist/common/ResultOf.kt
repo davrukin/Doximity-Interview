@@ -1,22 +1,16 @@
 package com.davrukin.watchlist.common
 
+import kotlinx.coroutines.CancellationException
+
 /**
- * Functional-style result type.
+ * [runCatching] for suspending work: cancellation is rethrown instead of being captured, so
+ * coroutine cancellation propagates correctly.
  */
-sealed interface ResultOf<out T> {
-    data class Success<out T>(val value: T) : ResultOf<T>
-
-    data class Failure(val throwable: Throwable) : ResultOf<Nothing>
-
-    fun getOrNull(): T? {
-        return when (this) {
-            is Success -> {
-                this.value
-            }
-
-            is Failure -> {
-                null
-            }
-        }
+suspend fun <T> resultOf(block: suspend () -> T): Result<T> =
+    try {
+        Result.success(block())
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Result.failure(e)
     }
-}
