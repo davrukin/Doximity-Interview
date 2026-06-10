@@ -11,6 +11,7 @@ import com.davrukin.watchlist.presentation.core.UiModel
 data class WatchlistUiModel(
     val items: List<WatchlistRowUiModel>,
     val isLoading: Boolean,
+    val isRefreshing: Boolean,
     val connectionState: ConnectionState,
     val dataMode: MarketDataMode,
     val isLiveAvailable: Boolean,
@@ -20,6 +21,8 @@ data class WatchlistUiModel(
         data class Remove(
             val symbol: String,
         ) : Event
+
+        data object Refresh : Event
 
         data object ToggleDataMode : Event
 

@@ -56,7 +56,7 @@ Key design points:
 - [x] O6 Compose UI tests
 - [x] O7 exponential backoff + jitter
 - [x] O5 offline cache display surfacing
-- [ ] O4 pull to refresh
+- [x] O4 pull to refresh
 - [ ] O2 sorting
 - [ ] O3 sparkline
 

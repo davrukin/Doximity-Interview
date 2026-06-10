@@ -67,10 +67,16 @@ class FakeWatchlistRepository(
 class FakePriceRepository : PriceRepository {
     val quotes = MutableStateFlow(emptyMap<String, Quote>())
     val connectionState = MutableStateFlow(ConnectionState.CONNECTING)
+    var refreshCount = 0
+        private set
 
     override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> = quotes
 
     override fun observeConnectionState(): Flow<ConnectionState> = connectionState
+
+    override suspend fun refreshQuotes() {
+        refreshCount++
+    }
 }
 
 class FakeMarketDataModeRepository(

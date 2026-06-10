@@ -5,6 +5,7 @@ import com.davrukin.watchlist.domain.usecase.ObserveConnectionStateUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveMarketDataModeUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveQuotesUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveWatchlistUseCase
+import com.davrukin.watchlist.domain.usecase.RefreshQuotesUseCase
 import com.davrukin.watchlist.domain.usecase.RemoveFromWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.SearchInstrumentsUseCase
 import com.davrukin.watchlist.domain.usecase.ToggleMarketDataModeUseCase
@@ -18,6 +19,7 @@ val domainModule =
         factoryOf(::AddToWatchlistUseCase)
         factoryOf(::RemoveFromWatchlistUseCase)
         factoryOf(::ObserveQuotesUseCase)
+        factoryOf(::RefreshQuotesUseCase)
         factoryOf(::ObserveConnectionStateUseCase)
         factoryOf(::ObserveMarketDataModeUseCase)
         factoryOf(::ToggleMarketDataModeUseCase)

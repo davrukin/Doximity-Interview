@@ -28,7 +28,7 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 | O1 | Price movement indicators | `WatchlistItemPresenter` (tick direction), `WatchlistScreen` (▲/▼) | `WatchlistPresenterTest` | ✅ |
 | O2 | Sorting the watchlist | — | — | ⬜ |
 | O3 | Sparkline | — | — | ⬜ |
-| O4 | Pull to refresh | — | — | ⬜ |
+| O4 | Pull to refresh | `PullToRefreshBox` on the watchlist; `PriceRepository.refreshQuotes` re-fetches snapshots | `WatchlistPresenterTest` | ✅ |
 | O5 | Offline cache display | cached quotes render immediately on launch (R6 design); stale label now shows last-updated time | `WatchlistPresenterTest`, `WatchlistDaoTest` | ✅ |
 | O6 | Compose UI tests | `app/src/androidTest/` (10 tests) | `./gradlew connectedDebugAndroidTest`; green on device | ✅ |
 | O7 | Advanced retry/backoff (exponential backoff with jitter) | `ReconnectingPriceStream.retryDelayFor` (1s base, x2, 30s cap, ±20% jitter) | `ReconnectingPriceStreamTest` | ✅ |

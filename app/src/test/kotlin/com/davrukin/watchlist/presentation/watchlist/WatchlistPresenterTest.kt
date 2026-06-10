@@ -10,6 +10,7 @@ import com.davrukin.watchlist.domain.usecase.ObserveConnectionStateUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveMarketDataModeUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveQuotesUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveWatchlistUseCase
+import com.davrukin.watchlist.domain.usecase.RefreshQuotesUseCase
 import com.davrukin.watchlist.domain.usecase.RemoveFromWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.ToggleMarketDataModeUseCase
 import com.davrukin.watchlist.testing.FakeMarketDataModeRepository
@@ -191,6 +192,26 @@ class WatchlistPresenterTest {
         }
 
     @Test
+    fun `refresh event re-fetches quotes and toggles the refreshing flag`() =
+        runTest {
+            val fixture = Fixture(scope = this)
+
+            fixture.models().test {
+                val initial = awaitItem()
+
+                initial.eventHandler.onEvent(event = WatchlistUiModel.Event.Refresh)
+
+                val refreshing = expectMostRecentItemWith { it.isRefreshing }
+                assertTrue(refreshing.isRefreshing)
+                assertEquals(1, fixture.priceRepository.refreshCount)
+
+                expectMostRecentItemWith { !it.isRefreshing }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun `open search event invokes navigation callback`() =
         runTest {
             var opened = false
@@ -236,6 +257,7 @@ class WatchlistPresenterTest {
                 observeMarketDataMode = ObserveMarketDataModeUseCase(repository = modeRepository),
                 toggleMarketDataMode = ToggleMarketDataModeUseCase(repository = modeRepository),
                 removeFromWatchlist = RemoveFromWatchlistUseCase(repository = watchlistRepository),
+                refreshQuotes = RefreshQuotesUseCase(repository = priceRepository),
                 itemPresenter = WatchlistItemPresenter(),
                 appScope = scope.backgroundScope,
             )

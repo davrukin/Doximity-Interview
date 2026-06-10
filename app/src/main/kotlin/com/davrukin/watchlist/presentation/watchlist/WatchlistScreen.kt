@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,18 +83,28 @@ fun WatchlistScreen(
                         model.isLoading -> LoadingState()
                         model.items.isEmpty() -> EmptyState()
                         else ->
-                            LazyColumn(
+                            PullToRefreshBox(
+                                isRefreshing = model.isRefreshing,
+                                onRefresh = { model.eventHandler.onEvent(event = WatchlistUiModel.Event.Refresh) },
                                 modifier = Modifier.fillMaxSize(),
                                 content = {
-                                    items(
-                                        items = model.items,
-                                        key = { it.symbol },
-                                        itemContent = { row ->
-                                            WatchlistRow(
-                                                row = row,
-                                                onRemove = {
-                                                    model.eventHandler.onEvent(
-                                                        event = WatchlistUiModel.Event.Remove(symbol = row.symbol),
+                                    LazyColumn(
+                                        modifier = Modifier.fillMaxSize(),
+                                        content = {
+                                            items(
+                                                items = model.items,
+                                                key = { it.symbol },
+                                                itemContent = { row ->
+                                                    WatchlistRow(
+                                                        row = row,
+                                                        onRemove = {
+                                                            model.eventHandler.onEvent(
+                                                                event =
+                                                                    WatchlistUiModel.Event.Remove(
+                                                                        symbol = row.symbol,
+                                                                    ),
+                                                            )
+                                                        },
                                                     )
                                                 },
                                             )
@@ -354,6 +365,7 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
                     ),
                 ),
             isLoading = false,
+            isRefreshing = false,
             connectionState = ConnectionState.CONNECTED,
             dataMode = MarketDataMode.LIVE,
             isLiveAvailable = true,

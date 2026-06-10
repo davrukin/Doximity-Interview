@@ -16,6 +16,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -51,6 +52,7 @@ class PriceRepositoryImpl(
     appScope: CoroutineScope,
 ) : PriceRepository {
     private val watchedSymbols = MutableStateFlow(emptySet<String>())
+    private val refreshRequests = MutableSharedFlow<Unit>()
 
     private val events: SharedFlow<PriceStreamEvent> =
         selector
@@ -73,6 +75,10 @@ class PriceRepositoryImpl(
             )
 
     override fun observeConnectionState(): Flow<ConnectionState> = connectionState
+
+    override suspend fun refreshQuotes() {
+        refreshRequests.emit(Unit)
+    }
 
     override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> =
         modeRepository.mode.flatMapLatest { mode ->
@@ -114,6 +120,14 @@ class PriceRepositoryImpl(
             val snapshots = fetchSnapshots(source = source, instruments = instruments)
             recordPreviousCloses(snapshots = snapshots, into = previousCloses)
             quotesState.value = snapshots
+
+            launch {
+                refreshRequests.collect {
+                    val fresh = fetchSnapshots(source = source, instruments = instruments)
+                    recordPreviousCloses(snapshots = fresh, into = previousCloses)
+                    quotesState.update { current -> current + fresh }
+                }
+            }
 
             var connectedOnce = false
             events.collect { event ->

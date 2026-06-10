@@ -15,4 +15,7 @@ interface PriceRepository {
     fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>>
 
     fun observeConnectionState(): Flow<ConnectionState>
+
+    /** Re-fetches REST snapshots for the instruments currently being observed. */
+    suspend fun refreshQuotes()
 }

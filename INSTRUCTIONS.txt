@@ -1,0 +1,87 @@
+Android Code Challenge: Real-Time Watchlist
+
+Overview
+
+Build a small Android app that lets a user search for financial instruments, add them to a watchlist, and see real-time price updates.
+
+This exercise is intentionally open-ended. We are more interested in your engineering decisions than in a large feature set. A smaller app with well-organized, maintainable code and thoughtful tradeoffs is preferred over a broad but fragile implementation.
+
+API
+
+Use Finnhub:
+
+- REST API documentation: https://finnhub.io/docs/api
+- WebSocket documentation: https://finnhub.io/docs/api/websocket-trades
+
+You may use stocks, crypto, forex, or a mix of instruments supported by Finnhub.
+
+Finnhub is an external service with plan limits and market-data availability constraints. Document any assumptions or limitations in your README.
+
+The app should also include a documented demo or fake-data mode so reviewers can run the core experience without depending on external service availability, market hours, or rate limits.
+
+Product Goal
+
+Create a real-time price tracker with a user-managed watchlist.
+
+The user should be able to:
+
+- Search for instruments.
+- Add and remove instruments from a watchlist.
+- See the latest known price for each watchlist item.
+- Receive live price updates while the app is running.
+- Understand loading, empty, error, stale-data, and reconnecting states.
+
+Technical Expectations
+
+Use:
+
+- Kotlin
+- Jetpack Compose
+- Coroutines and Flow
+- Dependency injection
+- A local persistence mechanism for the watchlist
+- Relevant unit tests
+
+Requirements
+
+- Use REST for instrument search and initial quote/snapshot data.
+- Use WebSocket streaming for live price updates.
+- Persist the watchlist across app launches.
+- Expose screen state in a way that Compose can observe safely.
+- Handle API errors, empty results, missing prices, network loss, and stream reconnects.
+- Provide a README with setup instructions, architecture notes, tradeoffs, and any AI/tooling assistance used.
+
+Optional Enhancements
+
+These are not required:
+
+- Price movement indicators.
+- Sorting or filtering the watchlist.
+- Basic chart or sparkline.
+- Pull to refresh.
+- Offline cache display.
+- UI tests or screenshot tests.
+- More advanced retry/backoff behavior.
+
+Time Box
+
+Please spend no more than 6-8 hours. You will have 3 days to complete and submit the assignment. It is acceptable to leave some polish or optional work unfinished if the important decisions are visible and explained.
+
+Submission
+
+Submit a repository or archive containing:
+
+- The Android project.
+- Build and run instructions.
+- Notes about demo/fake-data mode.
+- A short explanation of your architecture and tradeoffs.
+- A summary of relevant tests and how to run them.
+
+Completing the assignment does not guarantee you'll progress to the face-to-face interviews. However, the assignment is very beneficial at helping us assess your current level of skill and experience.
+
+How social media is helping doctors collaborate on patient care
+    http://video.foxbusiness.com/v/5410308538001/#sp=show-clips
+In the News: A state-by-state breakdown of the striking gender gap in doctors’ pay
+    https://www.statnews.com/2017/04/26/gender-pay-gap-medicine/
+Video: What it's like to work @ Dox
+    https://vimeo.com/214706551/c76dc663b6
