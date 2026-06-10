@@ -58,7 +58,7 @@ Key design points:
 - [x] O5 offline cache display surfacing
 - [x] O4 pull to refresh
 - [x] O8 custom design system components (developer addition)
-- [ ] O2 sorting
+- [x] O2 sorting
 - [ ] O3 sparkline
 
 ## Deviations log

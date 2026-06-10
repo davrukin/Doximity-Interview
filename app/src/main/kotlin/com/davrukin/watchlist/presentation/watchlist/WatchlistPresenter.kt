@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.MarketDataMode
@@ -56,9 +57,16 @@ class WatchlistPresenter(
         // Match the repository's initial state (LIVE) to avoid test mismatch
         val dataMode: MarketDataMode by observeMarketDataMode().collectAsState(initial = MarketDataMode.LIVE)
         var isRefreshing: Boolean by remember { mutableStateOf(value = false) }
+        var sortOrder: WatchlistUiModel.SortOrder by rememberSaveable {
+            mutableStateOf(value = WatchlistUiModel.SortOrder.ADDED)
+        }
 
         val items: List<WatchlistRowUiModel> =
-            (watchlist ?: emptyList()).map { item: WatchlistItem ->
+            sortItems(
+                items = watchlist ?: emptyList(),
+                quotes = quotes,
+                sortOrder = sortOrder,
+            ).map { item: WatchlistItem ->
                 key(item.instrument.symbol) {
                     itemPresenter.present(
                         params =
@@ -93,6 +101,10 @@ class WatchlistPresenter(
                             }
                         }
 
+                        WatchlistUiModel.Event.CycleSortOrder -> {
+                            sortOrder = sortOrder.next()
+                        }
+
                         WatchlistUiModel.Event.ToggleDataMode -> {
                             toggleMarketDataMode()
                         }
@@ -108,12 +120,39 @@ class WatchlistPresenter(
             items = items,
             isLoading = watchlist == null,
             isRefreshing = isRefreshing,
+            sortOrder = sortOrder,
             connectionState = connectionState,
             dataMode = dataMode,
             isLiveAvailable = observeMarketDataMode.isLiveAvailable,
             eventHandler = eventHandler,
         )
     }
+
+    private fun sortItems(
+        items: List<WatchlistItem>,
+        quotes: Map<String, Quote>,
+        sortOrder: WatchlistUiModel.SortOrder,
+    ): List<WatchlistItem> =
+        when (sortOrder) {
+            WatchlistUiModel.SortOrder.ADDED -> {
+                items
+            }
+
+            WatchlistUiModel.SortOrder.SYMBOL -> {
+                items.sortedBy { item: WatchlistItem ->
+                    item.instrument.displaySymbol
+                }
+            }
+
+            WatchlistUiModel.SortOrder.CHANGE -> {
+                items.sortedByDescending { item: WatchlistItem ->
+                    val quote: Quote? = quotes[item.instrument.symbol] ?: item.cachedQuote
+                    val percent: Double = quote?.percentChange ?: Double.NaN
+                    // NaN poisons comparators; unknown changes sort to the bottom.
+                    if (percent.isNaN()) Double.NEGATIVE_INFINITY else percent
+                }
+            }
+        }
 
     companion object {
         private val REFRESH_SPINNER_MINIMUM: Duration = 400.milliseconds

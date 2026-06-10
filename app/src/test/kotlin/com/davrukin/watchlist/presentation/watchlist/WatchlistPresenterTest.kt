@@ -212,6 +212,44 @@ class WatchlistPresenterTest {
         }
 
     @Test
+    fun `cycling sort order reorders rows by symbol then by percent change`() =
+        runTest {
+            val fixture =
+                Fixture(
+                    scope = this,
+                    watchlist =
+                        listOf(
+                            WatchlistItem(instrument = instrument(symbol = "MSFT"), cachedQuote = null),
+                            WatchlistItem(instrument = instrument(symbol = "AAPL"), cachedQuote = null),
+                        ),
+                )
+            fixture.priceRepository.quotes.value =
+                mapOf(
+                    "MSFT" to quote(price = 500.0, change = 5.0, percentChange = 1.0),
+                    "AAPL" to quote(price = 100.0, change = 4.0, percentChange = 4.2),
+                )
+
+            fixture.models().test {
+                val initial = expectMostRecentItemWith { it.items.size == 2 }
+                assertEquals(listOf("MSFT", "AAPL"), initial.items.map { it.symbol })
+
+                initial.eventHandler.onEvent(event = WatchlistUiModel.Event.CycleSortOrder)
+                val bySymbol = expectMostRecentItemWith { it.sortOrder == WatchlistUiModel.SortOrder.SYMBOL }
+                assertEquals(listOf("AAPL", "MSFT"), bySymbol.items.map { it.symbol })
+
+                bySymbol.eventHandler.onEvent(event = WatchlistUiModel.Event.CycleSortOrder)
+                val byChange = expectMostRecentItemWith { it.sortOrder == WatchlistUiModel.SortOrder.CHANGE }
+                assertEquals(listOf("AAPL", "MSFT"), byChange.items.map { it.symbol })
+
+                byChange.eventHandler.onEvent(event = WatchlistUiModel.Event.CycleSortOrder)
+                val backToAdded = expectMostRecentItemWith { it.sortOrder == WatchlistUiModel.SortOrder.ADDED }
+                assertEquals(listOf("MSFT", "AAPL"), backToAdded.items.map { it.symbol })
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun `open search event invokes navigation callback`() =
         runTest {
             var opened = false

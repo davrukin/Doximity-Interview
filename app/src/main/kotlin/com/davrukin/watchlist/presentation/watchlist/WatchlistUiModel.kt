@@ -15,14 +15,26 @@ data class WatchlistUiModel(
     val connectionState: ConnectionState,
     val dataMode: MarketDataMode,
     val isLiveAvailable: Boolean,
+    val sortOrder: SortOrder = SortOrder.ADDED,
     val eventHandler: EventHandler<Event>,
 ) : UiModel {
+    enum class SortOrder {
+        ADDED,
+        SYMBOL,
+        CHANGE,
+        ;
+
+        fun next(): SortOrder = entries[(ordinal + 1) % entries.size]
+    }
+
     sealed interface Event : UiEvent {
         data class Remove(
             val symbol: String,
         ) : Event
 
         data object Refresh : Event
+
+        data object CycleSortOrder : Event
 
         data object ToggleDataMode : Event
 

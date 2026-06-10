@@ -40,6 +40,14 @@ fun WatchlistScreen(
                     Text(text = "Watchlist")
                 },
                 actions = {
+                    SortOrderChip(
+                        sortOrder = model.sortOrder,
+                        onCycle = {
+                            model.eventHandler.onEvent(
+                                event = WatchlistUiModel.Event.CycleSortOrder,
+                            )
+                        },
+                    )
                     DataModeChip(
                         dataMode = model.dataMode,
                         isLiveAvailable = model.isLiveAvailable,
