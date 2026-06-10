@@ -8,6 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.davrukin.watchlist.domain.model.ConnectionState
+import com.davrukin.watchlist.domain.model.MarketDataMode
+import com.davrukin.watchlist.domain.model.Quote
 import com.davrukin.watchlist.domain.model.WatchlistItem
 import com.davrukin.watchlist.domain.usecase.ObserveConnectionStateUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveMarketDataModeUseCase
@@ -42,30 +44,38 @@ class WatchlistPresenter(
 
     @Composable
     override fun present(params: Params): WatchlistUiModel {
-        val watchlist by launchUseCase(initial = null as List<WatchlistItem>?) { observeWatchlist() }
-        val quotes by launchUseCase(initial = emptyMap()) { observeQuotes() }
-        val connectionState by launchUseCase(initial = ConnectionState.CONNECTING) { observeConnectionState() }
-        val dataMode by observeMarketDataMode().collectAsState()
-        var isRefreshing by remember { mutableStateOf(value = false) }
+        val watchlist: List<WatchlistItem>? by launchUseCase(initial = null) {
+            observeWatchlist()
+        }
+        val quotes: Map<String, Quote> by launchUseCase(initial = emptyMap()) {
+            observeQuotes()
+        }
+        val connectionState: ConnectionState by launchUseCase(initial = ConnectionState.CONNECTING) {
+            observeConnectionState()
+        }
+        // Match the repository's initial state (LIVE) to avoid test mismatch
+        val dataMode: MarketDataMode by observeMarketDataMode().collectAsState(initial = MarketDataMode.LIVE)
+        var isRefreshing: Boolean by remember { mutableStateOf(value = false) }
 
-        val items = (watchlist ?: emptyList()).map { item ->
+        val items: List<WatchlistRowUiModel> = (watchlist ?: emptyList()).map { item: WatchlistItem ->
             key(item.instrument.symbol) {
                 itemPresenter.present(
-                    params =
-                        WatchlistItemPresenter.Params(
-                            item = item,
-                            liveQuote = quotes[item.instrument.symbol],
-                            connectionState = connectionState,
-                        ),
+                    params = WatchlistItemPresenter.Params(
+                        item = item,
+                        liveQuote = quotes[item.instrument.symbol],
+                        connectionState = connectionState,
+                    ),
                 )
             }
         }
 
-        val eventHandler = remember(params) {
-            EventHandler<WatchlistUiModel.Event> { event ->
+        val eventHandler: EventHandler<WatchlistUiModel.Event> = remember(key1 = params) {
+            EventHandler<WatchlistUiModel.Event> { event: WatchlistUiModel.Event ->
                 when (event) {
                     is WatchlistUiModel.Event.Remove -> {
-                        appScope.launch { removeFromWatchlist(symbol = event.symbol) }
+                        appScope.launch {
+                            removeFromWatchlist(symbol = event.symbol)
+                        }
                     }
 
                     WatchlistUiModel.Event.Refresh -> {
@@ -80,8 +90,13 @@ class WatchlistPresenter(
                         }
                     }
 
-                    WatchlistUiModel.Event.ToggleDataMode -> toggleMarketDataMode()
-                    WatchlistUiModel.Event.OpenSearch -> params.onOpenSearch()
+                    WatchlistUiModel.Event.ToggleDataMode -> {
+                        toggleMarketDataMode()
+                    }
+
+                    WatchlistUiModel.Event.OpenSearch -> {
+                        params.onOpenSearch()
+                    }
                 }
             }
         }
