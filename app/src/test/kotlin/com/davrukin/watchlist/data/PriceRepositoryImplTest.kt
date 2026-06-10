@@ -100,6 +100,20 @@ class PriceRepositoryImplTest {
                 cancelAndIgnoreRemainingEvents()
             }
 
+            val nanFixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
+            nanFixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = Double.NaN))
+            nanFixture.repository.observeQuotes(instruments = listOf(aapl)).test {
+                awaitItem()
+                advanceTimeBy(6.seconds)
+                runCurrent()
+                // NaN sentinels must never reach the database; they persist as NULL.
+                val persisted = nanFixture.dao.persistedQuotes.last()
+                assertEquals(100.0, persisted.price, 0.0)
+                assertEquals(null, persisted.change)
+                assertEquals(null, persisted.percentChange)
+                cancelAndIgnoreRemainingEvents()
+            }
+
             val demoFixture = Fixture(scope = this, mode = MarketDataMode.DEMO)
             demoFixture.demoSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
             demoFixture.repository.observeQuotes(instruments = listOf(aapl)).test {
@@ -196,7 +210,15 @@ class PriceRepositoryImplTest {
     }
 
     private class FakeWatchlistDao : WatchlistDao {
+        data class PersistedQuote(
+            val symbol: String,
+            val price: Double,
+            val change: Double?,
+            val percentChange: Double?,
+        )
+
         val updatedSymbols = mutableListOf<String>()
+        val persistedQuotes = mutableListOf<PersistedQuote>()
         private val items = MutableStateFlow(emptyList<WatchlistItemEntity>())
 
         override fun observeAll(): Flow<List<WatchlistItemEntity>> = items
@@ -219,6 +241,13 @@ class PriceRepositoryImplTest {
             updatedAtEpochMillis: Long,
         ) {
             updatedSymbols += symbol
+            persistedQuotes +=
+                PersistedQuote(
+                    symbol = symbol,
+                    price = price,
+                    change = change,
+                    percentChange = percentChange,
+                )
         }
     }
 }
