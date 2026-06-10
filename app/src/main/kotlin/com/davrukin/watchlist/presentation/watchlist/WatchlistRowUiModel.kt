@@ -16,6 +16,7 @@ data class WatchlistRowUiModel(
     val change: String?,
     val isGain: Boolean?,
     val isStale: Boolean,
+    val staleAsOf: String? = null,
     val movement: PriceMovement? = null,
 ) : UiModel {
     enum class PriceMovement {

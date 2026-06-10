@@ -55,7 +55,7 @@ Key design points:
 - [x] O1 price movement indicators
 - [x] O6 Compose UI tests
 - [x] O7 exponential backoff + jitter
-- [ ] O5 offline cache display surfacing
+- [x] O5 offline cache display surfacing
 - [ ] O4 pull to refresh
 - [ ] O2 sorting
 - [ ] O3 sparkline

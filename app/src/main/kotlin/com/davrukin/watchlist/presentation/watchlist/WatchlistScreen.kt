@@ -266,7 +266,7 @@ private fun WatchlistRow(
                     when {
                         row.isStale && row.price != null ->
                             Text(
-                                text = "stale",
+                                text = row.staleAsOf?.let { "stale · $it" } ?: "stale",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

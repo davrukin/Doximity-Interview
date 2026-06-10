@@ -11,6 +11,8 @@ import com.davrukin.watchlist.domain.model.Quote
 import com.davrukin.watchlist.domain.model.WatchlistItem
 import com.davrukin.watchlist.presentation.core.Presenter
 import java.text.NumberFormat
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
@@ -56,6 +58,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             change = quote?.let { formatChange(quote = it) },
             isGain = quote?.change?.let { it >= 0 },
             isStale = isStale,
+            staleAsOf = if (isStale) quote?.let { timeFormat.format(it.lastUpdated.atZone(zoneId)) } else null,
             movement = movement,
         )
     }
@@ -79,4 +82,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             minimumFractionDigits = 2
             maximumFractionDigits = 2
         }
+
+    private val zoneId: ZoneId = ZoneId.systemDefault()
+    private val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, h:mm a", Locale.US)
 }
