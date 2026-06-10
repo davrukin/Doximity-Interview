@@ -179,6 +179,39 @@ class WatchlistPresenterTest {
         }
 
     @Test
+    fun `row click opens the detail and dismiss closes it`() =
+        runTest {
+            val fixture =
+                Fixture(
+                    scope = this,
+                    watchlist =
+                        listOf(
+                            WatchlistItem(
+                                instrument = instrument(symbol = "AAPL"),
+                                cachedQuote = quote(price = 100.0, change = 2.0, isStale = true),
+                            ),
+                        ),
+                )
+
+            fixture.models().test {
+                awaitItem()
+                val loaded = awaitItem()
+
+                loaded.eventHandler.onEvent(event = WatchlistUiModel.Event.RowClicked(symbol = "AAPL"))
+
+                val detailed = expectMostRecentItemWith { it.detail != null }
+                val detail = requireNotNull(detailed.detail)
+                assertEquals("AAPL", detail.displaySymbol)
+                assertEquals("100.00", detail.price)
+
+                detailed.eventHandler.onEvent(event = WatchlistUiModel.Event.DismissDetail)
+                expectMostRecentItemWith { it.detail == null }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun `dismissing the removal confirmation keeps the row`() =
         runTest {
             val fixture =

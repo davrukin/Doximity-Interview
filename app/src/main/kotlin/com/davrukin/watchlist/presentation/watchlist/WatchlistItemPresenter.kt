@@ -67,6 +67,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             symbol = instrument.symbol,
             displaySymbol = instrument.displaySymbol,
             description = instrument.description,
+            type = instrument.type,
             price =
                 quote?.let { quoteValue: Quote ->
                     priceFormat.format(quoteValue.price)

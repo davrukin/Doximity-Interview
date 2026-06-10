@@ -63,6 +63,9 @@ class WatchlistPresenter(
         var pendingRemovalSymbol: String? by rememberSaveable {
             mutableStateOf(value = null)
         }
+        var detailSymbol: String? by rememberSaveable {
+            mutableStateOf(value = null)
+        }
 
         val items: List<WatchlistRowUiModel> =
             sortItems(
@@ -104,6 +107,14 @@ class WatchlistPresenter(
                             pendingRemovalSymbol = null
                         }
 
+                        is WatchlistUiModel.Event.RowClicked -> {
+                            detailSymbol = event.symbol
+                        }
+
+                        WatchlistUiModel.Event.DismissDetail -> {
+                            detailSymbol = null
+                        }
+
                         WatchlistUiModel.Event.Refresh -> {
                             appScope.launch {
                                 isRefreshing = true
@@ -143,12 +154,18 @@ class WatchlistPresenter(
                     }
             }
 
+        val detail: WatchlistRowUiModel? =
+            detailSymbol?.let { symbol: String ->
+                items.firstOrNull { it.symbol == symbol }
+            }
+
         return WatchlistUiModel(
             items = items,
             isLoading = watchlist == null,
             isRefreshing = isRefreshing,
             sortOrder = sortOrder,
             pendingRemoval = pendingRemoval,
+            detail = detail,
             connectionState = connectionState,
             dataMode = dataMode,
             isLiveAvailable = observeMarketDataMode.isLiveAvailable,

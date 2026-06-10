@@ -1,5 +1,6 @@
 package com.davrukin.watchlist.presentation.watchlist
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -28,12 +29,16 @@ import com.davrukin.watchlist.ui.theme.WatchlistTheme
 @Composable
 fun WatchlistRow(
     row: WatchlistRowUiModel,
+    onClick: () -> Unit,
     onRemove: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+        modifier =
+            modifier
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 10.dp),
         content = {
             Column(
                 modifier = Modifier.weight(weight = 1f),
@@ -138,6 +143,7 @@ fun WatchlistRow(
 private fun WatchlistRowGainPreview() {
     WatchlistTheme {
         WatchlistRow(
+            onClick = {},
             row =
                 WatchlistRowUiModel(
                     symbol = "AAPL",
@@ -158,6 +164,7 @@ private fun WatchlistRowGainPreview() {
 private fun WatchlistRowLossPreview() {
     WatchlistTheme {
         WatchlistRow(
+            onClick = {},
             row =
                 WatchlistRowUiModel(
                     symbol = "TSLA",

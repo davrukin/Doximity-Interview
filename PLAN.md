@@ -66,7 +66,7 @@ Key design points:
 - [x] Defensive round-trip regression tests for the silent-persistence bug class
 - [x] D3 strings.xml extraction
 - [x] D1 delete confirmation dialog
-- [ ] D5 instrument detail dialog
+- [x] D5 instrument detail dialog
 - [ ] D2 animations (banner, list items, state transitions)
 - [ ] D4 design-system visual polish
 - [ ] Developer-additions tracking restructure in REQUIREMENTS.md

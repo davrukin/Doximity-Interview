@@ -120,6 +120,14 @@ fun WatchlistScreen(
                                                 itemContent = { row: WatchlistRowUiModel ->
                                                     WatchlistRow(
                                                         row = row,
+                                                        onClick = {
+                                                            model.eventHandler.onEvent(
+                                                                event =
+                                                                    WatchlistUiModel.Event.RowClicked(
+                                                                        symbol = row.symbol,
+                                                                    ),
+                                                            )
+                                                        },
                                                         onRemove = {
                                                             model.eventHandler.onEvent(
                                                                 event =
@@ -142,6 +150,15 @@ fun WatchlistScreen(
             )
         },
     )
+    val detail: WatchlistRowUiModel? = model.detail
+    if (detail != null) {
+        InstrumentDetailDialog(
+            row = detail,
+            onDismiss = {
+                model.eventHandler.onEvent(event = WatchlistUiModel.Event.DismissDetail)
+            },
+        )
+    }
     val pendingRemoval: WatchlistUiModel.PendingRemoval? = model.pendingRemoval
     if (pendingRemoval != null) {
         RemoveConfirmationDialog(

@@ -17,6 +17,7 @@ data class WatchlistUiModel(
     val isLiveAvailable: Boolean,
     val sortOrder: SortOrder = SortOrder.ADDED,
     val pendingRemoval: PendingRemoval? = null,
+    val detail: WatchlistRowUiModel? = null,
     val eventHandler: EventHandler<Event>,
 ) : UiModel {
     enum class SortOrder {
@@ -42,6 +43,12 @@ data class WatchlistUiModel(
         data object ConfirmRemoval : Event
 
         data object DismissRemoval : Event
+
+        data class RowClicked(
+            val symbol: String,
+        ) : Event
+
+        data object DismissDetail : Event
 
         data object Refresh : Event
 

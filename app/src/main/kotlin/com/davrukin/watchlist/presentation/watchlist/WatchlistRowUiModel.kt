@@ -1,6 +1,7 @@
 package com.davrukin.watchlist.presentation.watchlist
 
 import androidx.compose.runtime.Immutable
+import com.davrukin.watchlist.domain.model.InstrumentType
 import com.davrukin.watchlist.presentation.core.UiModel
 
 /**
@@ -12,6 +13,7 @@ data class WatchlistRowUiModel(
     val symbol: String,
     val displaySymbol: String,
     val description: String,
+    val type: InstrumentType = InstrumentType.STOCK,
     val price: String?,
     val change: String?,
     val isGain: Boolean?,
