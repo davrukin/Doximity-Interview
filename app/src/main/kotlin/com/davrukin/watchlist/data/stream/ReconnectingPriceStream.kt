@@ -60,12 +60,14 @@ class ReconnectingPriceStream(
                                         manageSubscriptions(session = event.session, wantedSymbols = latestSymbols)
                                     }
                             }
+
                             is PriceSocketEvent.MessageReceived -> {
                                 val ticks = parseTicks(event.text)
                                 if (ticks.isNotEmpty()) {
                                     send(PriceStreamEvent.Ticks(ticks = ticks))
                                 }
                             }
+
                             is PriceSocketEvent.Failed -> throw PriceSocketDroppedException()
                         }
                     }

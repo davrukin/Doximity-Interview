@@ -23,10 +23,10 @@ class OkHttpPriceSocket(
                 ) {
                     trySendBlocking(
                         element = PriceSocketEvent.Opened(
-                            session = {
-                                text -> webSocket.send(text)
-                            }
-                        )
+                            session = { text ->
+                                webSocket.send(text)
+                            },
+                        ),
                     )
                 }
 

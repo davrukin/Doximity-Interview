@@ -26,7 +26,7 @@ fun WatchlistApp() {
         backStack = backStack,
         onBack = {
             backStack.removeLastOrNull()
-                 },
+        },
         entryProvider = entryProvider {
             entry<WatchlistKey> {
                 val presenter = koinInject<WatchlistPresenter>()
@@ -35,7 +35,7 @@ fun WatchlistApp() {
                         WatchlistPresenter.Params(
                             onOpenSearch = {
                                 backStack.add(SearchKey)
-                            }
+                            },
                         )
                     }
                 WatchlistScreen(
@@ -49,7 +49,7 @@ fun WatchlistApp() {
                         SearchPresenter.Params(
                             onBack = {
                                 backStack.removeLastOrNull()
-                            }
+                            },
                         )
                     }
                 SearchScreen(
@@ -57,5 +57,5 @@ fun WatchlistApp() {
                 )
             }
         },
-)
+    )
 }

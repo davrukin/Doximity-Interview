@@ -67,6 +67,7 @@ class WatchlistPresenter(
                     is WatchlistUiModel.Event.Remove -> {
                         appScope.launch { removeFromWatchlist(symbol = event.symbol) }
                     }
+
                     WatchlistUiModel.Event.Refresh -> {
                         appScope.launch {
                             isRefreshing = true
@@ -78,6 +79,7 @@ class WatchlistPresenter(
                             }
                         }
                     }
+
                     WatchlistUiModel.Event.ToggleDataMode -> toggleMarketDataMode()
                     WatchlistUiModel.Event.OpenSearch -> params.onOpenSearch()
                 }

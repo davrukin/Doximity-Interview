@@ -79,6 +79,7 @@ class SearchPresenter(
                             isOnWatchlist = instrument.symbol in watchlistSymbols,
                         )
                     }
+
                 else -> emptyList()
             }
 
@@ -97,6 +98,7 @@ class SearchPresenter(
                                 }
                             }
                         }
+
                         SearchUiModel.Event.Retry -> retryToken++
                         SearchUiModel.Event.Back -> params.onBack()
                     }
@@ -117,6 +119,7 @@ class SearchPresenter(
                             SearchUiModel.Phase.RESULTS
                         }
                     }
+
                     SearchState.Failed -> SearchUiModel.Phase.ERROR
                 },
             eventHandler = eventHandler,

@@ -270,6 +270,7 @@ private fun WatchlistRow(
                                         modifier = Modifier.padding(end = 4.dp),
                                     )
                                 }
+
                                 WatchlistRowUiModel.PriceMovement.DOWN -> {
                                     Text(
                                         text = "▼",
@@ -278,6 +279,7 @@ private fun WatchlistRow(
                                         modifier = Modifier.padding(end = 4.dp),
                                     )
                                 }
+
                                 null -> {}
                             }
                             Text(
@@ -299,6 +301,7 @@ private fun WatchlistRow(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
+
                         row.change != null -> {
                             Text(
                                 text = row.change,

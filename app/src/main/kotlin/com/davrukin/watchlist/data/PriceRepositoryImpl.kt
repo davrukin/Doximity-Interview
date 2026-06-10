@@ -160,6 +160,7 @@ class PriceRepositoryImpl(
                             )
                         }
                     }
+
                     is PriceStreamEvent.ConnectionChanged -> {
                         if (event.state != ConnectionState.CONNECTED) {
                             return@collect

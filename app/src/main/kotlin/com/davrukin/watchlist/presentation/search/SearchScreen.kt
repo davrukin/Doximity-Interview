@@ -116,6 +116,7 @@ fun SearchScreen(
                                 title = "Search stocks and crypto",
                                 subtitle = "Results appear as you type",
                             )
+
                         SearchUiModel.Phase.LOADING ->
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -124,17 +125,20 @@ fun SearchScreen(
                                     CircularProgressIndicator()
                                 },
                             )
+
                         SearchUiModel.Phase.EMPTY ->
                             CenteredMessage(
                                 title = "No matches for \"${model.query}\"",
                                 subtitle = "Try a different symbol or name",
                             )
+
                         SearchUiModel.Phase.ERROR ->
                             ErrorState(
                                 onRetry = {
                                     model.eventHandler.onEvent(event = SearchUiModel.Event.Retry)
                                 },
                             )
+
                         SearchUiModel.Phase.RESULTS ->
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
@@ -194,7 +198,7 @@ private fun CenteredMessage(
 
 @Composable
 private fun ErrorState(
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
