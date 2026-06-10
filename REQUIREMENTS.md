@@ -30,5 +30,5 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 | O3 | Sparkline | — | — | ⬜ |
 | O4 | Pull to refresh | — | — | ⬜ |
 | O5 | Offline cache display | — | — | ⬜ |
-| O6 | Compose UI tests | — | — | ⬜ |
+| O6 | Compose UI tests | `app/src/androidTest/` (10 tests) | `./gradlew connectedDebugAndroidTest`; green on device | ✅ |
 | O7 | Advanced retry/backoff (exponential backoff with jitter) | — | — | ⬜ |
