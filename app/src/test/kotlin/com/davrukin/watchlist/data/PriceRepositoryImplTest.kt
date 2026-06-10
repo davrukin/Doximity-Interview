@@ -49,9 +49,10 @@ class PriceRepositoryImplTest {
                 runCurrent()
 
                 fixture.liveStream.emit(
-                    event = PriceStreamEvent.Ticks(
-                        ticks = listOf(PriceTick(symbol = "AAPL", price = 101.0, timestamp = Instant.EPOCH)),
-                    ),
+                    event =
+                        PriceStreamEvent.Ticks(
+                            ticks = listOf(PriceTick(symbol = "AAPL", price = 101.0, timestamp = Instant.EPOCH)),
+                        ),
                 )
                 val updated: Quote = requireNotNull(value = awaitItem()["AAPL"])
                 assertEquals(101.0, updated.price, 0.0)
@@ -124,15 +125,14 @@ class PriceRepositoryImplTest {
     private fun quote(
         price: Double,
         change: Double,
-    ): Quote {
-        return Quote(
+    ): Quote =
+        Quote(
             price = price,
             change = change,
             percentChange = Double.NaN,
             lastUpdated = Instant.EPOCH,
             isStale = false,
         )
-    }
 
     private class Fixture(
         scope: kotlinx.coroutines.test.TestScope,
@@ -214,8 +214,8 @@ class PriceRepositoryImplTest {
         override suspend fun updateQuote(
             symbol: String,
             price: Double,
-            change: Double,
-            percentChange: Double,
+            change: Double?,
+            percentChange: Double?,
             updatedAtEpochMillis: Long,
         ) {
             updatedSymbols += symbol

@@ -11,6 +11,10 @@ import java.time.Instant
 /**
  * A watchlist row: instrument identity plus the last persisted quote, so the UI can show a
  * last-known price (marked stale) immediately on launch.
+ *
+ * The cached-quote columns are nullable by necessity: SQLite stores NaN as NULL, so the domain's
+ * NaN sentinels cannot survive a NOT NULL REAL column (with INSERT OR IGNORE the row is silently
+ * dropped). NULL here maps to NaN at this boundary.
  */
 @Entity(tableName = "watchlist")
 data class WatchlistItemEntity(
@@ -19,31 +23,33 @@ data class WatchlistItemEntity(
     val description: String,
     val type: InstrumentType,
     val addedAtEpochMillis: Long,
-    val lastPrice: Double = Double.NaN,
-    val lastChange: Double = Double.NaN,
-    val lastPercentChange: Double = Double.NaN,
-    val lastUpdatedEpochMillis: Long = -1L,
+    val lastPrice: Double? = null,
+    val lastChange: Double? = null,
+    val lastPercentChange: Double? = null,
+    val lastUpdatedEpochMillis: Long? = null,
 ) {
     fun toWatchlistItem(): WatchlistItem {
-        val quote: Quote? = if (!lastPrice.isNaN() && lastUpdatedEpochMillis != -1L) {
-            Quote(
-                price = lastPrice,
-                change = lastChange,
-                percentChange = lastPercentChange,
-                lastUpdated = Instant.ofEpochMilli(lastUpdatedEpochMillis),
-                isStale = true,
-            )
-        } else {
-            null
-        }
+        val quote: Quote? =
+            if (lastPrice != null && lastUpdatedEpochMillis != null) {
+                Quote(
+                    price = lastPrice,
+                    change = lastChange ?: Double.NaN,
+                    percentChange = lastPercentChange ?: Double.NaN,
+                    lastUpdated = Instant.ofEpochMilli(lastUpdatedEpochMillis),
+                    isStale = true,
+                )
+            } else {
+                null
+            }
 
         return WatchlistItem(
-            instrument = Instrument(
-                symbol = symbol,
-                displaySymbol = displaySymbol,
-                description = description,
-                type = type,
-            ),
+            instrument =
+                Instrument(
+                    symbol = symbol,
+                    displaySymbol = displaySymbol,
+                    description = description,
+                    type = type,
+                ),
             cachedQuote = quote,
         )
     }
@@ -52,14 +58,13 @@ data class WatchlistItemEntity(
         fun fromInstrument(
             instrument: Instrument,
             addedAt: Instant,
-        ): WatchlistItemEntity {
-            return WatchlistItemEntity(
+        ): WatchlistItemEntity =
+            WatchlistItemEntity(
                 symbol = instrument.symbol,
                 displaySymbol = instrument.displaySymbol,
                 description = instrument.description,
                 type = instrument.type,
                 addedAtEpochMillis = addedAt.toEpochMilli(),
             )
-        }
     }
 }

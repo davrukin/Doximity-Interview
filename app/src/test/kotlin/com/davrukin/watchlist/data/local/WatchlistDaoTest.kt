@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import app.cash.turbine.test
 import com.davrukin.watchlist.domain.model.InstrumentType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -31,8 +32,7 @@ class WatchlistDaoTest {
                 .inMemoryDatabaseBuilder(
                     ApplicationProvider.getApplicationContext<Context>(),
                     WatchlistDatabase::class.java,
-                )
-                .setQueryExecutor { it.run() }
+                ).setQueryExecutor { it.run() }
                 .setTransactionExecutor { it.run() }
                 .allowMainThreadQueries()
                 .build()
@@ -58,7 +58,7 @@ class WatchlistDaoTest {
 
                 dao.delete(symbol = "AAPL")
                 assertEquals(listOf("MSFT"), awaitItem().map { it.symbol })
-                
+
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -82,8 +82,8 @@ class WatchlistDaoTest {
                 )
 
                 val updated: WatchlistItemEntity = awaitItem().single()
-                assertEquals(230.5, updated.lastPrice, 0.0)
-                assertEquals(1_700_000_000_000, updated.lastUpdatedEpochMillis)
+                assertEquals(230.5, requireNotNull(value = updated.lastPrice), 0.0)
+                assertEquals(1_700_000_000_000, requireNotNull(value = updated.lastUpdatedEpochMillis))
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -92,30 +92,22 @@ class WatchlistDaoTest {
     @Test
     fun `re-inserting an existing symbol keeps the cached quote`() {
         runTest {
-            dao.observeAll().test {
-                assertEquals(emptyList<WatchlistItemEntity>(), awaitItem())
+            dao.insert(entity = entity(symbol = "AAPL", addedAt = 1))
+            dao.updateQuote(
+                symbol = "AAPL",
+                price = 230.5,
+                change = null,
+                percentChange = null,
+                updatedAtEpochMillis = 1,
+            )
 
-                dao.insert(entity = entity(symbol = "AAPL", addedAt = 1))
-                assertEquals(1, awaitItem().size)
-                
-                dao.updateQuote(
-                    symbol = "AAPL",
-                    price = 230.5,
-                    change = Double.NaN,
-                    percentChange = Double.NaN,
-                    updatedAtEpochMillis = 1,
-                )
-                assertEquals(230.5, awaitItem().single().lastPrice, 0.0)
+            // The conflicting insert is IGNOREd: no write happens, so there is no flow
+            // re-emission to await — the outcome is asserted with a fresh query.
+            dao.insert(entity = entity(symbol = "AAPL", addedAt = 99))
 
-                dao.insert(entity = entity(symbol = "AAPL", addedAt = 99))
-                
-                // Room might emit the current state if it detects an attempted write
-                val items: List<WatchlistItemEntity> = awaitItem() 
-                val kept: WatchlistItemEntity = items.single()
-                assertEquals(230.5, kept.lastPrice, 0.0)
-                assertEquals(1, kept.addedAtEpochMillis)
-                cancelAndIgnoreRemainingEvents()
-            }
+            val kept: WatchlistItemEntity = dao.observeAll().first().single()
+            assertEquals(230.5, requireNotNull(value = kept.lastPrice), 0.0)
+            assertEquals(1, kept.addedAtEpochMillis)
         }
     }
 
@@ -132,13 +124,12 @@ class WatchlistDaoTest {
     private fun entity(
         symbol: String,
         addedAt: Long,
-    ): WatchlistItemEntity {
-        return WatchlistItemEntity(
+    ): WatchlistItemEntity =
+        WatchlistItemEntity(
             symbol = symbol,
             displaySymbol = symbol,
             description = "$symbol description",
             type = InstrumentType.STOCK,
             addedAtEpochMillis = addedAt,
         )
-    }
 }

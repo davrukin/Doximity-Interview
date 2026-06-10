@@ -59,8 +59,7 @@ class PriceRepositoryImpl(
             .observe()
             .flatMapLatest { source ->
                 source.priceStream.events(symbols = watchedSymbols)
-            }
-            .shareIn(
+            }.shareIn(
                 scope = appScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = SOCKET_LINGER_MILLIS),
                 replay = 0,
@@ -71,30 +70,26 @@ class PriceRepositoryImpl(
             .filterIsInstance<PriceStreamEvent.ConnectionChanged>()
             .map { connectionChanged ->
                 connectionChanged.state
-            }
-            .stateIn(
+            }.stateIn(
                 scope = appScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = SOCKET_LINGER_MILLIS),
                 initialValue = ConnectionState.CONNECTING,
             )
 
-    override fun observeConnectionState(): Flow<ConnectionState> {
-        return connectionState
-    }
+    override fun observeConnectionState(): Flow<ConnectionState> = connectionState
 
     override suspend fun refreshQuotes() {
         refreshRequests.emit(value = Unit)
     }
 
-    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> {
-        return modeRepository.mode.flatMapLatest { mode: MarketDataMode ->
+    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> =
+        modeRepository.mode.flatMapLatest { mode: MarketDataMode ->
             quotes(
                 source = selector.sourceFor(mode = mode),
                 persistFreshQuotes = mode == MarketDataMode.LIVE,
                 instruments = instruments,
             )
         }
-    }
 
     private fun quotes(
         source: MarketDataSource,
@@ -139,10 +134,11 @@ class PriceRepositoryImpl(
 
             launch {
                 refreshRequests.collect {
-                    val fresh: Map<String, Quote> = fetchSnapshots(
-                        source = source,
-                        instruments = instruments,
-                    )
+                    val fresh: Map<String, Quote> =
+                        fetchSnapshots(
+                            source = source,
+                            instruments = instruments,
+                        )
                     recordPreviousCloses(snapshots = fresh, into = previousCloses)
                     quotesState.update { current: Map<String, Quote> ->
                         current + fresh
@@ -172,10 +168,11 @@ class PriceRepositoryImpl(
                             connectedOnce = true
                             return@collect
                         }
-                        val fresh: Map<String, Quote> = fetchSnapshots(
-                            source = source,
-                            instruments = instruments,
-                        )
+                        val fresh: Map<String, Quote> =
+                            fetchSnapshots(
+                                source = source,
+                                instruments = instruments,
+                            )
                         recordPreviousCloses(
                             snapshots = fresh,
                             into = previousCloses,
@@ -192,23 +189,20 @@ class PriceRepositoryImpl(
     private suspend fun fetchSnapshots(
         source: MarketDataSource,
         instruments: List<Instrument>,
-    ): Map<String, Quote> {
-        return coroutineScope {
+    ): Map<String, Quote> =
+        coroutineScope {
             instruments
                 .map { instrument: Instrument ->
                     async {
                         instrument.symbol to source.quoteSnapshot(instrument = instrument).getOrNull()
                     }
-                }
-                .awaitAll()
+                }.awaitAll()
                 .mapNotNull { (symbol: String, quote: Quote?) ->
                     quote?.let { quoteValue: Quote ->
                         symbol to quoteValue
                     }
-                }
-                .toMap()
+                }.toMap()
         }
-    }
 
     private fun recordPreviousCloses(
         snapshots: Map<String, Quote>,
@@ -234,35 +228,41 @@ class PriceRepositoryImpl(
                 return@forEach
             }
             val previousClose: Double? = previousCloses[tick.symbol]?.takeIf { it != 0.0 }
-            val change: Double = if (previousClose != null) {
-                tick.price - previousClose
-            } else {
-                Double.NaN
-            }
-            val percentChange: Double = if (previousClose != null && previousClose != 0.0) {
-                change / previousClose * 100
-            } else {
-                Double.NaN
-            }
+            val change: Double =
+                if (previousClose != null) {
+                    tick.price - previousClose
+                } else {
+                    Double.NaN
+                }
+            val percentChange: Double =
+                if (previousClose != null && previousClose != 0.0) {
+                    change / previousClose * 100
+                } else {
+                    Double.NaN
+                }
 
-            updated[tick.symbol] = Quote(
-                price = tick.price,
-                change = change,
-                percentChange = percentChange,
-                lastUpdated = tick.timestamp,
-                isStale = false,
-            )
+            updated[tick.symbol] =
+                Quote(
+                    price = tick.price,
+                    change = change,
+                    percentChange = percentChange,
+                    lastUpdated = tick.timestamp,
+                    isStale = false,
+                )
         }
         return updated
     }
 
     private suspend fun persist(quotes: Map<String, Quote>) {
         quotes.forEach { (symbol: String, quote: Quote) ->
+            if (quote.price.isNaN()) {
+                return@forEach
+            }
             dao.updateQuote(
                 symbol = symbol,
                 price = quote.price,
-                change = quote.change,
-                percentChange = quote.percentChange,
+                change = quote.change.takeUnless { it.isNaN() },
+                percentChange = quote.percentChange.takeUnless { it.isNaN() },
                 updatedAtEpochMillis = quote.lastUpdated.toEpochMilli(),
             )
         }

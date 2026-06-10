@@ -66,8 +66,7 @@ val dataModule: Module =
                     context = androidContext(),
                     klass = WatchlistDatabase::class.java,
                     name = "watchlist.db",
-                )
-                .addMigrations(WatchlistDatabase.MIGRATION_1_2)
+                ).fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .build()
         }
         single {

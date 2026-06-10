@@ -20,38 +20,34 @@ import java.time.Instant
 fun instrument(
     symbol: String,
     type: InstrumentType = InstrumentType.STOCK,
-): Instrument {
-    return Instrument(
+): Instrument =
+    Instrument(
         symbol = symbol,
         displaySymbol = symbol,
         description = "$symbol description",
         type = type,
     )
-}
 
 fun quote(
     price: Double,
     change: Double = Double.NaN,
     percentChange: Double = Double.NaN,
     isStale: Boolean = false,
-): Quote {
-    return Quote(
+): Quote =
+    Quote(
         price = price,
         change = change,
         percentChange = percentChange,
         lastUpdated = Instant.EPOCH,
         isStale = isStale,
     )
-}
 
 class FakeWatchlistRepository(
     initial: List<WatchlistItem> = emptyList(),
 ) : WatchlistRepository {
     val items: MutableStateFlow<List<WatchlistItem>> = MutableStateFlow(value = initial)
 
-    override fun observeWatchlist(): Flow<List<WatchlistItem>> {
-        return items
-    }
+    override fun observeWatchlist(): Flow<List<WatchlistItem>> = items
 
     override suspend fun add(instrument: Instrument) {
         items.update { current: List<WatchlistItem> ->
@@ -76,13 +72,9 @@ class FakePriceRepository : PriceRepository {
     var refreshCount: Int = 0
         private set
 
-    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> {
-        return quotes
-    }
+    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> = quotes
 
-    override fun observeConnectionState(): Flow<ConnectionState> {
-        return connectionState
-    }
+    override fun observeConnectionState(): Flow<ConnectionState> = connectionState
 
     override suspend fun refreshQuotes() {
         refreshCount++

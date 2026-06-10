@@ -68,6 +68,8 @@ Key design points:
 | 2026-06-09 | No standalone Kotlin Android plugin | AGP 9 ships built-in Kotlin support and rejects `org.jetbrains.kotlin.android` |
 | 2026-06-09 | compileSdk 37 (target stays 36) | Current androidx releases require compiling against android-37 |
 | 2026-06-09 | Watchlist + search presenters landed in one commit | They share the Koin presentation module and test fakes; splitting would have left an intermediate commit referencing missing classes |
+| 2026-06-10 | Cached-quote columns are nullable in Room despite the no-nullable-primitives rule | SQLite stores NaN as NULL, so NaN sentinels cannot live in NOT NULL REAL columns — INSERT OR IGNORE silently dropped every row. NULL maps to NaN at the entity boundary |
+| 2026-06-10 | Database back to version 1; v2 schema and migration removed | The v2 NOT NULL schema was unshippable (see above) and its migration declared DEFAULT clauses Room's validator rejects. No release ever shipped v2; dev devices downgrade destructively |
 | 2026-06-09 | Engineering style: block bodies, explicit lambda names | Developer preference for debugging clarity and readability |
 | 2026-06-09 | Performance: Double.NaN for primitives | Avoid JVM object wrapping/boxing overhead for price data |
 | 2026-06-09 | Safety: Braces for all if/else, no !! | Enforced robustness and strict null safety |

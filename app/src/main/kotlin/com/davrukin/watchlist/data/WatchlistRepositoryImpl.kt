@@ -24,10 +24,11 @@ class WatchlistRepositoryImpl(
 
     override suspend fun add(instrument: Instrument) {
         dao.insert(
-            entity = WatchlistItemEntity.fromInstrument(
-                instrument = instrument,
-                addedAt = clock.instant(),
-            ),
+            entity =
+                WatchlistItemEntity.fromInstrument(
+                    instrument = instrument,
+                    addedAt = clock.instant(),
+                ),
         )
     }
 
