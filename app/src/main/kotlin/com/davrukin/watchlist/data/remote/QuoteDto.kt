@@ -12,10 +12,10 @@ import java.time.Instant
  */
 @Serializable
 data class QuoteDto(
-    @SerialName("c") val currentPrice: Double = 0.0,
-    @SerialName("d") val change: Double? = null,
-    @SerialName("dp") val percentChange: Double? = null,
-    @SerialName("t") val timestampEpochSeconds: Long = 0,
+    @SerialName(value = "c") val currentPrice: Double = 0.0,
+    @SerialName(value = "d") val change: Double? = null,
+    @SerialName(value = "dp") val percentChange: Double? = null,
+    @SerialName(value = "t") val timestampEpochSeconds: Long = 0,
 ) {
     fun toQuote(): Quote? {
         if (timestampEpochSeconds == 0L && currentPrice == 0.0) {

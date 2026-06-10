@@ -25,16 +25,20 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
+// TODO: is this the right places for these constants?
 private const val LIVE_SOURCE = "live"
 private const val DEMO_SOURCE = "demo"
+private const val FINNHUB_SOCKET_URL = "wss://ws.finnhub.io"
 
-val dataModule =
+val dataModule: Module =
     module {
+        // TODO: should all of these constructors live here or in their "own places"?
         single {
             Json {
                 ignoreUnknownKeys = true
@@ -63,9 +67,11 @@ val dataModule =
                     "watchlist.db",
                 ).build()
         }
-        single { get<WatchlistDatabase>().watchlistDao() }
+        single {
+            get<WatchlistDatabase>().watchlistDao()
+        }
 
-        single<MarketDataSource>(named(LIVE_SOURCE)) {
+        single<MarketDataSource>(qualifier = named(LIVE_SOURCE)) {
             LiveMarketDataSource(
                 api = get(),
                 priceStream =
@@ -79,7 +85,7 @@ val dataModule =
                     ),
             )
         }
-        single<MarketDataSource>(named(DEMO_SOURCE)) {
+        single<MarketDataSource>(qualifier = named(DEMO_SOURCE)) {
             val catalog = DemoInstrumentCatalog()
             DemoMarketDataSource(
                 catalog = catalog,
@@ -117,5 +123,3 @@ val dataModule =
             )
         }
     }
-
-private const val FINNHUB_SOCKET_URL = "wss://ws.finnhub.io"

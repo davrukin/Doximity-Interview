@@ -51,13 +51,15 @@ class PriceRepositoryImpl(
     private val dao: WatchlistDao,
     appScope: CoroutineScope,
 ) : PriceRepository {
-    private val watchedSymbols = MutableStateFlow(emptySet<String>())
+    private val watchedSymbols = MutableStateFlow(value = emptySet<String>())
     private val refreshRequests = MutableSharedFlow<Unit>()
 
     private val events: SharedFlow<PriceStreamEvent> =
         selector
             .observe()
-            .flatMapLatest { source -> source.priceStream.events(symbols = watchedSymbols) }
+            .flatMapLatest { source ->
+                source.priceStream.events(symbols = watchedSymbols)
+            }
             .shareIn(
                 scope = appScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = SOCKET_LINGER_MILLIS),
@@ -67,7 +69,9 @@ class PriceRepositoryImpl(
     private val connectionState: StateFlow<ConnectionState> =
         events
             .filterIsInstance<PriceStreamEvent.ConnectionChanged>()
-            .map { it.state }
+            .map { connectionChanged ->
+                connectionChanged.state
+            }
             .stateIn(
                 scope = appScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = SOCKET_LINGER_MILLIS),
@@ -102,30 +106,44 @@ class PriceRepositoryImpl(
                 return@channelFlow
             }
 
-            val quotesState = MutableStateFlow(emptyMap<String, Quote>())
+            val quotesState = MutableStateFlow(value = emptyMap<String, Quote>())
             launch {
-                quotesState.drop(count = 1).collect { send(it) }
+                quotesState
+                    .drop(count = 1)
+                    .collect { quotes ->
+                        send(element = quotes)
+                    }
             }
             if (persistFreshQuotes) {
                 launch {
                     quotesState
                         .drop(count = 1)
                         .sample(period = PERSIST_INTERVAL)
-                        .collect { persist(quotes = it) }
+                        .collect { quotes ->
+                            persist(quotes = quotes)
+                        }
                 }
             }
 
             // Previous-close baselines derived from snapshots let ticks carry day change too.
             val previousCloses = mutableMapOf<String, Double>()
             val snapshots = fetchSnapshots(source = source, instruments = instruments)
-            recordPreviousCloses(snapshots = snapshots, into = previousCloses)
+            recordPreviousCloses(
+                snapshots = snapshots,
+                into = previousCloses,
+            )
             quotesState.value = snapshots
 
             launch {
                 refreshRequests.collect {
-                    val fresh = fetchSnapshots(source = source, instruments = instruments)
+                    val fresh = fetchSnapshots(
+                        source = source,
+                        instruments = instruments,
+                    )
                     recordPreviousCloses(snapshots = fresh, into = previousCloses)
-                    quotesState.update { current -> current + fresh }
+                    quotesState.update { current ->
+                        current + fresh
+                    }
                 }
             }
 
@@ -150,9 +168,17 @@ class PriceRepositoryImpl(
                             connectedOnce = true
                             return@collect
                         }
-                        val fresh = fetchSnapshots(source = source, instruments = instruments)
-                        recordPreviousCloses(snapshots = fresh, into = previousCloses)
-                        quotesState.update { current -> current + fresh }
+                        val fresh = fetchSnapshots(
+                            source = source,
+                            instruments = instruments,
+                        )
+                        recordPreviousCloses(
+                            snapshots = fresh,
+                            into = previousCloses,
+                        )
+                        quotesState.update { current ->
+                            current + fresh
+                        }
                     }
                 }
             }
@@ -168,8 +194,13 @@ class PriceRepositoryImpl(
                     async {
                         instrument.symbol to source.quoteSnapshot(instrument = instrument).getOrNull()
                     }
-                }.awaitAll()
-                .mapNotNull { (symbol, quote) -> quote?.let { symbol to it } }
+                }
+                .awaitAll()
+                .mapNotNull { (symbol, quote) ->
+                    quote?.let {
+                        symbol to it
+                    }
+                }
                 .toMap()
         }
 
@@ -195,15 +226,18 @@ class PriceRepositoryImpl(
                 return@forEach
             }
             val previousClose = previousCloses[tick.symbol]?.takeIf { it != 0.0 }
-            val change = previousClose?.let { tick.price - it }
-            updated[tick.symbol] =
-                Quote(
-                    price = tick.price,
-                    change = change,
-                    percentChange = change?.let { it / previousClose!! * 100 },
-                    lastUpdated = tick.timestamp,
-                    isStale = false,
-                )
+            val change = previousClose?.let {
+                tick.price - it
+            }
+            updated[tick.symbol] = Quote(
+                price = tick.price,
+                change = change,
+                percentChange = change?.let {
+                    it / previousClose!! * 100 // TODO: not to use !!
+                },
+                lastUpdated = tick.timestamp,
+                isStale = false,
+            )
         }
         return updated
     }

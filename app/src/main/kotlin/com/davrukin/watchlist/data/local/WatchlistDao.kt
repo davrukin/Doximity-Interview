@@ -8,17 +8,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WatchlistDao {
-    @Query("SELECT * FROM watchlist ORDER BY addedAtEpochMillis ASC")
+    @Query(value = "SELECT * FROM watchlist ORDER BY addedAtEpochMillis ASC")
     fun observeAll(): Flow<List<WatchlistItemEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entity: WatchlistItemEntity)
 
-    @Query("DELETE FROM watchlist WHERE symbol = :symbol")
+    @Query(value = "DELETE FROM watchlist WHERE symbol = :symbol")
     suspend fun delete(symbol: String)
 
     @Query(
-        """
+        value = """
         UPDATE watchlist
         SET lastPrice = :price,
             lastChange = :change,

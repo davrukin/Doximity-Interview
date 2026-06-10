@@ -5,14 +5,15 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.Instant
 
+// TODO: separate files
 @Serializable
 data class SubscriptionMessageDto(
     val type: String,
     val symbol: String,
 ) {
     companion object {
-        const val TYPE_SUBSCRIBE = "subscribe"
-        const val TYPE_UNSUBSCRIBE = "unsubscribe"
+        const val TYPE_SUBSCRIBE: String = "subscribe"
+        const val TYPE_UNSUBSCRIBE: String = "unsubscribe"
     }
 }
 
@@ -22,16 +23,16 @@ data class SocketMessageDto(
     val data: List<TradeDto> = emptyList(),
 ) {
     companion object {
-        const val TYPE_TRADE = "trade"
+        const val TYPE_TRADE: String = "trade"
     }
 }
 
 @Serializable
 data class TradeDto(
-    @SerialName("s") val symbol: String,
-    @SerialName("p") val price: Double,
-    @SerialName("t") val timestampEpochMillis: Long,
-    @SerialName("v") val volume: Double? = null,
+    @SerialName(value = "s") val symbol: String,
+    @SerialName(value = "p") val price: Double,
+    @SerialName(value = "t") val timestampEpochMillis: Long,
+    @SerialName(value = "v") val volume: Double? = null,
 ) {
     fun toPriceTick(): PriceTick =
         PriceTick(

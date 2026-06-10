@@ -1,5 +1,6 @@
 package com.davrukin.watchlist.presentation.search
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.InstrumentType
-import com.davrukin.watchlist.presentation.core.EventHandler
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,10 +47,18 @@ fun SearchScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(text = "Add to watchlist") },
+                title = {
+                    Text(
+                        text = "Add to watchlist",
+                    )
+                },
                 navigationIcon = {
                     IconButton(
-                        onClick = { model.eventHandler.onEvent(event = SearchUiModel.Event.Back) },
+                        onClick = {
+                            model.eventHandler.onEvent(
+                                event = SearchUiModel.Event.Back,
+                            )
+                        },
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -63,10 +71,9 @@ fun SearchScreen(
         },
         content = { padding ->
             Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues = padding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = padding),
                 content = {
                     OutlinedTextField(
                         value = model.query,
@@ -75,13 +82,19 @@ fun SearchScreen(
                                 event = SearchUiModel.Event.QueryChanged(query = it),
                             )
                         },
-                        placeholder = { Text(text = "Symbol or name, e.g. AAPL or BTC") },
+                        placeholder = {
+                            Text(
+                                text = "Symbol or name, e.g. AAPL or BTC",
+                            )
+                        },
                         singleLine = true,
                         trailingIcon = {
                             if (model.query.isNotEmpty()) {
                                 IconButton(
                                     onClick = {
-                                        model.eventHandler.onEvent(event = SearchUiModel.Event.QueryChanged(query = ""))
+                                        model.eventHandler.onEvent(
+                                            event = SearchUiModel.Event.QueryChanged(query = ""),
+                                        )
                                     },
                                     content = {
                                         Icon(
@@ -118,7 +131,9 @@ fun SearchScreen(
                             )
                         SearchUiModel.Phase.ERROR ->
                             ErrorState(
-                                onRetry = { model.eventHandler.onEvent(event = SearchUiModel.Event.Retry) },
+                                onRetry = {
+                                    model.eventHandler.onEvent(event = SearchUiModel.Event.Retry)
+                                },
                             )
                         SearchUiModel.Phase.RESULTS ->
                             LazyColumn(
@@ -126,16 +141,17 @@ fun SearchScreen(
                                 content = {
                                     items(
                                         items = model.results,
-                                        key = { it.instrument.symbol },
+                                        key = { result ->
+                                            result.instrument.symbol
+                                        },
                                         itemContent = { result ->
                                             SearchResultRow(
                                                 result = result,
                                                 onToggle = {
                                                     model.eventHandler.onEvent(
-                                                        event =
-                                                            SearchUiModel.Event.ToggleWatchlist(
-                                                                instrument = result.instrument,
-                                                            ),
+                                                        event = SearchUiModel.Event.ToggleWatchlist(
+                                                            instrument = result.instrument,
+                                                        ),
                                                     )
                                                 },
                                             )
@@ -150,6 +166,8 @@ fun SearchScreen(
     )
 }
 
+// TODO: every sub-composable needs a Modifier
+// TODO: separate each into its own file with its own preview(s)
 @Composable
 private fun CenteredMessage(
     title: String,
@@ -175,7 +193,9 @@ private fun CenteredMessage(
 }
 
 @Composable
-private fun ErrorState(onRetry: () -> Unit) {
+private fun ErrorState(
+    onRetry: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -209,10 +229,9 @@ private fun SearchResultRow(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 6.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         content = {
             Column(
                 modifier = Modifier.weight(weight = 1f),
@@ -264,38 +283,37 @@ private class SearchPreviewProvider : PreviewParameterProvider<SearchUiModel> {
     private fun previewModel(): SearchUiModel =
         SearchUiModel(
             query = "ap",
-            results =
-                listOf(
-                    SearchUiModel.Result(
-                        instrument =
-                            Instrument(
-                                symbol = "AAPL",
-                                displaySymbol = "AAPL",
-                                description = "APPLE INC",
-                                type = InstrumentType.STOCK,
-                            ),
-                        isOnWatchlist = true,
-                    ),
-                    SearchUiModel.Result(
-                        instrument =
-                            Instrument(
-                                symbol = "BINANCE:APTUSDT",
-                                displaySymbol = "APT/USDT",
-                                description = "Binance APTUSDT",
-                                type = InstrumentType.CRYPTO,
-                            ),
-                        isOnWatchlist = false,
-                    ),
+            results = listOf(
+                SearchUiModel.Result(
+                    instrument =
+                        Instrument(
+                            symbol = "AAPL",
+                            displaySymbol = "AAPL",
+                            description = "APPLE INC",
+                            type = InstrumentType.STOCK,
+                        ),
+                    isOnWatchlist = true,
                 ),
+                SearchUiModel.Result(
+                    instrument =
+                        Instrument(
+                            symbol = "BINANCE:APTUSDT",
+                            displaySymbol = "APT/USDT",
+                            description = "Binance APTUSDT",
+                            type = InstrumentType.CRYPTO,
+                        ),
+                    isOnWatchlist = false,
+                ),
+            ),
             phase = SearchUiModel.Phase.RESULTS,
-            eventHandler = EventHandler {},
+            eventHandler = {},
         )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun SearchScreenPreview(
-    @PreviewParameter(SearchPreviewProvider::class) model: SearchUiModel,
+    @PreviewParameter(provider = SearchPreviewProvider::class) model: SearchUiModel,
 ) {
     WatchlistTheme(
         dynamicColor = false,
@@ -305,7 +323,7 @@ private fun SearchScreenPreview(
     )
 }
 
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun SearchScreenDarkPreview() {
     WatchlistTheme(

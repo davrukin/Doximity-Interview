@@ -1,12 +1,15 @@
 package com.davrukin.watchlist.data.remote
 
+import kotlinx.coroutines.flow.Flow
+
 /**
  * One raw socket session per collection of [connect]. Implementations complete the flow when the
  * server closes the connection and emit [PriceSocketEvent.Failed] on transport errors; reconnect
- * policy lives above this interface in [ReconnectingPriceStream] so it can be tested with a fake.
+ * policy lives above this interface in [com.davrukin.watchlist.data.stream.ReconnectingPriceStream] so it can be tested with a fake.
  */
+// TODO: should these be separate files?
 interface PriceSocket {
-    fun connect(): kotlinx.coroutines.flow.Flow<PriceSocketEvent>
+    fun connect(): Flow<PriceSocketEvent>
 }
 
 sealed interface PriceSocketEvent {

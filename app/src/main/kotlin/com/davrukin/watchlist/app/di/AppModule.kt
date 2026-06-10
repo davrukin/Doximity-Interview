@@ -4,10 +4,11 @@ import com.davrukin.watchlist.common.AppDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.time.Clock
 
-val appModule =
+val appModule: Module =
     module {
         single {
             AppDispatchers(
@@ -16,7 +17,9 @@ val appModule =
                 main = Dispatchers.Main,
             )
         }
-        single<Clock> { Clock.systemUTC() }
+        single<Clock> {
+            Clock.systemUTC()
+        }
         single<CoroutineScope> {
             CoroutineScope(SupervisorJob() + get<AppDispatchers>().default)
         }

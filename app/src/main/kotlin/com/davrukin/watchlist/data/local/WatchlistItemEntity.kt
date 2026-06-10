@@ -24,8 +24,8 @@ data class WatchlistItemEntity(
     val lastPercentChange: Double? = null,
     val lastUpdatedEpochMillis: Long? = null,
 ) {
-    fun toWatchlistItem(): WatchlistItem =
-        WatchlistItem(
+    fun toWatchlistItem(): WatchlistItem {
+        return WatchlistItem(
             instrument =
                 Instrument(
                     symbol = symbol,
@@ -46,6 +46,7 @@ data class WatchlistItemEntity(
                     null
                 },
         )
+    }
 
     companion object {
         fun fromInstrument(

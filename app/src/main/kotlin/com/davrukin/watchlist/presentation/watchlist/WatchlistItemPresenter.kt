@@ -30,13 +30,12 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
     override fun present(params: Params): WatchlistRowUiModel {
         val instrument = params.item.instrument
         val quote = params.liveQuote ?: params.item.cachedQuote
-        val isStale =
-            quote != null &&
-                (quote.isStale || params.connectionState != ConnectionState.CONNECTED)
+        val isStale = quote != null &&
+            (quote.isStale || params.connectionState != ConnectionState.CONNECTED)
 
         val livePrice = params.liveQuote?.price
-        var previousPrice by remember { mutableStateOf<Double?>(null) }
-        var movement by remember { mutableStateOf<WatchlistRowUiModel.PriceMovement?>(null) }
+        var previousPrice by remember { mutableStateOf<Double?>(value = null) }
+        var movement by remember { mutableStateOf<WatchlistRowUiModel.PriceMovement?>(value = null) }
         LaunchedEffect(livePrice) {
             val previous = previousPrice
             previousPrice = livePrice
@@ -54,18 +53,32 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             symbol = instrument.symbol,
             displaySymbol = instrument.displaySymbol,
             description = instrument.description,
-            price = quote?.let { priceFormat.format(it.price) },
-            change = quote?.let { formatChange(quote = it) },
+            price = quote?.let {
+                priceFormat.format(it.price)
+            },
+            change = quote?.let {
+                formatChange(quote = it)
+            },
             isGain = quote?.change?.let { it >= 0 },
             isStale = isStale,
-            staleAsOf = if (isStale) quote?.let { timeFormat.format(it.lastUpdated.atZone(zoneId)) } else null,
+            staleAsOf = if (isStale) {
+                quote.let {
+                    timeFormat.format(it.lastUpdated.atZone(zoneId))
+                }
+            } else {
+                null
+            },
             movement = movement,
         )
     }
 
     private fun formatChange(quote: Quote): String? {
         val change = quote.change ?: return null
-        val sign = if (change >= 0) "+" else ""
+        val sign = if (change >= 0) {
+            "+"
+        } else {
+            ""
+        }
         val formatted = "$sign${priceFormat.format(change)}"
         val percent = quote.percentChange ?: return formatted
         return "$formatted ($sign${percentFormat.format(percent)}%)"

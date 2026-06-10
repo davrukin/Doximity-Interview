@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 class ObserveMarketDataModeUseCase(
     private val repository: MarketDataModeRepository,
 ) {
-    val isLiveAvailable: Boolean get() = repository.isLiveAvailable
+    val isLiveAvailable: Boolean
+        get() = repository.isLiveAvailable
 
     operator fun invoke(): StateFlow<MarketDataMode> = repository.mode
 }

@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.davrukin.watchlist.domain.model.ConnectionState
-import com.davrukin.watchlist.domain.model.Quote
 import com.davrukin.watchlist.domain.model.WatchlistItem
 import com.davrukin.watchlist.domain.usecase.ObserveConnectionStateUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveMarketDataModeUseCase
@@ -44,48 +43,46 @@ class WatchlistPresenter(
     @Composable
     override fun present(params: Params): WatchlistUiModel {
         val watchlist by launchUseCase(initial = null as List<WatchlistItem>?) { observeWatchlist() }
-        val quotes by launchUseCase(initial = emptyMap<String, Quote>()) { observeQuotes() }
+        val quotes by launchUseCase(initial = emptyMap()) { observeQuotes() }
         val connectionState by launchUseCase(initial = ConnectionState.CONNECTING) { observeConnectionState() }
         val dataMode by observeMarketDataMode().collectAsState()
-        var isRefreshing by remember { mutableStateOf(false) }
+        var isRefreshing by remember { mutableStateOf(value = false) }
 
-        val items =
-            (watchlist ?: emptyList()).map { item ->
-                key(item.instrument.symbol) {
-                    itemPresenter.present(
-                        params =
-                            WatchlistItemPresenter.Params(
-                                item = item,
-                                liveQuote = quotes[item.instrument.symbol],
-                                connectionState = connectionState,
-                            ),
-                    )
-                }
+        val items = (watchlist ?: emptyList()).map { item ->
+            key(item.instrument.symbol) {
+                itemPresenter.present(
+                    params =
+                        WatchlistItemPresenter.Params(
+                            item = item,
+                            liveQuote = quotes[item.instrument.symbol],
+                            connectionState = connectionState,
+                        ),
+                )
             }
+        }
 
-        val eventHandler =
-            remember(params) {
-                EventHandler<WatchlistUiModel.Event> { event ->
-                    when (event) {
-                        is WatchlistUiModel.Event.Remove -> {
-                            appScope.launch { removeFromWatchlist(symbol = event.symbol) }
-                        }
-                        WatchlistUiModel.Event.Refresh -> {
-                            appScope.launch {
-                                isRefreshing = true
-                                try {
-                                    refreshQuotes()
-                                    delay(duration = REFRESH_SPINNER_MINIMUM)
-                                } finally {
-                                    isRefreshing = false
-                                }
+        val eventHandler = remember(params) {
+            EventHandler<WatchlistUiModel.Event> { event ->
+                when (event) {
+                    is WatchlistUiModel.Event.Remove -> {
+                        appScope.launch { removeFromWatchlist(symbol = event.symbol) }
+                    }
+                    WatchlistUiModel.Event.Refresh -> {
+                        appScope.launch {
+                            isRefreshing = true
+                            try {
+                                refreshQuotes()
+                                delay(duration = REFRESH_SPINNER_MINIMUM)
+                            } finally {
+                                isRefreshing = false
                             }
                         }
-                        WatchlistUiModel.Event.ToggleDataMode -> toggleMarketDataMode()
-                        WatchlistUiModel.Event.OpenSearch -> params.onOpenSearch()
                     }
+                    WatchlistUiModel.Event.ToggleDataMode -> toggleMarketDataMode()
+                    WatchlistUiModel.Event.OpenSearch -> params.onOpenSearch()
                 }
             }
+        }
 
         return WatchlistUiModel(
             items = items,

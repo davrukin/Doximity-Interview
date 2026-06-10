@@ -13,6 +13,7 @@ data class SearchUiModel(
     val phase: Phase,
     val eventHandler: EventHandler<Event>,
 ) : UiModel {
+    // TODO: is inside here the best place or should they be in their own files?
     enum class Phase {
         IDLE,
         LOADING,

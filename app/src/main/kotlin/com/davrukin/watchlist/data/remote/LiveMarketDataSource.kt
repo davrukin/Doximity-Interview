@@ -23,29 +23,40 @@ class LiveMarketDataSource(
             coroutineScope {
                 val stocks =
                     async {
-                        api.search(query = query).result.map { it.toInstrument() }
+                        api.search(query = query).result.map { result ->
+                            result.toInstrument()
+                        }
                     }
-                val crypto = async { searchCrypto(query = query) }
-                stocks.await().take(MAX_STOCK_RESULTS) + crypto.await().take(MAX_CRYPTO_RESULTS)
+                val crypto = async {
+                    searchCrypto(query = query)
+                }
+                stocks.await().take(n = MAX_STOCK_RESULTS) + crypto.await().take(n = MAX_CRYPTO_RESULTS)
             }
         }
 
     override suspend fun quoteSnapshot(instrument: Instrument): Result<Quote?> =
         when (instrument.type) {
-            InstrumentType.STOCK -> resultOf { api.quote(symbol = instrument.symbol).toQuote() }
+            InstrumentType.STOCK -> resultOf {
+                api.quote(symbol = instrument.symbol).toQuote()
+            }
             // Finnhub has no REST quote for crypto; the first streamed tick fills the price in.
-            InstrumentType.CRYPTO -> Result.success(null)
+            InstrumentType.CRYPTO -> Result.success(value = null)
         }
 
     private suspend fun searchCrypto(query: String): List<Instrument> {
-        val catalog =
-            cryptoCatalogMutex.withLock {
-                cryptoCatalog ?: api
-                    .cryptoSymbols(exchange = BINANCE_EXCHANGE)
-                    .map { it.toInstrument() }
-                    .filter { it.displaySymbol.endsWith(suffix = USDT_SUFFIX, ignoreCase = true) }
-                    .also { cryptoCatalog = it }
-            }
+        val catalog = cryptoCatalogMutex.withLock {
+            cryptoCatalog ?: api
+                .cryptoSymbols(exchange = BINANCE_EXCHANGE)
+                .map { symbol ->
+                    symbol.toInstrument()
+                }
+                .filter { instrument ->
+                    instrument.displaySymbol.endsWith(suffix = USDT_SUFFIX, ignoreCase = true)
+                }
+                .also { instruments ->
+                    cryptoCatalog = instruments
+                }
+        }
         return catalog.filter { instrument ->
             instrument.displaySymbol.contains(other = query, ignoreCase = true) ||
                 instrument.description.contains(other = query, ignoreCase = true)

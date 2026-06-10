@@ -39,12 +39,14 @@ class ReconnectingPriceStream(
 ) : PriceStreamSource {
     override fun events(symbols: Flow<Set<String>>): Flow<PriceStreamEvent> =
         channelFlow {
-            val latestSymbols = MutableStateFlow(emptySet<String>())
+            val latestSymbols = MutableStateFlow(value = emptySet<String>())
             launch {
-                symbols.collect { latestSymbols.value = it }
+                symbols.collect {
+                    latestSymbols.value = it
+                }
             }
             var failedAttempts = 0
-            send(PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTING))
+            send(element = PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTING))
             while (true) {
                 var subscriptionJob: Job? = null
                 try {
@@ -52,7 +54,7 @@ class ReconnectingPriceStream(
                         when (event) {
                             is PriceSocketEvent.Opened -> {
                                 failedAttempts = 0
-                                send(PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTED))
+                                send(element = PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTED))
                                 subscriptionJob =
                                     launch {
                                         manageSubscriptions(session = event.session, wantedSymbols = latestSymbols)
@@ -115,7 +117,9 @@ class ReconnectingPriceStream(
     private fun subscriptionMessage(
         type: String,
         symbol: String,
-    ): String = json.encodeToString(SubscriptionMessageDto(type = type, symbol = symbol))
+    ): String {
+        return json.encodeToString(value = SubscriptionMessageDto(type = type, symbol = symbol))
+    }
 
     private fun parseTicks(text: String): List<PriceTick> {
         val message =

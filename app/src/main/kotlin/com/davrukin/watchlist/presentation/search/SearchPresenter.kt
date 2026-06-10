@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.davrukin.watchlist.domain.model.Instrument
-import com.davrukin.watchlist.domain.model.WatchlistItem
 import com.davrukin.watchlist.domain.usecase.AddToWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.RemoveFromWatchlistUseCase
@@ -50,8 +49,8 @@ class SearchPresenter(
     override fun present(params: Params): SearchUiModel {
         var query by rememberSaveable { mutableStateOf("") }
         var retryToken by remember { mutableIntStateOf(0) }
-        var searchState by remember { mutableStateOf<SearchState>(SearchState.Idle) }
-        val watchlist by launchUseCase(initial = emptyList<WatchlistItem>()) { observeWatchlist() }
+        var searchState by remember { mutableStateOf<SearchState>(value = SearchState.Idle) }
+        val watchlist by launchUseCase(initial = emptyList()) { observeWatchlist() }
 
         LaunchedEffect(query, retryToken) {
             if (query.isBlank()) {
@@ -60,14 +59,17 @@ class SearchPresenter(
             }
             searchState = SearchState.Loading
             delay(duration = DEBOUNCE)
-            searchState =
-                searchInstruments(query = query.trim()).fold(
-                    onSuccess = { SearchState.Loaded(instruments = it) },
-                    onFailure = { SearchState.Failed },
-                )
+            searchState = searchInstruments(query = query.trim()).fold(
+                onSuccess = { instruments ->
+                    SearchState.Loaded(instruments = instruments)
+                },
+                onFailure = {
+                    SearchState.Failed
+                },
+            )
         }
 
-        val watchlistSymbols = watchlist.map { it.instrument.symbol }.toSet()
+        val watchlistSymbols = watchlist.map { it.instrument.symbol }.toSet() // TODO: lint marks as redundant
         val results =
             when (val state = searchState) {
                 is SearchState.Loaded ->
@@ -108,8 +110,13 @@ class SearchPresenter(
                 when (searchState) {
                     SearchState.Idle -> SearchUiModel.Phase.IDLE
                     SearchState.Loading -> SearchUiModel.Phase.LOADING
-                    is SearchState.Loaded ->
-                        if (results.isEmpty()) SearchUiModel.Phase.EMPTY else SearchUiModel.Phase.RESULTS
+                    is SearchState.Loaded -> {
+                        if (results.isEmpty()) {
+                            SearchUiModel.Phase.EMPTY
+                        } else {
+                            SearchUiModel.Phase.RESULTS
+                        }
+                    }
                     SearchState.Failed -> SearchUiModel.Phase.ERROR
                 },
             eventHandler = eventHandler,

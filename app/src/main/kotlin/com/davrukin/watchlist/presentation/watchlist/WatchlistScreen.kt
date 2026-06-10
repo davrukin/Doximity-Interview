@@ -1,5 +1,6 @@
 package com.davrukin.watchlist.presentation.watchlist
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.MarketDataMode
-import com.davrukin.watchlist.presentation.core.EventHandler
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,19 +50,29 @@ fun WatchlistScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(text = "Watchlist") },
+                title = {
+                    Text(text = "Watchlist")
+                },
                 actions = {
                     DataModeChip(
                         dataMode = model.dataMode,
                         isLiveAvailable = model.isLiveAvailable,
-                        onToggle = { model.eventHandler.onEvent(event = WatchlistUiModel.Event.ToggleDataMode) },
+                        onToggle = {
+                            model.eventHandler.onEvent(
+                                event = WatchlistUiModel.Event.ToggleDataMode,
+                            )
+                        },
                     )
                 },
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { model.eventHandler.onEvent(event = WatchlistUiModel.Event.OpenSearch) },
+                onClick = {
+                    model.eventHandler.onEvent(
+                        event = WatchlistUiModel.Event.OpenSearch,
+                    )
+                },
                 content = {
                     Icon(
                         imageVector = Icons.Filled.Add,
@@ -85,7 +95,11 @@ fun WatchlistScreen(
                         else ->
                             PullToRefreshBox(
                                 isRefreshing = model.isRefreshing,
-                                onRefresh = { model.eventHandler.onEvent(event = WatchlistUiModel.Event.Refresh) },
+                                onRefresh = {
+                                    model.eventHandler.onEvent(
+                                        event = WatchlistUiModel.Event.Refresh,
+                                    )
+                                },
                                 modifier = Modifier.fillMaxSize(),
                                 content = {
                                     LazyColumn(
@@ -93,16 +107,17 @@ fun WatchlistScreen(
                                         content = {
                                             items(
                                                 items = model.items,
-                                                key = { it.symbol },
+                                                key = {
+                                                    it.symbol
+                                                },
                                                 itemContent = { row ->
                                                     WatchlistRow(
                                                         row = row,
                                                         onRemove = {
                                                             model.eventHandler.onEvent(
-                                                                event =
-                                                                    WatchlistUiModel.Event.Remove(
-                                                                        symbol = row.symbol,
-                                                                    ),
+                                                                event = WatchlistUiModel.Event.Remove(
+                                                                    symbol = row.symbol,
+                                                                ),
                                                             )
                                                         },
                                                     )
@@ -119,6 +134,8 @@ fun WatchlistScreen(
     )
 }
 
+// TODO: Modifier for each nested Composable
+// TODO: maybe move each into its own file
 @Composable
 private fun DataModeChip(
     dataMode: MarketDataMode,
@@ -137,15 +154,14 @@ private fun DataModeChip(
                     },
             )
         },
-        colors =
-            when (dataMode) {
-                MarketDataMode.LIVE -> AssistChipDefaults.assistChipColors()
-                MarketDataMode.DEMO ->
-                    AssistChipDefaults.assistChipColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    )
-            },
+        colors = when (dataMode) {
+            MarketDataMode.LIVE -> AssistChipDefaults.assistChipColors()
+            MarketDataMode.DEMO ->
+                AssistChipDefaults.assistChipColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+        },
         modifier = Modifier.padding(end = 12.dp),
     )
 }
@@ -164,13 +180,12 @@ private fun ConnectionBanner(connectionState: ConnectionState) {
         modifier = Modifier.fillMaxWidth(),
         content = {
             Text(
-                text =
-                    when (connectionState) {
-                        ConnectionState.CONNECTING -> "Connecting to live prices…"
-                        ConnectionState.RECONNECTING -> "Connection lost — reconnecting…"
-                        ConnectionState.OFFLINE -> "Offline — retrying. Prices may be out of date."
-                        ConnectionState.CONNECTED -> ""
-                    },
+                text = when (connectionState) {
+                    ConnectionState.CONNECTING -> "Connecting to live prices…"
+                    ConnectionState.RECONNECTING -> "Connection lost — reconnecting…"
+                    ConnectionState.OFFLINE -> "Offline — retrying. Prices may be out of date."
+                    ConnectionState.CONNECTED -> ""
+                },
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
@@ -201,6 +216,7 @@ private fun EmptyState() {
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
+                // TODO: put these strings and others into strings.xml
                 text = "Tap + to search for stocks and crypto",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -217,10 +233,9 @@ private fun WatchlistRow(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         content = {
             Column(
                 modifier = Modifier.weight(weight = 1f),
@@ -246,42 +261,45 @@ private fun WatchlistRow(
                         verticalAlignment = Alignment.CenterVertically,
                         content = {
                             when (row.movement) {
-                                WatchlistRowUiModel.PriceMovement.UP ->
+                                WatchlistRowUiModel.PriceMovement.UP -> {
+                                    // TODO: is Text the best Composable for this?
                                     Text(
                                         text = "▲",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = GainColor,
                                         modifier = Modifier.padding(end = 4.dp),
                                     )
-                                WatchlistRowUiModel.PriceMovement.DOWN ->
+                                }
+                                WatchlistRowUiModel.PriceMovement.DOWN -> {
                                     Text(
                                         text = "▼",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.error,
                                         modifier = Modifier.padding(end = 4.dp),
                                     )
-                                null -> Unit
+                                }
+                                null -> {}
                             }
                             Text(
                                 text = row.price ?: "—",
                                 style = MaterialTheme.typography.titleMedium,
-                                color =
-                                    if (row.isStale || row.price == null) {
-                                        MaterialTheme.colorScheme.onSurfaceVariant
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurface
-                                    },
+                                color = if (row.isStale || row.price == null) {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                },
                             )
                         },
                     )
                     when {
-                        row.isStale && row.price != null ->
+                        row.isStale && row.price != null -> {
                             Text(
                                 text = row.staleAsOf?.let { "stale · $it" } ?: "stale",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
-                        row.change != null ->
+                        }
+                        row.change != null -> {
                             Text(
                                 text = row.change,
                                 style = MaterialTheme.typography.labelMedium,
@@ -292,6 +310,7 @@ private fun WatchlistRow(
                                         null -> MaterialTheme.colorScheme.onSurfaceVariant
                                     },
                             )
+                        }
                     }
                 },
             )
@@ -309,6 +328,7 @@ private fun WatchlistRow(
     )
 }
 
+// TODO: put into Colors file
 private val GainColor = Color(color = 0xFF1B873B)
 
 private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiModel> {
@@ -321,62 +341,62 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
             previewModel().copy(items = emptyList(), isLoading = true),
         )
 
-    private fun previewModel(): WatchlistUiModel =
-        WatchlistUiModel(
-            items =
-                listOf(
-                    WatchlistRowUiModel(
-                        symbol = "AAPL",
-                        displaySymbol = "AAPL",
-                        description = "APPLE INC",
-                        price = "228.40",
-                        change = "+1.20 (+0.53%)",
-                        isGain = true,
-                        isStale = false,
-                        movement = WatchlistRowUiModel.PriceMovement.UP,
-                    ),
-                    WatchlistRowUiModel(
-                        symbol = "TSLA",
-                        displaySymbol = "TSLA",
-                        description = "TESLA INC",
-                        price = "318.50",
-                        change = "-4.10 (-1.27%)",
-                        isGain = false,
-                        isStale = false,
-                        movement = WatchlistRowUiModel.PriceMovement.DOWN,
-                    ),
-                    WatchlistRowUiModel(
-                        symbol = "MSFT",
-                        displaySymbol = "MSFT",
-                        description = "MICROSOFT CORP",
-                        price = "512.70",
-                        change = "+0.90 (+0.18%)",
-                        isGain = true,
-                        isStale = true,
-                    ),
-                    WatchlistRowUiModel(
-                        symbol = "BINANCE:BTCUSDT",
-                        displaySymbol = "BTC/USDT",
-                        description = "Binance BTCUSDT",
-                        price = null,
-                        change = null,
-                        isGain = null,
-                        isStale = false,
-                    ),
+    private fun previewModel(): WatchlistUiModel {
+        return WatchlistUiModel(
+            items = listOf(
+                WatchlistRowUiModel(
+                    symbol = "AAPL",
+                    displaySymbol = "AAPL",
+                    description = "APPLE INC",
+                    price = "228.40",
+                    change = "+1.20 (+0.53%)",
+                    isGain = true,
+                    isStale = false,
+                    movement = WatchlistRowUiModel.PriceMovement.UP,
                 ),
+                WatchlistRowUiModel(
+                    symbol = "TSLA",
+                    displaySymbol = "TSLA",
+                    description = "TESLA INC",
+                    price = "318.50",
+                    change = "-4.10 (-1.27%)",
+                    isGain = false,
+                    isStale = false,
+                    movement = WatchlistRowUiModel.PriceMovement.DOWN,
+                ),
+                WatchlistRowUiModel(
+                    symbol = "MSFT",
+                    displaySymbol = "MSFT",
+                    description = "MICROSOFT CORP",
+                    price = "512.70",
+                    change = "+0.90 (+0.18%)",
+                    isGain = true,
+                    isStale = true,
+                ),
+                WatchlistRowUiModel(
+                    symbol = "BINANCE:BTCUSDT",
+                    displaySymbol = "BTC/USDT",
+                    description = "Binance BTCUSDT",
+                    price = null,
+                    change = null,
+                    isGain = null,
+                    isStale = false,
+                ),
+            ),
             isLoading = false,
             isRefreshing = false,
             connectionState = ConnectionState.CONNECTED,
             dataMode = MarketDataMode.LIVE,
             isLiveAvailable = true,
-            eventHandler = EventHandler {},
+            eventHandler = {},
         )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun WatchlistScreenPreview(
-    @PreviewParameter(WatchlistPreviewProvider::class) model: WatchlistUiModel,
+    @PreviewParameter(provider = WatchlistPreviewProvider::class) model: WatchlistUiModel,
 ) {
     WatchlistTheme(
         dynamicColor = false,
@@ -386,7 +406,7 @@ private fun WatchlistScreenPreview(
     )
 }
 
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun WatchlistScreenDarkPreview() {
     WatchlistTheme(

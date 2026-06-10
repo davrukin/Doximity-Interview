@@ -9,10 +9,11 @@ import com.davrukin.watchlist.domain.usecase.RefreshQuotesUseCase
 import com.davrukin.watchlist.domain.usecase.RemoveFromWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.SearchInstrumentsUseCase
 import com.davrukin.watchlist.domain.usecase.ToggleMarketDataModeUseCase
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
-val domainModule =
+val domainModule: Module =
     module {
         factoryOf(::SearchInstrumentsUseCase)
         factoryOf(::ObserveWatchlistUseCase)

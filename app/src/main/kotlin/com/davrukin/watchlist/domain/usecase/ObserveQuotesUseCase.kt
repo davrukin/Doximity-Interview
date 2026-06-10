@@ -22,7 +22,13 @@ class ObserveQuotesUseCase(
     operator fun invoke(): Flow<Map<String, Quote>> =
         watchlistRepository
             .observeWatchlist()
-            .map { items -> items.map { it.instrument } }
+            .map { items ->
+                items.map { item ->
+                    item.instrument
+                }
+            }
             .distinctUntilChanged()
-            .flatMapLatest { instruments -> priceRepository.observeQuotes(instruments) }
+            .flatMapLatest { instruments ->
+                priceRepository.observeQuotes(instruments)
+            }
 }

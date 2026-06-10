@@ -4,22 +4,23 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface FinnhubApi {
-    @GET("search")
+    @GET(value = "search")
     suspend fun search(
         @Query("q") query: String,
     ): SearchResponseDto
 
-    @GET("quote")
+    @GET(value = "quote")
     suspend fun quote(
         @Query("symbol") symbol: String,
     ): QuoteDto
 
-    @GET("crypto/symbol")
+    @GET(value = "crypto/symbol")
     suspend fun cryptoSymbols(
         @Query("exchange") exchange: String,
     ): List<CryptoSymbolDto>
 
     companion object {
-        const val BASE_URL = "https://finnhub.io/api/v1/"
+        // TODO: is this the correct/best places for this? should it be remote config? built-in?
+        const val BASE_URL: String = "https://finnhub.io/api/v1/"
     }
 }

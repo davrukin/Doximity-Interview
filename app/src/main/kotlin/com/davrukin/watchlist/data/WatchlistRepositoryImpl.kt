@@ -16,15 +16,18 @@ class WatchlistRepositoryImpl(
     override fun observeWatchlist(): Flow<List<WatchlistItem>> =
         dao
             .observeAll()
-            .map { entities -> entities.map { it.toWatchlistItem() } }
+            .map { entities ->
+                entities.map { entity ->
+                    entity.toWatchlistItem()
+                }
+            }
 
     override suspend fun add(instrument: Instrument) {
         dao.insert(
-            entity =
-                WatchlistItemEntity.fromInstrument(
-                    instrument = instrument,
-                    addedAt = clock.instant(),
-                ),
+            entity = WatchlistItemEntity.fromInstrument(
+                instrument = instrument,
+                addedAt = clock.instant(),
+            ),
         )
     }
 
