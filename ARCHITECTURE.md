@@ -100,8 +100,9 @@ so the reconnecting state is observable without touching the network.
 
 ## AI usage
 
-This project was built with Claude (Anthropic) as a pair-programming agent, directed and reviewed
-by me. The split:
+This project was built with AI pair-programming agents — Claude (Anthropic) for the large
+majority, plus a brief session with Gemini CLI (Google) — directed and reviewed by me; each
+commit names its agent in a Co-Authored-By trailer. The split:
 
 - **Mine**: all product and architecture decisions — adopting the Composable Presenter pattern,
   Koin, Room, Navigation 3, the staleness semantics, the demo-mode design, requirement
@@ -109,6 +110,9 @@ by me. The split:
 - **AI-generated under those constraints**: the bulk of the implementation code, tests, and these
   documents, produced incrementally against the conventions in [CLAUDE.md](CLAUDE.md) with the
   build (`ktlintCheck assembleDebug testDebugUnitTest`) green before each commit, plus an
-  on-device smoke test of the full search → add → live-tick → relaunch flow.
+  on-device smoke test of the full search → add → live-tick → relaunch flow. Cross-review between
+  agents was part of the workflow: a regression introduced in one session (NaN sentinels meeting
+  SQLite's NaN→NULL conversion, which silently broke watchlist persistence) was caught and fixed
+  in review, with the root cause documented in PLAN.md's deviations log.
 
 The pattern itself is reproduced from the two Doximity engineering blog posts cited above.
