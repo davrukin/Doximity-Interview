@@ -20,13 +20,14 @@ import java.time.Instant
 fun instrument(
     symbol: String,
     type: InstrumentType = InstrumentType.STOCK,
-): Instrument =
-    Instrument(
+): Instrument {
+    return Instrument(
         symbol = symbol,
         displaySymbol = symbol,
         description = "$symbol description",
         type = type,
     )
+}
 
 fun quote(
     price: Double,
@@ -46,13 +47,15 @@ fun quote(
 class FakeWatchlistRepository(
     initial: List<WatchlistItem> = emptyList(),
 ) : WatchlistRepository {
-    val items = MutableStateFlow(initial)
+    val items: MutableStateFlow<List<WatchlistItem>> = MutableStateFlow(value = initial)
 
-    override fun observeWatchlist(): Flow<List<WatchlistItem>> = items
+    override fun observeWatchlist(): Flow<List<WatchlistItem>> {
+        return items
+    }
 
     override suspend fun add(instrument: Instrument) {
-        items.update { current ->
-            if (current.any { it.instrument.symbol == instrument.symbol }) {
+        items.update { current: List<WatchlistItem> ->
+            if (current.any { item: WatchlistItem -> item.instrument.symbol == instrument.symbol }) {
                 current
             } else {
                 current + WatchlistItem(instrument = instrument, cachedQuote = null)
@@ -61,19 +64,25 @@ class FakeWatchlistRepository(
     }
 
     override suspend fun remove(symbol: String) {
-        items.update { current -> current.filterNot { it.instrument.symbol == symbol } }
+        items.update { current: List<WatchlistItem> ->
+            current.filterNot { item: WatchlistItem -> item.instrument.symbol == symbol }
+        }
     }
 }
 
 class FakePriceRepository : PriceRepository {
-    val quotes = MutableStateFlow(emptyMap<String, Quote>())
-    val connectionState = MutableStateFlow(ConnectionState.CONNECTING)
-    var refreshCount = 0
+    val quotes: MutableStateFlow<Map<String, Quote>> = MutableStateFlow(value = emptyMap<String, Quote>())
+    val connectionState: MutableStateFlow<ConnectionState> = MutableStateFlow(value = ConnectionState.CONNECTING)
+    var refreshCount: Int = 0
         private set
 
-    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> = quotes
+    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> {
+        return quotes
+    }
 
-    override fun observeConnectionState(): Flow<ConnectionState> = connectionState
+    override fun observeConnectionState(): Flow<ConnectionState> {
+        return connectionState
+    }
 
     override suspend fun refreshQuotes() {
         refreshCount++
@@ -84,7 +93,7 @@ class FakeMarketDataModeRepository(
     initial: MarketDataMode = MarketDataMode.LIVE,
     override val isLiveAvailable: Boolean = true,
 ) : MarketDataModeRepository {
-    private val mutableMode = MutableStateFlow(initial)
+    private val mutableMode: MutableStateFlow<MarketDataMode> = MutableStateFlow(value = initial)
     override val mode: StateFlow<MarketDataMode> = mutableMode.asStateFlow()
 
     override fun toggle() {
@@ -98,8 +107,8 @@ class FakeMarketDataModeRepository(
 }
 
 class FakeInstrumentSearchRepository : InstrumentSearchRepository {
-    var result: Result<List<Instrument>> = Result.success(emptyList())
-    val queries = mutableListOf<String>()
+    var result: Result<List<Instrument>> = Result.success(value = emptyList<Instrument>())
+    val queries: MutableList<String> = mutableListOf<String>()
 
     override suspend fun search(query: String): Result<List<Instrument>> {
         queries += query
