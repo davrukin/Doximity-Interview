@@ -86,9 +86,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             isStale = isStale,
             staleAsOf =
                 if (isStale) {
-                    quote?.let { quoteValue: Quote ->
-                        timeFormat.format(quoteValue.lastUpdated.atZone(zoneId))
-                    }
+                    timeFormat.format(quote.lastUpdated.atZone(zoneId))
                 } else {
                     null
                 },
