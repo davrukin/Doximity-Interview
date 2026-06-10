@@ -23,8 +23,8 @@ data class QuoteDto(
         }
         return Quote(
             price = currentPrice,
-            change = change,
-            percentChange = percentChange,
+            change = change ?: Double.NaN,
+            percentChange = percentChange ?: Double.NaN,
             lastUpdated = Instant.ofEpochSecond(timestampEpochSeconds),
             isStale = false,
         )

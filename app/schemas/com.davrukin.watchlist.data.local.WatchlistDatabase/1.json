@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e8d163844795b2b4d63b7ad4f0f737ac",
+    "identityHash": "35d4e16629596c52b21cba20a9cff50c",
     "entities": [
       {
         "tableName": "watchlist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`symbol` TEXT NOT NULL, `displaySymbol` TEXT NOT NULL, `description` TEXT NOT NULL, `type` TEXT NOT NULL, `addedAtEpochMillis` INTEGER NOT NULL, `lastPrice` REAL, `lastChange` REAL, `lastPercentChange` REAL, `lastUpdatedEpochMillis` INTEGER, PRIMARY KEY(`symbol`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`symbol` TEXT NOT NULL, `displaySymbol` TEXT NOT NULL, `description` TEXT NOT NULL, `type` TEXT NOT NULL, `addedAtEpochMillis` INTEGER NOT NULL, `lastPrice` REAL NOT NULL, `lastChange` REAL NOT NULL, `lastPercentChange` REAL NOT NULL, `lastUpdatedEpochMillis` INTEGER NOT NULL, PRIMARY KEY(`symbol`))",
         "fields": [
           {
             "fieldPath": "symbol",
@@ -41,22 +41,26 @@
           {
             "fieldPath": "lastPrice",
             "columnName": "lastPrice",
-            "affinity": "REAL"
+            "affinity": "REAL",
+            "notNull": true
           },
           {
             "fieldPath": "lastChange",
             "columnName": "lastChange",
-            "affinity": "REAL"
+            "affinity": "REAL",
+            "notNull": true
           },
           {
             "fieldPath": "lastPercentChange",
             "columnName": "lastPercentChange",
-            "affinity": "REAL"
+            "affinity": "REAL",
+            "notNull": true
           },
           {
             "fieldPath": "lastUpdatedEpochMillis",
             "columnName": "lastUpdatedEpochMillis",
-            "affinity": "INTEGER"
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -69,7 +73,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e8d163844795b2b4d63b7ad4f0f737ac')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '35d4e16629596c52b21cba20a9cff50c')"
     ]
   }
 }

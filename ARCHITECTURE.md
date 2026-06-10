@@ -62,6 +62,22 @@ Room (watchlist + cached quotes) ──┴──> WatchlistRepository ───�
 - **Cache**: fresh quotes are persisted (throttled to 5s) so the next launch shows last-known
   prices immediately, marked stale until refreshed. Demo prices are never persisted.
 
+## Engineering Standards & Performance
+
+To optimize for maintainability, debuggability, and runtime performance, the project follows
+these strict engineering standards:
+
+- **Performance**: Floating-point primitives (prices, changes) use `Double.NaN` instead of
+  nullable types. This prevents JVM object wrapping (boxing) overhead, which is critical in a
+  high-frequency data application.
+- **Maintainability**: All functions use block bodies (`{ return ... }`) instead of expression
+  bodies. This provides clear entry/exit points for debuggers and improves readability as
+  complexity grows.
+- **Safety**: The non-null assertion operator (`!!`) is strictly prohibited. All if/else
+  statements require braces to prevent logic errors during refactoring.
+- **Clarity**: Lambda parameters are explicitly named (avoiding `it`) to ensure the source
+  and purpose of data are always obvious in nested scopes.
+
 ## Demo mode
 
 Both the live Finnhub stack and a demo stack implement one `MarketDataSource` contract (search,

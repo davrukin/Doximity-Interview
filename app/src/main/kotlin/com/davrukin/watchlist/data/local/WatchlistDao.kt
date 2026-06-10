@@ -30,8 +30,8 @@ interface WatchlistDao {
     suspend fun updateQuote(
         symbol: String,
         price: Double,
-        change: Double?,
-        percentChange: Double?,
+        change: Double,
+        percentChange: Double,
         updatedAtEpochMillis: Long,
     )
 }

@@ -30,17 +30,18 @@ fun instrument(
 
 fun quote(
     price: Double,
-    change: Double? = null,
-    percentChange: Double? = null,
+    change: Double = Double.NaN,
+    percentChange: Double = Double.NaN,
     isStale: Boolean = false,
-): Quote =
-    Quote(
+): Quote {
+    return Quote(
         price = price,
         change = change,
         percentChange = percentChange,
         lastUpdated = Instant.EPOCH,
         isStale = isStale,
     )
+}
 
 class FakeWatchlistRepository(
     initial: List<WatchlistItem> = emptyList(),

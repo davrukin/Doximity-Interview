@@ -39,29 +39,30 @@ class PriceRepositoryImplTest {
         )
 
     @Test
-    fun `emits snapshots then merges ticks with derived day change`() =
+    fun `emits snapshots then merges ticks with derived day change`() {
         runTest {
-            val fixture = Fixture(scope = this)
+            val fixture: Fixture = Fixture(scope = this)
             fixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
 
             fixture.repository.observeQuotes(instruments = listOf(aapl)).test {
-                assertEquals(100.0, requireNotNull(awaitItem()["AAPL"]).price, 0.0)
+                assertEquals(100.0, requireNotNull(value = awaitItem()["AAPL"]).price, 0.0)
                 runCurrent()
 
                 fixture.liveStream.emit(
-                    PriceStreamEvent.Ticks(
+                    event = PriceStreamEvent.Ticks(
                         ticks = listOf(PriceTick(symbol = "AAPL", price = 101.0, timestamp = Instant.EPOCH)),
                     ),
                 )
-                val updated = requireNotNull(awaitItem()["AAPL"])
+                val updated: Quote = requireNotNull(value = awaitItem()["AAPL"])
                 assertEquals(101.0, updated.price, 0.0)
                 // Previous close = 100 - 2 = 98, so a 101 tick is a +3 day change.
-                assertEquals(3.0, requireNotNull(updated.change), 1e-9)
-                assertEquals(3.0 / 98.0 * 100, requireNotNull(updated.percentChange), 1e-9)
+                assertEquals(3.0, updated.change, 1e-9)
+                assertEquals(3.0 / 98.0 * 100, updated.percentChange, 1e-9)
 
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
     fun `refetches snapshots on reconnect`() =
@@ -122,15 +123,16 @@ class PriceRepositoryImplTest {
 
     private fun quote(
         price: Double,
-        change: Double?,
-    ): Quote =
-        Quote(
+        change: Double,
+    ): Quote {
+        return Quote(
             price = price,
             change = change,
-            percentChange = null,
+            percentChange = Double.NaN,
             lastUpdated = Instant.EPOCH,
             isStale = false,
         )
+    }
 
     private class Fixture(
         scope: kotlinx.coroutines.test.TestScope,
@@ -212,8 +214,8 @@ class PriceRepositoryImplTest {
         override suspend fun updateQuote(
             symbol: String,
             price: Double,
-            change: Double?,
-            percentChange: Double?,
+            change: Double,
+            percentChange: Double,
             updatedAtEpochMillis: Long,
         ) {
             updatedSymbols += symbol

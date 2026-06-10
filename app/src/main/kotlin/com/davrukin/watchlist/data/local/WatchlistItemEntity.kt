@@ -19,32 +19,32 @@ data class WatchlistItemEntity(
     val description: String,
     val type: InstrumentType,
     val addedAtEpochMillis: Long,
-    val lastPrice: Double? = null,
-    val lastChange: Double? = null,
-    val lastPercentChange: Double? = null,
-    val lastUpdatedEpochMillis: Long? = null,
+    val lastPrice: Double = Double.NaN,
+    val lastChange: Double = Double.NaN,
+    val lastPercentChange: Double = Double.NaN,
+    val lastUpdatedEpochMillis: Long = -1L,
 ) {
     fun toWatchlistItem(): WatchlistItem {
+        val quote: Quote? = if (!lastPrice.isNaN() && lastUpdatedEpochMillis != -1L) {
+            Quote(
+                price = lastPrice,
+                change = lastChange,
+                percentChange = lastPercentChange,
+                lastUpdated = Instant.ofEpochMilli(lastUpdatedEpochMillis),
+                isStale = true,
+            )
+        } else {
+            null
+        }
+
         return WatchlistItem(
-            instrument =
-                Instrument(
-                    symbol = symbol,
-                    displaySymbol = displaySymbol,
-                    description = description,
-                    type = type,
-                ),
-            cachedQuote =
-                if (lastPrice != null && lastUpdatedEpochMillis != null) {
-                    Quote(
-                        price = lastPrice,
-                        change = lastChange,
-                        percentChange = lastPercentChange,
-                        lastUpdated = Instant.ofEpochMilli(lastUpdatedEpochMillis),
-                        isStale = true,
-                    )
-                } else {
-                    null
-                },
+            instrument = Instrument(
+                symbol = symbol,
+                displaySymbol = displaySymbol,
+                description = description,
+                type = type,
+            ),
+            cachedQuote = quote,
         )
     }
 
@@ -52,13 +52,14 @@ data class WatchlistItemEntity(
         fun fromInstrument(
             instrument: Instrument,
             addedAt: Instant,
-        ): WatchlistItemEntity =
-            WatchlistItemEntity(
+        ): WatchlistItemEntity {
+            return WatchlistItemEntity(
                 symbol = instrument.symbol,
                 displaySymbol = instrument.displaySymbol,
                 description = instrument.description,
                 type = instrument.type,
                 addedAtEpochMillis = addedAt.toEpochMilli(),
             )
+        }
     }
 }

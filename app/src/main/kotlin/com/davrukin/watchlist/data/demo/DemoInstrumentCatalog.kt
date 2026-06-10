@@ -45,10 +45,10 @@ class DemoInstrumentCatalog {
             }
     }
 
-    fun basePrice(symbol: String): Double? {
-        return entries.firstOrNull { entry ->
+    fun basePrice(symbol: String): Double {
+        return entries.firstOrNull { entry: Entry ->
             entry.instrument.symbol == symbol
-        }?.basePrice
+        }?.basePrice ?: Double.NaN
     }
 
     private fun stock(

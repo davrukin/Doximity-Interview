@@ -18,11 +18,14 @@ class DemoMarketDataSource(
     }
 
     override suspend fun quoteSnapshot(instrument: Instrument): Result<Quote?> {
-        val base = catalog.basePrice(symbol = instrument.symbol) ?: return Result.success(null)
-        val price = base * (1 + random.nextDouble(from = -SNAPSHOT_SPREAD, until = SNAPSHOT_SPREAD))
-        val change = price - base
+        val base: Double = catalog.basePrice(symbol = instrument.symbol)
+        if (base.isNaN()) {
+            return Result.success(value = null)
+        }
+        val price: Double = base * (1 + random.nextDouble(from = -SNAPSHOT_SPREAD, until = SNAPSHOT_SPREAD))
+        val change: Double = price - base
         return Result.success(
-            Quote(
+            value = Quote(
                 price = price,
                 change = change,
                 percentChange = change / base * 100,

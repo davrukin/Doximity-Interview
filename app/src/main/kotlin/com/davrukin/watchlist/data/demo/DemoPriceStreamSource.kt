@@ -64,10 +64,15 @@ class DemoPriceStreamSource(
         symbol: String,
         prices: MutableMap<String, Double>,
     ): PriceTick? {
-        val base = catalog.basePrice(symbol = symbol) ?: return null
-        val current = prices.getOrPut(symbol) { base }
-        val drift = current * (random.nextDouble(from = -STEP_FRACTION, until = STEP_FRACTION))
-        val next = (current + drift).coerceAtLeast(minimumValue = 0.01)
+        val base: Double = catalog.basePrice(symbol = symbol)
+        if (base.isNaN()) {
+            return null
+        }
+        val current: Double = prices.getOrPut(key = symbol) {
+            base
+        }
+        val drift: Double = current * (random.nextDouble(from = -STEP_FRACTION, until = STEP_FRACTION))
+        val next: Double = (current + drift).coerceAtLeast(minimumValue = 0.01)
         prices[symbol] = next
         return PriceTick(
             symbol = symbol,
