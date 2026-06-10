@@ -31,14 +31,14 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
-// TODO: is this the right places for these constants?
-private const val LIVE_SOURCE = "live"
-private const val DEMO_SOURCE = "demo"
-private const val FINNHUB_SOCKET_URL = "wss://ws.finnhub.io"
+private object DataConfig {
+    const val LIVE_SOURCE: String = "live"
+    const val DEMO_SOURCE: String = "demo"
+    const val FINNHUB_SOCKET_URL: String = "wss://ws.finnhub.io"
+}
 
 val dataModule: Module =
     module {
-        // TODO: should all of these constructors live here or in their "own places"?
         single {
             Json {
                 ignoreUnknownKeys = true
@@ -47,7 +47,7 @@ val dataModule: Module =
         single {
             OkHttpClient
                 .Builder()
-                .addInterceptor(FinnhubAuthInterceptor(apiKey = BuildConfig.FINNHUB_API_KEY))
+                .addInterceptor(interceptor = FinnhubAuthInterceptor(apiKey = BuildConfig.FINNHUB_API_KEY))
                 .build()
         }
         single<FinnhubApi> {
@@ -55,7 +55,7 @@ val dataModule: Module =
                 .Builder()
                 .baseUrl(FinnhubApi.BASE_URL)
                 .client(get<OkHttpClient>())
-                .addConverterFactory(get<Json>().asConverterFactory(contentType = "application/json".toMediaType()))
+                .addConverterFactory(get<Json>().asConverterFactory("application/json".toMediaType()))
                 .build()
                 .create(FinnhubApi::class.java)
         }
@@ -71,7 +71,7 @@ val dataModule: Module =
             get<WatchlistDatabase>().watchlistDao()
         }
 
-        single<MarketDataSource>(qualifier = named(LIVE_SOURCE)) {
+        single<MarketDataSource>(qualifier = named(name = DataConfig.LIVE_SOURCE)) {
             LiveMarketDataSource(
                 api = get(),
                 priceStream =
@@ -79,14 +79,14 @@ val dataModule: Module =
                         socket =
                             OkHttpPriceSocket(
                                 client = get(),
-                                url = "$FINNHUB_SOCKET_URL?token=${BuildConfig.FINNHUB_API_KEY}",
+                                url = "${DataConfig.FINNHUB_SOCKET_URL}?token=${BuildConfig.FINNHUB_API_KEY}",
                             ),
                         json = get(),
                     ),
             )
         }
-        single<MarketDataSource>(qualifier = named(DEMO_SOURCE)) {
-            val catalog = DemoInstrumentCatalog()
+        single<MarketDataSource>(qualifier = named(name = DataConfig.DEMO_SOURCE)) {
+            val catalog: DemoInstrumentCatalog = DemoInstrumentCatalog()
             DemoMarketDataSource(
                 catalog = catalog,
                 clock = get(),
@@ -104,8 +104,8 @@ val dataModule: Module =
         single {
             MarketDataSelector(
                 modeRepository = get(),
-                live = get(named(LIVE_SOURCE)),
-                demo = get(named(DEMO_SOURCE)),
+                live = get(qualifier = named(name = DataConfig.LIVE_SOURCE)),
+                demo = get(qualifier = named(name = DataConfig.DEMO_SOURCE)),
             )
         }
         single<InstrumentSearchRepository> {

@@ -37,6 +37,8 @@ import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.InstrumentType
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
+import com.davrukin.watchlist.ui.components.WatchlistToggleButton
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -69,17 +71,17 @@ fun SearchScreen(
                 },
             )
         },
-        content = { padding ->
+        content = { paddingValues: androidx.compose.foundation.layout.PaddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues = padding),
+                    .padding(paddingValues = paddingValues),
                 content = {
                     OutlinedTextField(
                         value = model.query,
-                        onValueChange = {
+                        onValueChange = { query: String ->
                             model.eventHandler.onEvent(
-                                event = SearchUiModel.Event.QueryChanged(query = it),
+                                event = SearchUiModel.Event.QueryChanged(query = query),
                             )
                         },
                         placeholder = {
@@ -105,19 +107,20 @@ fun SearchScreen(
                                 )
                             }
                         },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                     )
                     when (model.phase) {
-                        SearchUiModel.Phase.IDLE ->
+                        SearchUiModel.Phase.IDLE -> {
                             CenteredMessage(
                                 title = "Search stocks and crypto",
                                 subtitle = "Results appear as you type",
+                                modifier = Modifier.fillMaxSize(),
                             )
+                        }
 
-                        SearchUiModel.Phase.LOADING ->
+                        SearchUiModel.Phase.LOADING -> {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center,
@@ -125,30 +128,35 @@ fun SearchScreen(
                                     CircularProgressIndicator()
                                 },
                             )
+                        }
 
-                        SearchUiModel.Phase.EMPTY ->
+                        SearchUiModel.Phase.EMPTY -> {
                             CenteredMessage(
                                 title = "No matches for \"${model.query}\"",
                                 subtitle = "Try a different symbol or name",
+                                modifier = Modifier.fillMaxSize(),
                             )
+                        }
 
-                        SearchUiModel.Phase.ERROR ->
+                        SearchUiModel.Phase.ERROR -> {
                             ErrorState(
                                 onRetry = {
                                     model.eventHandler.onEvent(event = SearchUiModel.Event.Retry)
                                 },
+                                modifier = Modifier.fillMaxSize(),
                             )
+                        }
 
-                        SearchUiModel.Phase.RESULTS ->
+                        SearchUiModel.Phase.RESULTS -> {
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
                                 content = {
                                     items(
                                         items = model.results,
-                                        key = { result ->
+                                        key = { result: SearchUiModel.Result ->
                                             result.instrument.symbol
                                         },
-                                        itemContent = { result ->
+                                        itemContent = { result: SearchUiModel.Result ->
                                             SearchResultRow(
                                                 result = result,
                                                 onToggle = {
@@ -158,11 +166,13 @@ fun SearchScreen(
                                                         ),
                                                     )
                                                 },
+                                                modifier = Modifier.fillMaxWidth(),
                                             )
                                         },
                                     )
                                 },
                             )
+                        }
                     }
                 },
             )
@@ -170,15 +180,14 @@ fun SearchScreen(
     )
 }
 
-// TODO: every sub-composable needs a Modifier
-// TODO: separate each into its own file with its own preview(s)
 @Composable
 private fun CenteredMessage(
     title: String,
     subtitle: String,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         content = {
@@ -199,9 +208,10 @@ private fun CenteredMessage(
 @Composable
 private fun ErrorState(
     onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         content = {
@@ -230,12 +240,11 @@ private fun ErrorState(
 private fun SearchResultRow(
     result: SearchUiModel.Result,
     onToggle: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 6.dp),
         content = {
             Column(
                 modifier = Modifier.weight(weight = 1f),
@@ -253,22 +262,9 @@ private fun SearchResultRow(
                     )
                 },
             )
-            IconButton(
+            WatchlistToggleButton(
+                isOnWatchlist = result.isOnWatchlist,
                 onClick = onToggle,
-                content = {
-                    if (result.isOnWatchlist) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = "Remove ${result.instrument.displaySymbol} from watchlist",
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add ${result.instrument.displaySymbol} to watchlist",
-                        )
-                    }
-                },
             )
         },
     )
@@ -284,34 +280,33 @@ private class SearchPreviewProvider : PreviewParameterProvider<SearchUiModel> {
             previewModel().copy(results = emptyList(), phase = SearchUiModel.Phase.ERROR),
         )
 
-    private fun previewModel(): SearchUiModel =
-        SearchUiModel(
+    private fun previewModel(): SearchUiModel {
+        return SearchUiModel(
             query = "ap",
             results = listOf(
                 SearchUiModel.Result(
-                    instrument =
-                        Instrument(
-                            symbol = "AAPL",
-                            displaySymbol = "AAPL",
-                            description = "APPLE INC",
-                            type = InstrumentType.STOCK,
-                        ),
+                    instrument = Instrument(
+                        symbol = "AAPL",
+                        displaySymbol = "AAPL",
+                        description = "APPLE INC",
+                        type = InstrumentType.STOCK,
+                    ),
                     isOnWatchlist = true,
                 ),
                 SearchUiModel.Result(
-                    instrument =
-                        Instrument(
-                            symbol = "BINANCE:APTUSDT",
-                            displaySymbol = "APT/USDT",
-                            description = "Binance APTUSDT",
-                            type = InstrumentType.CRYPTO,
-                        ),
+                    instrument = Instrument(
+                        symbol = "BINANCE:APTUSDT",
+                        displaySymbol = "APT/USDT",
+                        description = "Binance APTUSDT",
+                        type = InstrumentType.CRYPTO,
+                    ),
                     isOnWatchlist = false,
                 ),
             ),
             phase = SearchUiModel.Phase.RESULTS,
             eventHandler = {},
         )
+    }
 }
 
 @Preview(showBackground = true)

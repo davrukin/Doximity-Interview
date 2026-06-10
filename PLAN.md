@@ -57,6 +57,7 @@ Key design points:
 - [x] O7 exponential backoff + jitter
 - [x] O5 offline cache display surfacing
 - [x] O4 pull to refresh
+- [x] O8 custom design system components (developer addition)
 - [ ] O2 sorting
 - [ ] O3 sparkline
 
@@ -67,3 +68,6 @@ Key design points:
 | 2026-06-09 | No standalone Kotlin Android plugin | AGP 9 ships built-in Kotlin support and rejects `org.jetbrains.kotlin.android` |
 | 2026-06-09 | compileSdk 37 (target stays 36) | Current androidx releases require compiling against android-37 |
 | 2026-06-09 | Watchlist + search presenters landed in one commit | They share the Koin presentation module and test fakes; splitting would have left an intermediate commit referencing missing classes |
+| 2026-06-09 | Engineering style: block bodies, explicit lambda names | Developer preference for debugging clarity and readability |
+| 2026-06-09 | Performance: Double.NaN for primitives | Avoid JVM object wrapping/boxing overhead for price data |
+| 2026-06-09 | Safety: Braces for all if/else, no !! | Enforced robustness and strict null safety |

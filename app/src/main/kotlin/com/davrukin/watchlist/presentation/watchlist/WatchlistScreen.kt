@@ -40,6 +40,10 @@ import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.MarketDataMode
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
+import com.davrukin.watchlist.ui.components.MovementIndicator
+import com.davrukin.watchlist.ui.components.PriceChip
+import com.davrukin.watchlist.ui.components.WatchlistDesignSystem
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WatchlistScreen(
@@ -81,18 +85,26 @@ fun WatchlistScreen(
                 },
             )
         },
-        content = { padding ->
+        content = { paddingValues: androidx.compose.foundation.layout.PaddingValues ->
             Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues = padding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = paddingValues),
                 content = {
-                    ConnectionBanner(connectionState = model.connectionState)
+                    ConnectionBanner(
+                        connectionState = model.connectionState,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                     when {
-                        model.isLoading -> LoadingState()
-                        model.items.isEmpty() -> EmptyState()
-                        else ->
+                        model.isLoading -> {
+                            LoadingState(modifier = Modifier.fillMaxSize())
+                        }
+
+                        model.items.isEmpty() -> {
+                            EmptyState(modifier = Modifier.fillMaxSize())
+                        }
+
+                        else -> {
                             PullToRefreshBox(
                                 isRefreshing = model.isRefreshing,
                                 onRefresh = {
@@ -107,10 +119,10 @@ fun WatchlistScreen(
                                         content = {
                                             items(
                                                 items = model.items,
-                                                key = {
-                                                    it.symbol
+                                                key = { row: WatchlistRowUiModel ->
+                                                    row.symbol
                                                 },
-                                                itemContent = { row ->
+                                                itemContent = { row: WatchlistRowUiModel ->
                                                     WatchlistRow(
                                                         row = row,
                                                         onRemove = {
@@ -120,6 +132,7 @@ fun WatchlistScreen(
                                                                 ),
                                                             )
                                                         },
+                                                        modifier = Modifier.fillMaxWidth(),
                                                     )
                                                 },
                                             )
@@ -127,6 +140,7 @@ fun WatchlistScreen(
                                     )
                                 },
                             )
+                        }
                     }
                 },
             )
@@ -134,57 +148,82 @@ fun WatchlistScreen(
     )
 }
 
-// TODO: Modifier for each nested Composable
-// TODO: maybe move each into its own file
 @Composable
 private fun DataModeChip(
     dataMode: MarketDataMode,
     isLiveAvailable: Boolean,
     onToggle: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AssistChip(
         onClick = onToggle,
         enabled = isLiveAvailable,
         label = {
             Text(
-                text =
-                    when (dataMode) {
-                        MarketDataMode.LIVE -> "Live"
-                        MarketDataMode.DEMO -> "Demo"
-                    },
+                text = when (dataMode) {
+                    MarketDataMode.LIVE -> {
+                        "Live"
+                    }
+
+                    MarketDataMode.DEMO -> {
+                        "Demo"
+                    }
+                },
             )
         },
         colors = when (dataMode) {
-            MarketDataMode.LIVE -> AssistChipDefaults.assistChipColors()
-            MarketDataMode.DEMO ->
+            MarketDataMode.LIVE -> {
+                AssistChipDefaults.assistChipColors()
+            }
+
+            MarketDataMode.DEMO -> {
                 AssistChipDefaults.assistChipColors(
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                     labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 )
+            }
         },
-        modifier = Modifier.padding(end = 12.dp),
+        modifier = modifier.padding(end = 12.dp),
     )
 }
 
 @Composable
-private fun ConnectionBanner(connectionState: ConnectionState) {
+private fun ConnectionBanner(
+    connectionState: ConnectionState,
+    modifier: Modifier = Modifier,
+) {
     if (connectionState == ConnectionState.CONNECTED) {
         return
     }
     Surface(
-        color =
-            when (connectionState) {
-                ConnectionState.OFFLINE -> MaterialTheme.colorScheme.errorContainer
-                else -> MaterialTheme.colorScheme.secondaryContainer
-            },
-        modifier = Modifier.fillMaxWidth(),
+        color = when (connectionState) {
+            ConnectionState.OFFLINE -> {
+                MaterialTheme.colorScheme.errorContainer
+            }
+
+            else -> {
+                MaterialTheme.colorScheme.secondaryContainer
+            }
+        },
+        modifier = modifier,
         content = {
             Text(
                 text = when (connectionState) {
-                    ConnectionState.CONNECTING -> "Connecting to live prices…"
-                    ConnectionState.RECONNECTING -> "Connection lost — reconnecting…"
-                    ConnectionState.OFFLINE -> "Offline — retrying. Prices may be out of date."
-                    ConnectionState.CONNECTED -> ""
+                    ConnectionState.CONNECTING -> {
+                        "Connecting to live prices…"
+                    }
+
+                    ConnectionState.RECONNECTING -> {
+                        "Connection lost — reconnecting…"
+                    }
+
+                    ConnectionState.OFFLINE -> {
+                        "Offline — retrying. Prices may be out of date."
+                    }
+
+                    ConnectionState.CONNECTED -> {
+                        ""
+                    }
                 },
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
@@ -194,9 +233,9 @@ private fun ConnectionBanner(connectionState: ConnectionState) {
 }
 
 @Composable
-private fun LoadingState() {
+private fun LoadingState(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.Center,
         content = {
             CircularProgressIndicator()
@@ -205,9 +244,9 @@ private fun LoadingState() {
 }
 
 @Composable
-private fun EmptyState() {
+private fun EmptyState(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         content = {
@@ -216,7 +255,6 @@ private fun EmptyState() {
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                // TODO: put these strings and others into strings.xml
                 text = "Tap + to search for stocks and crypto",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -230,12 +268,11 @@ private fun EmptyState() {
 private fun WatchlistRow(
     row: WatchlistRowUiModel,
     onRemove: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 10.dp),
         content = {
             Column(
                 modifier = Modifier.weight(weight = 1f),
@@ -260,43 +297,23 @@ private fun WatchlistRow(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         content = {
-                            when (row.movement) {
-                                WatchlistRowUiModel.PriceMovement.UP -> {
-                                    // TODO: is Text the best Composable for this?
-                                    Text(
-                                        text = "▲",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = GainColor,
-                                        modifier = Modifier.padding(end = 4.dp),
-                                    )
-                                }
-
-                                WatchlistRowUiModel.PriceMovement.DOWN -> {
-                                    Text(
-                                        text = "▼",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.error,
-                                        modifier = Modifier.padding(end = 4.dp),
-                                    )
-                                }
-
-                                null -> {}
-                            }
-                            Text(
-                                text = row.price ?: "—",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = if (row.isStale || row.price == null) {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                } else {
-                                    MaterialTheme.colorScheme.onSurface
-                                },
+                            MovementIndicator(
+                                movement = row.movement,
+                                modifier = Modifier.padding(end = 4.dp),
+                            )
+                            PriceChip(
+                                price = row.price ?: "—",
+                                isGain = row.isGain,
+                                isStale = row.isStale,
                             )
                         },
                     )
                     when {
                         row.isStale && row.price != null -> {
                             Text(
-                                text = row.staleAsOf?.let { "stale · $it" } ?: "stale",
+                                text = row.staleAsOf?.let { asOf: String ->
+                                    "stale · $asOf"
+                                } ?: "stale",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -306,12 +323,19 @@ private fun WatchlistRow(
                             Text(
                                 text = row.change,
                                 style = MaterialTheme.typography.labelMedium,
-                                color =
-                                    when (row.isGain) {
-                                        true -> GainColor
-                                        false -> MaterialTheme.colorScheme.error
-                                        null -> MaterialTheme.colorScheme.onSurfaceVariant
-                                    },
+                                color = when (row.isGain) {
+                                    true -> {
+                                        WatchlistDesignSystem.GainColor
+                                    }
+
+                                    false -> {
+                                        WatchlistDesignSystem.LossColor
+                                    }
+
+                                    null -> {
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                    }
+                                },
                             )
                         }
                     }
@@ -330,9 +354,6 @@ private fun WatchlistRow(
         },
     )
 }
-
-// TODO: put into Colors file
-private val GainColor = Color(color = 0xFF1B873B)
 
 private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiModel> {
     override val values: Sequence<WatchlistUiModel> =

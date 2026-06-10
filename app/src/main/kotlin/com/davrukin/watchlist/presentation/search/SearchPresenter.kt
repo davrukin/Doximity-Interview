@@ -47,12 +47,14 @@ class SearchPresenter(
 
     @Composable
     override fun present(params: Params): SearchUiModel {
-        var query by rememberSaveable { mutableStateOf("") }
-        var retryToken by remember { mutableIntStateOf(0) }
-        var searchState by remember { mutableStateOf<SearchState>(value = SearchState.Idle) }
-        val watchlist by launchUseCase(initial = emptyList()) { observeWatchlist() }
+        var query: String by rememberSaveable { mutableStateOf(value = "") }
+        var retryToken: Int by remember { mutableIntStateOf(value = 0) }
+        var searchState: SearchState by remember { mutableStateOf<SearchState>(value = SearchState.Idle) }
+        val watchlist: List<com.davrukin.watchlist.domain.model.WatchlistItem> by launchUseCase(initial = emptyList()) {
+            observeWatchlist()
+        }
 
-        LaunchedEffect(query, retryToken) {
+        LaunchedEffect(key1 = query, key2 = retryToken) {
             if (query.isBlank()) {
                 searchState = SearchState.Idle
                 return@LaunchedEffect
@@ -60,68 +62,89 @@ class SearchPresenter(
             searchState = SearchState.Loading
             delay(duration = DEBOUNCE)
             searchState = searchInstruments(query = query.trim()).fold(
-                onSuccess = { instruments ->
+                onSuccess = { instruments: List<Instrument> ->
                     SearchState.Loaded(instruments = instruments)
                 },
-                onFailure = {
+                onFailure = { _: Throwable ->
                     SearchState.Failed
                 },
             )
         }
 
-        val watchlistSymbols = watchlist.map { it.instrument.symbol }.toSet() // TODO: lint marks as redundant
-        val results =
-            when (val state = searchState) {
-                is SearchState.Loaded ->
-                    state.instruments.map { instrument ->
-                        SearchUiModel.Result(
-                            instrument = instrument,
-                            isOnWatchlist = instrument.symbol in watchlistSymbols,
-                        )
-                    }
+        val watchlistSymbols: Set<String> = watchlist.map { item: com.davrukin.watchlist.domain.model.WatchlistItem ->
+            item.instrument.symbol
+        }.toSet()
 
-                else -> emptyList()
+        val results: List<SearchUiModel.Result> = when (val state: SearchState = searchState) {
+            is SearchState.Loaded -> {
+                state.instruments.map { instrument: Instrument ->
+                    SearchUiModel.Result(
+                        instrument = instrument,
+                        isOnWatchlist = instrument.symbol in watchlistSymbols,
+                    )
+                }
             }
 
-        val eventHandler =
-            remember(params) {
-                EventHandler<SearchUiModel.Event> { event ->
-                    when (event) {
-                        is SearchUiModel.Event.QueryChanged -> query = event.query
-                        is SearchUiModel.Event.ToggleWatchlist -> {
-                            val onWatchlist = watchlist.any { it.instrument.symbol == event.instrument.symbol }
-                            appScope.launch {
-                                if (onWatchlist) {
-                                    removeFromWatchlist(symbol = event.instrument.symbol)
-                                } else {
-                                    addToWatchlist(instrument = event.instrument)
-                                }
+            else -> {
+                emptyList()
+            }
+        }
+
+        val eventHandler: EventHandler<SearchUiModel.Event> = remember(key1 = params) {
+            EventHandler<SearchUiModel.Event> { event: SearchUiModel.Event ->
+                when (event) {
+                    is SearchUiModel.Event.QueryChanged -> {
+                        query = event.query
+                    }
+
+                    is SearchUiModel.Event.ToggleWatchlist -> {
+                        val onWatchlist: Boolean = watchlist.any { item: com.davrukin.watchlist.domain.model.WatchlistItem ->
+                            item.instrument.symbol == event.instrument.symbol
+                        }
+                        appScope.launch {
+                            if (onWatchlist) {
+                                removeFromWatchlist(symbol = event.instrument.symbol)
+                            } else {
+                                addToWatchlist(instrument = event.instrument)
                             }
                         }
+                    }
 
-                        SearchUiModel.Event.Retry -> retryToken++
-                        SearchUiModel.Event.Back -> params.onBack()
+                    SearchUiModel.Event.Retry -> {
+                        retryToken++
+                    }
+
+                    SearchUiModel.Event.Back -> {
+                        params.onBack()
                     }
                 }
             }
+        }
 
         return SearchUiModel(
             query = query,
             results = results,
-            phase =
-                when (searchState) {
-                    SearchState.Idle -> SearchUiModel.Phase.IDLE
-                    SearchState.Loading -> SearchUiModel.Phase.LOADING
-                    is SearchState.Loaded -> {
-                        if (results.isEmpty()) {
-                            SearchUiModel.Phase.EMPTY
-                        } else {
-                            SearchUiModel.Phase.RESULTS
-                        }
-                    }
+            phase = when (searchState) {
+                SearchState.Idle -> {
+                    SearchUiModel.Phase.IDLE
+                }
 
-                    SearchState.Failed -> SearchUiModel.Phase.ERROR
-                },
+                SearchState.Loading -> {
+                    SearchUiModel.Phase.LOADING
+                }
+
+                is SearchState.Loaded -> {
+                    if (results.isEmpty()) {
+                        SearchUiModel.Phase.EMPTY
+                    } else {
+                        SearchUiModel.Phase.RESULTS
+                    }
+                }
+
+                SearchState.Failed -> {
+                    SearchUiModel.Phase.ERROR
+                }
+            },
             eventHandler = eventHandler,
         )
     }
