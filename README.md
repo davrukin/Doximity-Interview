@@ -8,6 +8,14 @@ Built with Kotlin, Jetpack Compose, the
 [Composable Presenter pattern](ARCHITECTURE.md) (no ViewModels), Koin, Room, Navigation 3,
 Retrofit/OkHttp, and kotlinx.serialization.
 
+**About this submission:** I used AI pair-programming throughout (Claude; see
+[ARCHITECTURE.md](ARCHITECTURE.md) for the full disclosure and what decisions were mine).
+Required scope (R1–R11) landed first; optional enhancements came only after all requirements were
+met. Two features — after-hours market-session pricing and swipe-to-remove with undo — were
+designed and deliberately cut when breadth began to outweigh explainability; both designs are
+preserved in [PLAN.md](PLAN.md). The supporting docs (REQUIREMENTS.md, PLAN.md) exist because
+traceability is how I kept AI-generated work auditable, not because they took long to produce.
+
 ## Setup
 
 Requirements: JDK 17+, Android SDK (compileSdk 37), a device or emulator on API 26+.
@@ -53,8 +61,8 @@ rather than failing silently.
 ## Tests
 
 ```bash
-./gradlew testDebugUnitTest   # 35 JVM tests
-./gradlew ktlintCheck         # formatting gate (ktlint official style)
+./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest   # full gate (45 JVM tests)
+./gradlew connectedDebugAndroidTest                            # Compose UI tests (device/emulator)
 ```
 
 Coverage: presenter behavior via Molecule + Turbine (loading/content/error/retry, add/remove,
