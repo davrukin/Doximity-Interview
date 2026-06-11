@@ -72,6 +72,31 @@ Key design points:
 - [x] D4 design-system visual polish
 - [x] Developer-additions tracking restructure in REQUIREMENTS.md
 
+### Phase 4 — enforcement and scope freeze
+- [x] Stabilize cross-agent regressions (unsupported-instrument contract, test suite)
+- [x] Machine-enforce style rules (detekt + compose-rules; see CLAUDE.md)
+- [x] Scope frozen for submission — remaining designs recorded below, deliberately not built
+
+## Designed but deliberately cut
+
+The brief prefers "a smaller app with well-organized, maintainable code and thoughtful
+tradeoffs … over a broad but fragile implementation," and these were the next features in
+flight when breadth began to outweigh explainability. Both are designed and ready to build.
+
+**Market sessions & after-hours pricing.** A `MarketStatusRepository` polling Finnhub's
+`/stock/market-status` (locally computed NYSE schedule as fallback and as the demo source),
+a `MarketSession` tag on quotes, the listed stock price frozen at the regular-session close
+while after-hours ticks feed a separate subdued "After hours" line (matching brokerage UX),
+explicit at-close/after-hours fields in the detail dialog, and a session-segmented sparkline
+that renders extended-hours data in a muted style and refuses to connect across data gaps —
+so missing data reads as a visible break, never a fabricated line. Crypto stays 24/7.
+
+**Swipe-to-remove with undo.** Replace the X + confirmation dialog with swipe-to-dismiss and
+an Undo snackbar: confirmation dialogs suit costly or irreversible actions, while removing a
+watchlist item is cheaply reversible, which favors undo (lossless — the cached quote would be
+restored via a repository-level restore, not a fresh re-add). A custom accessibility action
+and a remove affordance in the detail dialog would keep non-swipe paths available.
+
 ## Deviations log
 
 | Date | Change | Why |
@@ -81,6 +106,8 @@ Key design points:
 | 2026-06-09 | Watchlist + search presenters landed in one commit | They share the Koin presentation module and test fakes; splitting would have left an intermediate commit referencing missing classes |
 | 2026-06-10 | Cached-quote columns are nullable in Room despite the no-nullable-primitives rule | SQLite stores NaN as NULL, so NaN sentinels cannot live in NOT NULL REAL columns — INSERT OR IGNORE silently dropped every row. NULL maps to NaN at the entity boundary |
 | 2026-06-10 | Database back to version 1; v2 schema and migration removed | The v2 NOT NULL schema was unshippable (see above) and its migration declared DEFAULT clauses Room's validator rejects. No release ever shipped v2; dev devices downgrade destructively |
+| 2026-06-11 | After-hours feature (D6–D8) cut at ~25% built | Breadth began to outweigh explainability; the brief explicitly prefers smaller-but-excellent. Design preserved above |
+| 2026-06-11 | Swipe-to-remove with undo (D9) cut before starting | Same scope freeze; the shipped confirm dialog is tested and accessible. Design preserved above |
 | 2026-06-09 | Engineering style: block bodies, explicit lambda names | Developer preference for debugging clarity and readability |
 | 2026-06-09 | Performance: Double.NaN for primitives | Avoid JVM object wrapping/boxing overhead for price data |
 | 2026-06-09 | Safety: Braces for all if/else, no !! | Enforced robustness and strict null safety |
