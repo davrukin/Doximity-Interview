@@ -1,5 +1,6 @@
-package com.davrukin.watchlist.data
+package com.davrukin.watchlist.data.repository
 
+import com.davrukin.watchlist.data.source.MarketDataSelector
 import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.repository.InstrumentSearchRepository
 

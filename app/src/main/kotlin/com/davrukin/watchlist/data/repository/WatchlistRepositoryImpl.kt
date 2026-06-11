@@ -1,4 +1,4 @@
-package com.davrukin.watchlist.data
+package com.davrukin.watchlist.data.repository
 
 import com.davrukin.watchlist.data.local.WatchlistDao
 import com.davrukin.watchlist.data.local.WatchlistItemEntity

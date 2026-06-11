@@ -1,7 +1,7 @@
 package com.davrukin.watchlist.data.remote
 
 import com.davrukin.watchlist.common.resultOf
-import com.davrukin.watchlist.data.MarketDataSource
+import com.davrukin.watchlist.data.source.MarketDataSource
 import com.davrukin.watchlist.data.stream.PriceStreamSource
 import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.InstrumentType

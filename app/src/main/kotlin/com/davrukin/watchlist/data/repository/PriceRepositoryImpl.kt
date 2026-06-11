@@ -1,7 +1,9 @@
-package com.davrukin.watchlist.data
+package com.davrukin.watchlist.data.repository
 
 import androidx.lifecycle.Lifecycle
 import com.davrukin.watchlist.data.local.WatchlistDao
+import com.davrukin.watchlist.data.source.MarketDataSelector
+import com.davrukin.watchlist.data.source.MarketDataSource
 import com.davrukin.watchlist.data.stream.PriceStreamEvent
 import com.davrukin.watchlist.domain.model.ConnectionState
 import com.davrukin.watchlist.domain.model.Instrument

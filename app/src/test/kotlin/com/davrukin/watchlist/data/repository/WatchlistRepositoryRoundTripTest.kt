@@ -1,4 +1,4 @@
-package com.davrukin.watchlist.data
+package com.davrukin.watchlist.data.repository
 
 import android.app.Application
 import android.content.Context

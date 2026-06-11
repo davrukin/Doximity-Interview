@@ -1,4 +1,4 @@
-package com.davrukin.watchlist.data
+package com.davrukin.watchlist.data.source
 
 import com.davrukin.watchlist.data.stream.PriceStreamSource
 import com.davrukin.watchlist.domain.model.Instrument

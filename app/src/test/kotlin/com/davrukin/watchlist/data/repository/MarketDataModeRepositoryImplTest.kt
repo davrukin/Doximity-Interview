@@ -1,4 +1,4 @@
-package com.davrukin.watchlist.data
+package com.davrukin.watchlist.data.repository
 
 import com.davrukin.watchlist.domain.model.MarketDataMode
 import org.junit.Assert.assertEquals

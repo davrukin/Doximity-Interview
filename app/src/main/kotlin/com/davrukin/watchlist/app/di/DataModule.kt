@@ -3,12 +3,6 @@ package com.davrukin.watchlist.app.di
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
 import com.davrukin.watchlist.BuildConfig
-import com.davrukin.watchlist.data.InstrumentSearchRepositoryImpl
-import com.davrukin.watchlist.data.MarketDataModeRepositoryImpl
-import com.davrukin.watchlist.data.MarketDataSelector
-import com.davrukin.watchlist.data.MarketDataSource
-import com.davrukin.watchlist.data.PriceRepositoryImpl
-import com.davrukin.watchlist.data.WatchlistRepositoryImpl
 import com.davrukin.watchlist.data.demo.DemoInstrumentCatalog
 import com.davrukin.watchlist.data.demo.DemoMarketDataSource
 import com.davrukin.watchlist.data.demo.DemoPriceStreamSource
@@ -17,6 +11,12 @@ import com.davrukin.watchlist.data.remote.FinnhubApi
 import com.davrukin.watchlist.data.remote.FinnhubAuthInterceptor
 import com.davrukin.watchlist.data.remote.LiveMarketDataSource
 import com.davrukin.watchlist.data.remote.OkHttpPriceSocket
+import com.davrukin.watchlist.data.repository.InstrumentSearchRepositoryImpl
+import com.davrukin.watchlist.data.repository.MarketDataModeRepositoryImpl
+import com.davrukin.watchlist.data.repository.PriceRepositoryImpl
+import com.davrukin.watchlist.data.repository.WatchlistRepositoryImpl
+import com.davrukin.watchlist.data.source.MarketDataSelector
+import com.davrukin.watchlist.data.source.MarketDataSource
 import com.davrukin.watchlist.data.stream.ReconnectingPriceStream
 import com.davrukin.watchlist.domain.repository.InstrumentSearchRepository
 import com.davrukin.watchlist.domain.repository.MarketDataModeRepository

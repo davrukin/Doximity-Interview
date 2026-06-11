@@ -1,6 +1,6 @@
 package com.davrukin.watchlist.data.demo
 
-import com.davrukin.watchlist.data.MarketDataSource
+import com.davrukin.watchlist.data.source.MarketDataSource
 import com.davrukin.watchlist.data.stream.PriceStreamSource
 import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.Quote
