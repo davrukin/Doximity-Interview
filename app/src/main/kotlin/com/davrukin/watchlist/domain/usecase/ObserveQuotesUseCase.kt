@@ -21,8 +21,7 @@ class ObserveQuotesUseCase(
                 items.map { item ->
                     item.instrument
                 }
-            }
-            .flatMapLatest { instruments ->
+            }.flatMapLatest { instruments ->
                 if (instruments.isEmpty()) {
                     flowOf(emptyMap())
                 } else {

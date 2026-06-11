@@ -1,7 +1,6 @@
 package com.davrukin.watchlist.data.repository
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.davrukin.watchlist.data.local.WatchlistDatabase

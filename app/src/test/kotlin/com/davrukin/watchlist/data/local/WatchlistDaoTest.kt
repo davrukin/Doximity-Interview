@@ -1,7 +1,6 @@
 package com.davrukin.watchlist.data.local
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import app.cash.turbine.test
