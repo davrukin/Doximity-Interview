@@ -40,10 +40,8 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
 
         val livePrice: Double = params.liveQuote?.price ?: Double.NaN
         var previousPrice: Double by remember { mutableDoubleStateOf(value = Double.NaN) }
-        var movement: WatchlistRowUiModel.PriceMovement? by remember {
-            mutableStateOf<WatchlistRowUiModel.PriceMovement?>(value = null)
-        }
-        val recentPrices: SnapshotStateList<Double> = remember { mutableStateListOf<Double>() }
+        var movement: WatchlistRowUiModel.PriceMovement? by remember { mutableStateOf(value = null) }
+        val recentPrices: SnapshotStateList<Double> = remember { mutableStateListOf() }
         LaunchedEffect(key1 = livePrice) {
             val previous: Double = previousPrice
             previousPrice = livePrice
@@ -111,7 +109,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             } else {
                 ""
             }
-        val formatted: String = "$sign${priceFormat.format(quote.change)}"
+        val formatted = "$sign${priceFormat.format(quote.change)}"
         if (quote.percentChange.isNaN()) {
             return formatted
         }

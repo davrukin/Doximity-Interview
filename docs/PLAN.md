@@ -29,10 +29,12 @@ Key design points:
 ## Phases
 
 ### Phase 0 — docs first
+
 - [x] REQUIREMENTS.md + PLAN.md committed alongside the assignment brief
 - [x] CLAUDE.md project workflow section
 
 ### Phase 1 — required scope
+
 - [x] Scaffold: Gradle 9.5.1, AGP 9.2.1, Kotlin 2.4.0, version catalog, ktlint
 - [x] Presenter core: `Presenter`, `UiModel`, `UiEvent`, `EventHandler`, `launchUseCase` (R8)
 - [x] Koin application setup + app scope + injected dispatchers/clock (R9)
@@ -52,6 +54,7 @@ Key design points:
 - [x] README + ARCHITECTURE.md (R11)
 
 ### Phase 2 — optional enhancements (in priority order)
+
 - [x] O1 price movement indicators
 - [x] O6 Compose UI tests
 - [x] O7 exponential backoff + jitter
@@ -62,6 +65,7 @@ Key design points:
 - [x] O3 sparkline
 
 ### Phase 3 — hardening and developer additions
+
 - [x] Compiler warnings resolved (safe call, v2 compose test rule, unused imports)
 - [x] Defensive DB operations: check row ID and exists-on-fail to prevent silent SQLite drops
 - [x] Defensive round-trip regression tests for the silent-persistence bug class
@@ -73,6 +77,7 @@ Key design points:
 - [x] Developer-additions tracking restructure in REQUIREMENTS.md
 
 ### Phase 4 — enforcement and scope freeze
+
 - [x] Stabilize cross-agent regressions (unsupported-instrument contract, test suite)
 - [x] Machine-enforce style rules (detekt + compose-rules; see CLAUDE.md)
 - [x] Scope frozen for submission — remaining designs recorded below, deliberately not built
@@ -99,15 +104,15 @@ and a remove affordance in the detail dialog would keep non-swipe paths availabl
 
 ## Deviations log
 
-| Date | Change | Why |
-|------|--------|-----|
-| 2026-06-09 | No standalone Kotlin Android plugin | AGP 9 ships built-in Kotlin support and rejects `org.jetbrains.kotlin.android` |
-| 2026-06-09 | compileSdk 37 (target stays 36) | Current androidx releases require compiling against android-37 |
-| 2026-06-09 | Watchlist + search presenters landed in one commit | They share the Koin presentation module and test fakes; splitting would have left an intermediate commit referencing missing classes |
-| 2026-06-10 | Cached-quote columns are nullable in Room despite the no-nullable-primitives rule | SQLite stores NaN as NULL, so NaN sentinels cannot live in NOT NULL REAL columns — INSERT OR IGNORE silently dropped every row. NULL maps to NaN at the entity boundary |
-| 2026-06-10 | Database back to version 1; v2 schema and migration removed | The v2 NOT NULL schema was unshippable (see above) and its migration declared DEFAULT clauses Room's validator rejects. No release ever shipped v2; dev devices downgrade destructively |
-| 2026-06-11 | After-hours feature (D6–D8) cut at ~25% built | Breadth began to outweigh explainability; the brief explicitly prefers smaller-but-excellent. Design preserved above |
-| 2026-06-11 | Swipe-to-remove with undo (D9) cut before starting | Same scope freeze; the shipped confirm dialog is tested and accessible. Design preserved above |
-| 2026-06-09 | Engineering style: block bodies, explicit lambda names | Developer preference for debugging clarity and readability |
-| 2026-06-09 | Performance: Double.NaN for primitives | Avoid JVM object wrapping/boxing overhead for price data |
-| 2026-06-09 | Safety: Braces for all if/else, no !! | Enforced robustness and strict null safety |
+| Date       | Change                                                                            | Why                                                                                                                                                                                     |
+|------------|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 2026-06-09 | No standalone Kotlin Android plugin                                               | AGP 9 ships built-in Kotlin support and rejects `org.jetbrains.kotlin.android`                                                                                                          |
+| 2026-06-09 | compileSdk 37 (target stays 36)                                                   | Current androidx releases require compiling against android-37                                                                                                                          |
+| 2026-06-09 | Watchlist + search presenters landed in one commit                                | They share the Koin presentation module and test fakes; splitting would have left an intermediate commit referencing missing classes                                                    |
+| 2026-06-10 | Cached-quote columns are nullable in Room despite the no-nullable-primitives rule | SQLite stores NaN as NULL, so NaN sentinels cannot live in NOT NULL REAL columns — INSERT OR IGNORE silently dropped every row. NULL maps to NaN at the entity boundary                 |
+| 2026-06-10 | Database back to version 1; v2 schema and migration removed                       | The v2 NOT NULL schema was unshippable (see above) and its migration declared DEFAULT clauses Room's validator rejects. No release ever shipped v2; dev devices downgrade destructively |
+| 2026-06-11 | After-hours feature (D6–D8) cut at ~25% built                                     | Breadth began to outweigh explainability; the brief explicitly prefers smaller-but-excellent. Design preserved above                                                                    |
+| 2026-06-11 | Swipe-to-remove with undo (D9) cut before starting                                | Same scope freeze; the shipped confirm dialog is tested and accessible. Design preserved above                                                                                          |
+| 2026-06-09 | Engineering style: block bodies, explicit lambda names                            | Developer preference for debugging clarity and readability                                                                                                                              |
+| 2026-06-09 | Performance: Double.NaN for primitives                                            | Avoid JVM object wrapping/boxing overhead for price data                                                                                                                                |
+| 2026-06-09 | Safety: Braces for all if/else, no !!                                             | Enforced robustness and strict null safety                                                                                                                                              |

@@ -134,5 +134,6 @@ class ReconnectingPriceStream(
         return message.data.map { it.toPriceTick() }
     }
 
+    @Suppress("serial")
     private class PriceSocketDroppedException : Exception()
 }

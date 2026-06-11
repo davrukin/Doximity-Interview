@@ -43,7 +43,7 @@ class PriceRepositoryImplTest {
     @Test
     fun `emits snapshots then merges ticks with derived day change`() {
         runTest {
-            val fixture: Fixture = Fixture(scope = this)
+            val fixture = Fixture(scope = this)
             fixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
 
             fixture.repository.observeQuotes(instruments = listOf(aapl)).test {
@@ -70,7 +70,7 @@ class PriceRepositoryImplTest {
     @Test
     fun `refetches snapshots on reconnect`() {
         runTest {
-            val fixture: Fixture = Fixture(scope = this)
+            val fixture = Fixture(scope = this)
             fixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
 
             fixture.repository.observeQuotes(instruments = listOf(aapl)).test {
@@ -93,7 +93,7 @@ class PriceRepositoryImplTest {
     @Test
     fun `persists fresh quotes in live mode only`() {
         runTest {
-            val liveFixture: Fixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
+            val liveFixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
             liveFixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
             liveFixture.repository.observeQuotes(instruments = listOf(aapl)).test {
                 awaitItem()
@@ -103,7 +103,7 @@ class PriceRepositoryImplTest {
                 cancelAndIgnoreRemainingEvents()
             }
 
-            val nanFixture: Fixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
+            val nanFixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
             nanFixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = Double.NaN))
             nanFixture.repository.observeQuotes(instruments = listOf(aapl)).test {
                 awaitItem()
@@ -117,7 +117,7 @@ class PriceRepositoryImplTest {
                 cancelAndIgnoreRemainingEvents()
             }
 
-            val demoFixture: Fixture = Fixture(scope = this, mode = MarketDataMode.DEMO)
+            val demoFixture = Fixture(scope = this, mode = MarketDataMode.DEMO)
             demoFixture.demoSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
             demoFixture.repository.observeQuotes(instruments = listOf(aapl)).test {
                 awaitItem()
@@ -132,7 +132,7 @@ class PriceRepositoryImplTest {
     @Test
     fun `emits empty map for an empty watchlist`() {
         runTest {
-            val fixture: Fixture = Fixture(scope = this)
+            val fixture = Fixture(scope = this)
 
             fixture.repository.observeQuotes(instruments = emptyList()).test {
                 assertEquals(emptyMap<String, Quote>(), awaitItem())
@@ -243,7 +243,7 @@ class PriceRepositoryImplTest {
                     current + entity
                 }
             }
-            return 1L
+            return items.value.size.toLong()
         }
 
         override suspend fun delete(symbol: String) {

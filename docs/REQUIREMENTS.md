@@ -1,6 +1,6 @@
 # Requirements Traceability
 
-Requirements distilled from [INSTRUCTIONS.RTF](INSTRUCTIONS.RTF). Each row is updated as work lands;
+Requirements distilled from [INSTRUCTIONS.RTF](INSTRUCTIONS.rtf). Each row is updated as work lands;
 commit messages reference the IDs they advance (e.g. `Req: R4, R5`).
 
 Status legend: ⬜ planned · 🔄 in progress · ✅ done

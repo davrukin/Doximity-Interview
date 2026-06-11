@@ -14,16 +14,20 @@ class ObserveQuotesUseCase(
     private val priceRepository: PriceRepository,
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    operator fun invoke(): Flow<Map<String, Quote>> =
-        watchlistRepository
+    operator fun invoke(): Flow<Map<String, Quote>> {
+        return watchlistRepository
             .observeWatchlist()
             .map { items ->
-                items.map { it.instrument }
-            }.flatMapLatest { instruments ->
+                items.map { item ->
+                    item.instrument
+                }
+            }
+            .flatMapLatest { instruments ->
                 if (instruments.isEmpty()) {
                     flowOf(emptyMap())
                 } else {
                     priceRepository.observeQuotes(instruments = instruments)
                 }
             }
+    }
 }

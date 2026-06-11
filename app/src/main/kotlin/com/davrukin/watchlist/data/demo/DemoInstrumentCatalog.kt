@@ -12,7 +12,7 @@ class DemoInstrumentCatalog {
         val basePrice: Double,
     )
 
-    val entries: List<Entry> =
+    private val entries: List<Entry> =
         listOf(
             stock(symbol = "AAPL", description = "APPLE INC", basePrice = 228.40),
             stock(symbol = "MSFT", description = "MICROSOFT CORP", basePrice = 512.70),

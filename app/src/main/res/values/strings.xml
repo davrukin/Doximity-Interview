@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Watchlist</string>
 
-    <string name="watchlist_title">Watchlist</string>
+    <string name="watchlist_title">@string/app_name</string>
     <string name="watchlist_empty_title">Your watchlist is empty</string>
     <string name="watchlist_empty_subtitle">Tap + to search for stocks and crypto</string>
     <string name="watchlist_open_search">Search instruments</string>
@@ -30,7 +30,7 @@
     <string name="search_clear_query">Clear query</string>
     <string name="search_idle_title">Search stocks and crypto</string>
     <string name="search_idle_subtitle">Results appear as you type</string>
-    <string name="search_no_matches_title">No matches for \"%1$s\"</string>
+    <string name="search_no_matches_title">No matches for \“%1$s\”</string>
     <string name="search_no_matches_subtitle">Try a different symbol or name</string>
     <string name="search_error_title">Search failed</string>
     <string name="search_error_subtitle">Check your connection and try again</string>

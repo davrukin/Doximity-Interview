@@ -30,7 +30,7 @@ class WatchlistDaoTest {
         database =
             Room
                 .inMemoryDatabaseBuilder(
-                    ApplicationProvider.getApplicationContext<Context>(),
+                    ApplicationProvider.getApplicationContext(),
                     WatchlistDatabase::class.java,
                 ).setQueryExecutor { it.run() }
                 .setTransactionExecutor { it.run() }

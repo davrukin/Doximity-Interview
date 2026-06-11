@@ -29,9 +29,11 @@
 `local.properties`. The app starts in demo mode automatically.
 
 **Live mode**: add a free Finnhub API key to `local.properties`:
+
 ```
 FINNHUB_API_KEY=your_key_here
 ```
+
 US-market hours give the most interesting live-tick behavior; crypto (BTC, ETH) trades 24/7.
 
 ---
@@ -131,7 +133,8 @@ Automated coverage: `WatchlistPresenterTest.price_tick_updates_row_and_movement_
 | Wait ~30 s with airplane mode on | Banner changes to red "Offline" (after retry budget exhausted) |
 | Re-enable network | Banner changes to "Reconnecting…", then disappears; prices refresh (snapshot refetch visible in logs) |
 
-Automated coverage: `ReconnectingPriceStreamTest` (virtual-time tests for reconnect/offline transitions);
+Automated coverage: `ReconnectingPriceStreamTest` (virtual-time tests for reconnect/offline
+transitions);
 `WatchlistPresenterTest.connection_state_banner_shown`
 
 ---

@@ -15,6 +15,10 @@ ij_kotlin_allow_trailing_comma_on_call_site = true
 ktlint_function_naming_ignore_when_annotated_with = Composable
 compose_allowed_composition_locals = LocalExtendedColors
 max_line_length = 120
+# Project convention (CLAUDE.md): block bodies everywhere; explicit public return types including Unit.
+# These two ktlint rules enforce the opposite — disable them so the mechanical check matches the convention.
+ktlint_standard_function-expression-body = disabled
+ktlint_standard_no-unit-return = disabled
 
 [**/presentation/core/LaunchUseCase.kt]
 # launchUseCase deliberately collects once per composition; restarting on lambda change is

@@ -73,7 +73,7 @@ class FakeWatchlistRepository(
 }
 
 class FakePriceRepository : PriceRepository {
-    val quotes: MutableStateFlow<Map<String, Quote>> = MutableStateFlow(value = emptyMap<String, Quote>())
+    val quotes: MutableStateFlow<Map<String, Quote>> = MutableStateFlow(value = emptyMap())
     val connectionState: MutableStateFlow<ConnectionState> = MutableStateFlow(value = ConnectionState.CONNECTING)
     var refreshCount: Int = 0
         private set
@@ -100,6 +100,7 @@ class FakeMarketDataModeRepository(
                 MarketDataMode.LIVE -> {
                     MarketDataMode.DEMO
                 }
+
                 MarketDataMode.DEMO -> {
                     MarketDataMode.LIVE
                 }
@@ -109,8 +110,8 @@ class FakeMarketDataModeRepository(
 }
 
 class FakeInstrumentSearchRepository : InstrumentSearchRepository {
-    var result: Result<List<Instrument>> = Result.success(value = emptyList<Instrument>())
-    val queries: MutableList<String> = mutableListOf<String>()
+    var result: Result<List<Instrument>> = Result.success(value = emptyList())
+    val queries: MutableList<String> = mutableListOf()
 
     override suspend fun search(query: String): Result<List<Instrument>> {
         queries += query

@@ -85,7 +85,8 @@ demo-source determinism with seeded randomness. Details in [ARCHITECTURE.md](doc
 - **Free-tier limits**: 60 REST calls/min and ~50 WebSocket symbols — comfortably above this app's
   needs; stock `/search` may return non-US listings whose quotes 403 on the free tier, which
   surface as the missing-price state.
-- **Scope cuts** are tracked in [PLAN.md](docs/PLAN.md) and [REQUIREMENTS.md](docs/REQUIREMENTS.md), which
+- **Scope cuts** are tracked in [PLAN.md](docs/PLAN.md) and [REQUIREMENTS.md](docs/REQUIREMENTS.md),
+  which
   also map every assignment requirement to its implementation and tests.
 
 ## Documents

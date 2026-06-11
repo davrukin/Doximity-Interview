@@ -39,7 +39,7 @@ class WatchlistRepositoryRoundTripTest {
         database =
             Room
                 .inMemoryDatabaseBuilder(
-                    ApplicationProvider.getApplicationContext<Context>(),
+                    ApplicationProvider.getApplicationContext(),
                     WatchlistDatabase::class.java,
                 ).allowMainThreadQueries()
                 .build()

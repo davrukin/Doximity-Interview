@@ -50,7 +50,7 @@ class SearchPresenter(
     override fun present(params: Params): SearchUiModel {
         var query: String by rememberSaveable { mutableStateOf(value = "") }
         var retryToken: Int by remember { mutableIntStateOf(value = 0) }
-        var searchState: SearchState by remember { mutableStateOf<SearchState>(value = SearchState.Idle) }
+        var searchState: SearchState by remember { mutableStateOf(value = SearchState.Idle) }
 
         val watchlist: List<WatchlistItem> by launchUseCase(initial = emptyList()) {
             observeWatchlist()
@@ -101,7 +101,7 @@ class SearchPresenter(
         // capture: the delegate resolves to the current value at invocation time.
         val eventHandler: EventHandler<SearchUiModel.Event> =
             remember(key1 = params) {
-                EventHandler<SearchUiModel.Event> { event ->
+                EventHandler { event ->
                     when (event) {
                         is SearchUiModel.Event.QueryChanged -> {
                             query = event.query

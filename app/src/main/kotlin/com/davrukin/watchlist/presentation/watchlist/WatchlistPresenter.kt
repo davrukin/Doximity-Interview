@@ -87,7 +87,7 @@ class WatchlistPresenter(
 
         val eventHandler: EventHandler<WatchlistUiModel.Event> =
             remember(key1 = params) {
-                EventHandler<WatchlistUiModel.Event> { event ->
+                EventHandler { event ->
                     when (event) {
                         is WatchlistUiModel.Event.RequestRemove -> {
                             pendingRemovalSymbol = event.symbol

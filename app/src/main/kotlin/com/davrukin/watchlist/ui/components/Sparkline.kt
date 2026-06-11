@@ -31,7 +31,7 @@ fun Sparkline(
             val max: Double = prices.max()
             val range: Double = max - min
             val stepX: Float = size.width / (prices.size - 1)
-            val path: Path = Path()
+            val path = Path()
             prices.forEachIndexed { index: Int, price: Double ->
                 val x: Float = index * stepX
                 val y: Float =

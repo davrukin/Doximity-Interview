@@ -89,7 +89,7 @@ val dataModule: Module =
             )
         }
         single<MarketDataSource>(qualifier = named(name = DataConfig.DEMO_SOURCE)) {
-            val catalog: DemoInstrumentCatalog = DemoInstrumentCatalog()
+            val catalog = DemoInstrumentCatalog()
             DemoMarketDataSource(
                 catalog = catalog,
                 clock = get(),

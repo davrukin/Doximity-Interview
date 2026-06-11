@@ -1,6 +1,7 @@
 package com.davrukin.watchlist.ui.theme
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
@@ -29,7 +30,7 @@ val DarkExtendedColors: ExtendedColors =
         stale = Color(color = 0xFFB0B0B0),
     )
 
-val LocalExtendedColors =
+val LocalExtendedColors: ProvidableCompositionLocal<ExtendedColors> =
     staticCompositionLocalOf {
         LightExtendedColors
     }

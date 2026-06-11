@@ -116,7 +116,7 @@ class PriceRepositoryImpl(
                 return@channelFlow
             }
 
-            val quotesState: MutableStateFlow<Map<String, Quote>> = MutableStateFlow(value = emptyMap<String, Quote>())
+            val quotesState = MutableStateFlow<Map<String, Quote>>(value = emptyMap())
             launch {
                 quotesState
                     .drop(count = 1)
@@ -136,7 +136,7 @@ class PriceRepositoryImpl(
             }
 
             // Previous-close baselines derived from snapshots let ticks carry day change too.
-            val previousCloses: MutableMap<String, Double> = mutableMapOf<String, Double>()
+            val previousCloses = mutableMapOf<String, Double>()
             val snapshots: Map<String, Quote> = fetchSnapshots(source = source, instruments = instruments)
             recordPreviousCloses(
                 snapshots = snapshots,
@@ -158,7 +158,7 @@ class PriceRepositoryImpl(
                 }
             }
 
-            var connectedOnce: Boolean = false
+            var connectedOnce = false
             events.collect { event ->
                 when (event) {
                     is PriceStreamEvent.Ticks -> {
@@ -247,7 +247,7 @@ class PriceRepositoryImpl(
                     Double.NaN
                 }
             val percentChange: Double =
-                if (previousClose != null && previousClose != 0.0) {
+                if (previousClose != null) {
                     change / previousClose * 100
                 } else {
                     Double.NaN
