@@ -11,8 +11,11 @@ interface WatchlistDao {
     @Query(value = "SELECT * FROM watchlist ORDER BY addedAtEpochMillis ASC")
     fun observeAll(): Flow<List<WatchlistItemEntity>>
 
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM watchlist WHERE symbol = :symbol)")
+    suspend fun exists(symbol: String): Boolean
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(entity: WatchlistItemEntity)
+    suspend fun insert(entity: WatchlistItemEntity): Long
 
     @Query(value = "DELETE FROM watchlist WHERE symbol = :symbol")
     suspend fun delete(symbol: String)
