@@ -5,15 +5,15 @@ persisted watchlist, and watch prices update live over WebSocket — with a full
 the entire experience on generated data.
 
 Built with Kotlin, Jetpack Compose, the
-[Composable Presenter pattern](ARCHITECTURE.md) (no ViewModels), Koin, Room, Navigation 3,
+[Composable Presenter pattern](docs/ARCHITECTURE.md) (no ViewModels), Koin, Room, Navigation 3,
 Retrofit/OkHttp, and kotlinx.serialization.
 
-**About this submission:** I used AI pair-programming throughout (Claude; see
-[ARCHITECTURE.md](ARCHITECTURE.md) for the full disclosure and what decisions were mine).
+**About this submission:** I used AI pair-programming throughout (Claude & Gemini; see
+[ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full disclosure and what decisions were mine).
 Required scope (R1–R11) landed first; optional enhancements came only after all requirements were
 met. Two features — after-hours market-session pricing and swipe-to-remove with undo — were
 designed and deliberately cut when breadth began to outweigh explainability; both designs are
-preserved in [PLAN.md](PLAN.md). The supporting docs (REQUIREMENTS.md, PLAN.md) exist because
+preserved in [PLAN.md](docs/PLAN.md). The supporting docs (REQUIREMENTS.md, PLAN.md) exist because
 traceability is how I kept AI-generated work auditable, not because they took long to produce.
 
 ## Setup
@@ -51,11 +51,11 @@ price (em dash, e.g. crypto before its first tick), stale (cached or disconnecte
 network loss and reconnecting (banner; automatic resubscribe + snapshot re-fetch on recovery).
 Day change renders green/red against the previous close.
 
-**UI Polish:** Includes price movement indicators (▲/▼), a custom `WatchlistDesignSystem` for chips, 
+**UI Polish:** Includes price movement indicators (▲/▼), a custom `WatchlistDesignSystem` for chips,
 `animateItem()` list transitions, and a modal deletion confirmation.
 
-**Data Integrity:** The repository layer includes defensive pre-validation and row ID verification 
-to catch SQLite constraint violations (like `NaN` mapping) and throw loudly during development 
+**Data Integrity:** The repository layer includes defensive pre-validation and row ID verification
+to catch SQLite constraint violations (like `NaN` mapping) and throw loudly during development
 rather than failing silently.
 
 ## Tests
@@ -68,7 +68,7 @@ rather than failing silently.
 Coverage: presenter behavior via Molecule + Turbine (loading/content/error/retry, add/remove,
 debounce, mode toggling), WebSocket reconnect/resubscribe/offline policy with a fake socket and
 virtual time, snapshot⊕tick merging and live-only cache persistence, Room DAO via Robolectric, and
-demo-source determinism with seeded randomness. Details in [ARCHITECTURE.md](ARCHITECTURE.md).
+demo-source determinism with seeded randomness. Details in [ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Assumptions & limitations
 
@@ -81,12 +81,12 @@ demo-source determinism with seeded randomness. Details in [ARCHITECTURE.md](ARC
 - **Free-tier limits**: 60 REST calls/min and ~50 WebSocket symbols — comfortably above this app's
   needs; stock `/search` may return non-US listings whose quotes 403 on the free tier, which
   surface as the missing-price state.
-- **Scope cuts** are tracked in [PLAN.md](PLAN.md) and [REQUIREMENTS.md](REQUIREMENTS.md), which
+- **Scope cuts** are tracked in [PLAN.md](docs/PLAN.md) and [REQUIREMENTS.md](docs/REQUIREMENTS.md), which
   also map every assignment requirement to its implementation and tests.
 
 ## Documents
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — pattern rationale, data flow, tradeoffs, **AI usage**.
-- [REQUIREMENTS.md](REQUIREMENTS.md) — requirement → implementation → test traceability.
-- [PLAN.md](PLAN.md) — the living development plan the commit history follows.
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — pattern rationale, data flow, tradeoffs, **AI usage**.
+- [REQUIREMENTS.md](docs/REQUIREMENTS.md) — requirement → implementation → test traceability.
+- [PLAN.md](docs/PLAN.md) — the living development plan the commit history follows.
 - [CLAUDE.md](CLAUDE.md) — engineering conventions all code in this repo follows.
