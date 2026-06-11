@@ -120,6 +120,13 @@ Automated coverage: `WatchlistPresenterTest.remove_shows_confirmation_dialog`,
 | Watch an updating row | A green ▲ or red ▼ indicator flashes briefly after each tick; price text reflects the latest trade |
 | Watch the sparkline (small chart on the right) | Fills gradually from left to right with each tick (up to 40 ticks retained) |
 
+**Note — sparkline only appears when ticks arrive in the current session.** The REST snapshot
+populates the price display but not the sparkline buffer. Instruments with low or zero after-hours
+volume (e.g. ETFs like VOO) will show a price but no chart outside market hours, while actively
+traded after-hours instruments (e.g. AAPL) will accumulate ticks and show a chart. This is
+correct behavior: an empty sparkline means "no in-session activity," which is more honest than
+drawing a flat line.
+
 Automated coverage: `WatchlistPresenterTest.price_tick_updates_row_and_movement_direction`
 
 ---
