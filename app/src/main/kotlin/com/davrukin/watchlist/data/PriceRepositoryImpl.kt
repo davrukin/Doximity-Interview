@@ -83,7 +83,7 @@ class PriceRepositoryImpl(
     }
 
     override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> =
-        modeRepository.mode.flatMapLatest { mode: MarketDataMode ->
+        modeRepository.mode.flatMapLatest { mode ->
             quotes(
                 source = selector.sourceFor(mode = mode),
                 persistFreshQuotes = mode == MarketDataMode.LIVE,
@@ -147,7 +147,7 @@ class PriceRepositoryImpl(
             }
 
             var connectedOnce: Boolean = false
-            events.collect { event: PriceStreamEvent ->
+            events.collect { event ->
                 when (event) {
                     is PriceStreamEvent.Ticks -> {
                         quotesState.update { current: Map<String, Quote> ->
@@ -192,13 +192,13 @@ class PriceRepositoryImpl(
     ): Map<String, Quote> =
         coroutineScope {
             instruments
-                .map { instrument: Instrument ->
+                .map { instrument ->
                     async {
                         instrument.symbol to source.quoteSnapshot(instrument = instrument).getOrNull()
                     }
                 }.awaitAll()
                 .mapNotNull { (symbol: String, quote: Quote?) ->
-                    quote?.let { quoteValue: Quote ->
+                    quote?.let { quoteValue ->
                         symbol to quoteValue
                     }
                 }.toMap()
@@ -223,7 +223,7 @@ class PriceRepositoryImpl(
         symbols: Set<String>,
     ): Map<String, Quote> {
         val updated: MutableMap<String, Quote> = current.toMutableMap()
-        ticks.forEach { tick: PriceTick ->
+        ticks.forEach { tick ->
             if (tick.symbol !in symbols) {
                 return@forEach
             }

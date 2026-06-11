@@ -72,7 +72,7 @@ class WatchlistPresenter(
                 items = watchlist ?: emptyList(),
                 quotes = quotes,
                 sortOrder = sortOrder,
-            ).map { item: WatchlistItem ->
+            ).map { item ->
                 key(item.instrument.symbol) {
                     itemPresenter.present(
                         params =
@@ -87,7 +87,7 @@ class WatchlistPresenter(
 
         val eventHandler: EventHandler<WatchlistUiModel.Event> =
             remember(key1 = params) {
-                EventHandler<WatchlistUiModel.Event> { event: WatchlistUiModel.Event ->
+                EventHandler<WatchlistUiModel.Event> { event ->
                     when (event) {
                         is WatchlistUiModel.Event.RequestRemove -> {
                             pendingRemovalSymbol = event.symbol
@@ -143,10 +143,10 @@ class WatchlistPresenter(
             }
 
         val pendingRemoval: WatchlistUiModel.PendingRemoval? =
-            pendingRemovalSymbol?.let { symbol: String ->
+            pendingRemovalSymbol?.let { symbol ->
                 items
                     .firstOrNull { it.symbol == symbol }
-                    ?.let { row: WatchlistRowUiModel ->
+                    ?.let { row ->
                         WatchlistUiModel.PendingRemoval(
                             symbol = row.symbol,
                             displaySymbol = row.displaySymbol,
@@ -155,7 +155,7 @@ class WatchlistPresenter(
             }
 
         val detail: WatchlistRowUiModel? =
-            detailSymbol?.let { symbol: String ->
+            detailSymbol?.let { symbol ->
                 items.firstOrNull { it.symbol == symbol }
             }
 
@@ -184,13 +184,13 @@ class WatchlistPresenter(
             }
 
             WatchlistUiModel.SortOrder.SYMBOL -> {
-                items.sortedBy { item: WatchlistItem ->
+                items.sortedBy { item ->
                     item.instrument.displaySymbol
                 }
             }
 
             WatchlistUiModel.SortOrder.CHANGE -> {
-                items.sortedByDescending { item: WatchlistItem ->
+                items.sortedByDescending { item ->
                     val quote: Quote? = quotes[item.instrument.symbol] ?: item.cachedQuote
                     val percent: Double = quote?.percentChange ?: Double.NaN
                     // NaN poisons comparators; unknown changes sort to the bottom.

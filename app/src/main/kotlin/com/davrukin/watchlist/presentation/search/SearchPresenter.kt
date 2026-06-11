@@ -65,10 +65,10 @@ class SearchPresenter(
             delay(duration = DEBOUNCE)
             searchState =
                 searchInstruments(query = query.trim()).fold(
-                    onSuccess = { instruments: List<Instrument> ->
+                    onSuccess = { instruments ->
                         SearchState.Loaded(instruments = instruments)
                     },
-                    onFailure = { _: Throwable ->
+                    onFailure = { _ ->
                         SearchState.Failed
                     },
                 )
@@ -76,14 +76,14 @@ class SearchPresenter(
 
         val watchlistSymbols: Set<String> =
             watchlist
-                .map { item: WatchlistItem ->
+                .map { item ->
                     item.instrument.symbol
                 }.toSet()
 
         val results: List<SearchUiModel.Result> =
             when (val state: SearchState = searchState) {
                 is SearchState.Loaded -> {
-                    state.instruments.map { instrument: Instrument ->
+                    state.instruments.map { instrument ->
                         SearchUiModel.Result(
                             instrument = instrument,
                             isOnWatchlist = instrument.symbol in watchlistSymbols,
@@ -101,7 +101,7 @@ class SearchPresenter(
         // capture: the delegate resolves to the current value at invocation time.
         val eventHandler: EventHandler<SearchUiModel.Event> =
             remember(key1 = params) {
-                EventHandler<SearchUiModel.Event> { event: SearchUiModel.Event ->
+                EventHandler<SearchUiModel.Event> { event ->
                     when (event) {
                         is SearchUiModel.Event.QueryChanged -> {
                             query = event.query
@@ -109,7 +109,7 @@ class SearchPresenter(
 
                         is SearchUiModel.Event.ToggleWatchlist -> {
                             val onWatchlist: Boolean =
-                                watchlist.any { item: WatchlistItem ->
+                                watchlist.any { item ->
                                     item.instrument.symbol == event.instrument.symbol
                                 }
                             appScope.launch {

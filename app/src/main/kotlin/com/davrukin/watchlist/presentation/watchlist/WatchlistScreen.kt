@@ -85,7 +85,7 @@ fun WatchlistScreen(
                 },
             )
         },
-        content = { paddingValues: androidx.compose.foundation.layout.PaddingValues ->
+        content = { paddingValues ->
             Column(
                 modifier =
                     Modifier
@@ -105,7 +105,7 @@ fun WatchlistScreen(
                             },
                         animationSpec = tween(durationMillis = MotionTokens.STANDARD_MILLIS),
                         label = "WatchlistContent",
-                    ) { phase: ContentPhase ->
+                    ) { phase ->
                         when (phase) {
                             ContentPhase.LOADING -> {
                                 LoadingState(modifier = Modifier.fillMaxSize())
@@ -132,10 +132,10 @@ fun WatchlistScreen(
                                             content = {
                                                 items(
                                                     items = model.items,
-                                                    key = { row: WatchlistRowUiModel ->
+                                                    key = { row ->
                                                         row.symbol
                                                     },
-                                                    itemContent = { row: WatchlistRowUiModel ->
+                                                    itemContent = { row ->
                                                         WatchlistRow(
                                                             row = row,
                                                             onClick = {

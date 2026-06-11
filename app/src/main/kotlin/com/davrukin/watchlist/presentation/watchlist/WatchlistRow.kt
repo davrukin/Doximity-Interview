@@ -121,7 +121,7 @@ private fun RowContent(
                         row.isStale && row.price != null -> {
                             Text(
                                 text =
-                                    row.staleAsOf?.let { asOf: String ->
+                                    row.staleAsOf?.let { asOf ->
                                         stringResource(id = R.string.price_stale_as_of, asOf)
                                     } ?: stringResource(id = R.string.price_stale),
                                 style = MaterialTheme.typography.labelSmall,

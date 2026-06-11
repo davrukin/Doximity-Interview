@@ -50,8 +50,12 @@ class FakeWatchlistRepository(
     override fun observeWatchlist(): Flow<List<WatchlistItem>> = items
 
     override suspend fun add(instrument: Instrument) {
-        items.update { current: List<WatchlistItem> ->
-            if (current.any { item: WatchlistItem -> item.instrument.symbol == instrument.symbol }) {
+        items.update { current ->
+            if (
+                current.any { item ->
+                    item.instrument.symbol == instrument.symbol
+                }
+            ) {
                 current
             } else {
                 current + WatchlistItem(instrument = instrument, cachedQuote = null)
@@ -60,8 +64,10 @@ class FakeWatchlistRepository(
     }
 
     override suspend fun remove(symbol: String) {
-        items.update { current: List<WatchlistItem> ->
-            current.filterNot { item: WatchlistItem -> item.instrument.symbol == symbol }
+        items.update { current ->
+            current.filterNot { item ->
+                item.instrument.symbol == symbol
+            }
         }
     }
 }
@@ -89,10 +95,14 @@ class FakeMarketDataModeRepository(
     override val mode: StateFlow<MarketDataMode> = mutableMode.asStateFlow()
 
     override fun toggle() {
-        mutableMode.update {
-            when (it) {
-                MarketDataMode.LIVE -> MarketDataMode.DEMO
-                MarketDataMode.DEMO -> MarketDataMode.LIVE
+        mutableMode.update { current ->
+            when (current) {
+                MarketDataMode.LIVE -> {
+                    MarketDataMode.DEMO
+                }
+                MarketDataMode.DEMO -> {
+                    MarketDataMode.LIVE
+                }
             }
         }
     }

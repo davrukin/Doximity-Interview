@@ -1,5 +1,6 @@
 package com.davrukin.watchlist.data
 
+import android.util.Log
 import com.davrukin.watchlist.data.local.WatchlistDao
 import com.davrukin.watchlist.data.local.WatchlistItemEntity
 import com.davrukin.watchlist.domain.model.Instrument
@@ -9,34 +10,30 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Clock
 
-import android.util.Log
-
 class WatchlistRepositoryImpl(
     private val dao: WatchlistDao,
     private val clock: Clock,
 ) : WatchlistRepository {
-    override fun observeWatchlist(): Flow<List<WatchlistItem>> {
-        return dao
+    override fun observeWatchlist(): Flow<List<WatchlistItem>> =
+        dao
             .observeAll()
-            .map { entities: List<WatchlistItemEntity> ->
-                entities.map { entity: WatchlistItemEntity ->
+            .map { entities ->
+                entities.map { entity ->
                     entity.toWatchlistItem()
                 }
             }
-    }
-
     override suspend fun add(instrument: Instrument) {
         Log.d("WatchlistRepository", "Adding ${instrument.symbol} to database")
-        val entity: WatchlistItemEntity = WatchlistItemEntity.fromInstrument(
+        val entity = WatchlistItemEntity.fromInstrument(
             instrument = instrument,
             addedAt = clock.instant(),
         )
 
         try {
-            val rowId: Long = dao.insert(entity = entity)
+            val rowId = dao.insert(entity = entity)
             if (rowId == -1L) {
                 if (!dao.exists(symbol = instrument.symbol)) {
-                    val message: String = "Failed to insert ${instrument.symbol}: INSERT OR IGNORE silently dropped the row (likely constraint violation)."
+                    val message = "Failed to insert ${instrument.symbol}: INSERT OR IGNORE dropped row"
                     Log.e("WatchlistRepository", message)
                     throw IllegalStateException(message)
                 } else {

@@ -46,7 +46,7 @@ class DemoInstrumentCatalog {
 
     fun basePrice(symbol: String): Double =
         entries
-            .firstOrNull { entry: Entry ->
+            .firstOrNull { entry ->
                 entry.instrument.symbol == symbol
             }?.basePrice ?: Double.NaN
 

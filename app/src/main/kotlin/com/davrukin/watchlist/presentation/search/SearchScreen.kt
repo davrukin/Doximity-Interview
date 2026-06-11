@@ -64,7 +64,7 @@ fun SearchScreen(
                 },
             )
         },
-        content = { paddingValues: androidx.compose.foundation.layout.PaddingValues ->
+        content = { paddingValues ->
             Column(
                 modifier =
                     Modifier
@@ -73,7 +73,7 @@ fun SearchScreen(
                 content = {
                     OutlinedTextField(
                         value = model.query,
-                        onValueChange = { query: String ->
+                        onValueChange = { query ->
                             model.eventHandler.onEvent(
                                 event = SearchUiModel.Event.QueryChanged(query = query),
                             )
@@ -142,10 +142,10 @@ fun SearchScreen(
                                 content = {
                                     items(
                                         items = model.results,
-                                        key = { result: SearchUiModel.Result ->
+                                        key = { result ->
                                             result.instrument.symbol
                                         },
-                                        itemContent = { result: SearchUiModel.Result ->
+                                        itemContent = { result ->
                                             SearchResultRow(
                                                 result = result,
                                                 onToggle = {

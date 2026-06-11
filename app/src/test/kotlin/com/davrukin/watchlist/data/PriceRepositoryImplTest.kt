@@ -26,7 +26,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PriceRepositoryImplTest {
@@ -66,75 +65,78 @@ class PriceRepositoryImplTest {
     }
 
     @Test
-    fun `refetches snapshots on reconnect`() =
+    fun `refetches snapshots on reconnect`() {
         runTest {
-            val fixture = Fixture(scope = this)
+            val fixture: Fixture = Fixture(scope = this)
             fixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
 
             fixture.repository.observeQuotes(instruments = listOf(aapl)).test {
                 awaitItem()
                 runCurrent()
 
-                fixture.liveStream.emit(PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTED))
+                fixture.liveStream.emit(event = PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTED))
                 runCurrent()
                 expectNoEvents()
 
                 fixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 110.0, change = 12.0))
-                fixture.liveStream.emit(PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTED))
-                assertEquals(110.0, requireNotNull(awaitItem()["AAPL"]).price, 0.0)
+                fixture.liveStream.emit(event = PriceStreamEvent.ConnectionChanged(state = ConnectionState.CONNECTED))
+                assertEquals(110.0, requireNotNull(value = awaitItem()["AAPL"]).price, 0.0)
 
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `persists fresh quotes in live mode only`() =
+    fun `persists fresh quotes in live mode only`() {
         runTest {
-            val liveFixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
+            val liveFixture: Fixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
             liveFixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
             liveFixture.repository.observeQuotes(instruments = listOf(aapl)).test {
                 awaitItem()
-                advanceTimeBy(6.seconds)
+                advanceTimeBy(delayTimeMillis = 6000L)
                 runCurrent()
-                assertTrue(liveFixture.dao.updatedSymbols.contains("AAPL"))
+                assertTrue(liveFixture.dao.updatedSymbols.contains(element = "AAPL"))
                 cancelAndIgnoreRemainingEvents()
             }
 
-            val nanFixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
+            val nanFixture: Fixture = Fixture(scope = this, mode = MarketDataMode.LIVE)
             nanFixture.liveSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = Double.NaN))
             nanFixture.repository.observeQuotes(instruments = listOf(aapl)).test {
                 awaitItem()
-                advanceTimeBy(6.seconds)
+                advanceTimeBy(delayTimeMillis = 6000L)
                 runCurrent()
                 // NaN sentinels must never reach the database; they persist as NULL.
-                val persisted = nanFixture.dao.persistedQuotes.last()
+                val persisted: FakeWatchlistDao.PersistedQuote = nanFixture.dao.persistedQuotes.last()
                 assertEquals(100.0, persisted.price, 0.0)
                 assertEquals(null, persisted.change)
                 assertEquals(null, persisted.percentChange)
                 cancelAndIgnoreRemainingEvents()
             }
 
-            val demoFixture = Fixture(scope = this, mode = MarketDataMode.DEMO)
+            val demoFixture: Fixture = Fixture(scope = this, mode = MarketDataMode.DEMO)
             demoFixture.demoSource.snapshots = mapOf("AAPL" to quote(price = 100.0, change = 2.0))
             demoFixture.repository.observeQuotes(instruments = listOf(aapl)).test {
                 awaitItem()
-                advanceTimeBy(6.seconds)
+                advanceTimeBy(delayTimeMillis = 6000L)
                 runCurrent()
                 assertTrue(demoFixture.dao.updatedSymbols.isEmpty())
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `emits empty map for an empty watchlist`() =
+    fun `emits empty map for an empty watchlist`() {
         runTest {
-            val fixture = Fixture(scope = this)
+            val fixture: Fixture = Fixture(scope = this)
 
             fixture.repository.observeQuotes(instruments = emptyList()).test {
                 assertEquals(emptyMap<String, Quote>(), awaitItem())
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     private fun quote(
         price: Double,
@@ -223,14 +225,30 @@ class PriceRepositoryImplTest {
 
         override fun observeAll(): Flow<List<WatchlistItemEntity>> = items
 
-        override suspend fun insert(entity: WatchlistItemEntity) {
+        override suspend fun exists(symbol: String): Boolean =
+            items.value.any { entity -> entity.symbol == symbol }
+
+        override suspend fun insert(entity: WatchlistItemEntity): Long {
             items.update { current ->
-                if (current.any { it.symbol == entity.symbol }) current else current + entity
+                if (
+                    current.any { currentEntity ->
+                        currentEntity.symbol == entity.symbol
+                    }
+                ) {
+                    current
+                } else {
+                    current + entity
+                }
             }
+            return 1L
         }
 
         override suspend fun delete(symbol: String) {
-            items.update { current -> current.filterNot { it.symbol == symbol } }
+            items.update { current ->
+                current.filterNot { currentEntity ->
+                    currentEntity.symbol == symbol
+                }
+            }
         }
 
         override suspend fun updateQuote(

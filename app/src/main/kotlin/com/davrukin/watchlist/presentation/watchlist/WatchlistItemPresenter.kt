@@ -69,7 +69,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             description = instrument.description,
             type = instrument.type,
             price =
-                quote?.let { quoteValue: Quote ->
+                quote?.let { quoteValue ->
                     if (quoteValue.price.isNaN()) {
                         null
                     } else {
@@ -77,11 +77,11 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
                     }
                 },
             change =
-                quote?.let { quoteValue: Quote ->
+                quote?.let { quoteValue ->
                     formatChange(quote = quoteValue)
                 },
             isGain =
-                quote?.let { quoteValue: Quote ->
+                quote?.let { quoteValue ->
                     if (quoteValue.change.isNaN()) {
                         null
                     } else {
