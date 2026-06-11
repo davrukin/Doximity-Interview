@@ -24,6 +24,10 @@ Requirements: JDK 17+, Android SDK (compileSdk 37), a device or emulator on API 
 git clone <this repo>
 # Optional — for live data, add a free Finnhub key (https://finnhub.io/register):
 echo "FINNHUB_API_KEY=your_key_here" >> local.properties
+
+# Configure the local git hooks path (also runs automatically during Gradle builds):
+git config core.hooksPath scripts
+
 ./gradlew installDebug
 ```
 
