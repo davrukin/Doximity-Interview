@@ -87,7 +87,7 @@ class SearchScreenTest {
             SearchScreen(model = model(query = "zzz", phase = SearchUiModel.Phase.EMPTY))
         }
 
-        composeRule.onNodeWithText(text = "No matches for \"zzz\"").assertIsDisplayed()
+        composeRule.onNodeWithText(text = "No matches for “zzz”").assertIsDisplayed()
     }
 
     private val aapl =
