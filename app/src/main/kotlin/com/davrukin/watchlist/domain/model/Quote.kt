@@ -16,4 +16,5 @@ data class Quote(
     val percentChange: Double = Double.NaN,
     val lastUpdated: Instant,
     val isStale: Boolean,
+    val isUnsupported: Boolean = false,
 )

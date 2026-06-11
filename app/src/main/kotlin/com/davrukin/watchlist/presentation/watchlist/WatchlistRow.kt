@@ -110,6 +110,14 @@ private fun RowContent(
                         },
                     )
                     when {
+                        row.isUnsupported -> {
+                            Text(
+                                text = stringResource(id = R.string.price_unsupported),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+
                         row.isStale && row.price != null -> {
                             Text(
                                 text =

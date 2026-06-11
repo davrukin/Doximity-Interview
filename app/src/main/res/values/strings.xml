@@ -22,6 +22,7 @@
     <string name="price_missing">—</string>
     <string name="price_stale">stale</string>
     <string name="price_stale_as_of">stale · %1$s</string>
+    <string name="price_unsupported">Unsupported in Demo</string>
 
     <string name="search_title">Add to watchlist</string>
     <string name="search_back">Back</string>

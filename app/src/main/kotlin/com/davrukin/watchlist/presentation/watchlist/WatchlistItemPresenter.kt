@@ -70,7 +70,11 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
             type = instrument.type,
             price =
                 quote?.let { quoteValue: Quote ->
-                    priceFormat.format(quoteValue.price)
+                    if (quoteValue.price.isNaN()) {
+                        null
+                    } else {
+                        priceFormat.format(quoteValue.price)
+                    }
                 },
             change =
                 quote?.let { quoteValue: Quote ->
@@ -85,6 +89,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
                     }
                 },
             isStale = isStale,
+            isUnsupported = quote?.isUnsupported == true,
             staleAsOf =
                 if (isStale) {
                     timeFormat.format(quote.lastUpdated.atZone(zoneId))

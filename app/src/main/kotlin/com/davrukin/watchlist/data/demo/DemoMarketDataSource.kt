@@ -18,19 +18,26 @@ class DemoMarketDataSource(
     override suspend fun quoteSnapshot(instrument: Instrument): Result<Quote?> {
         val base: Double = catalog.basePrice(symbol = instrument.symbol)
         if (base.isNaN()) {
-            return Result.success(value = null)
+            return Result.success(
+                value = Quote(
+                    price = Double.NaN,
+                    lastUpdated = clock.instant(),
+                    isStale = false,
+                    isUnsupported = true,
+                ),
+            )
         }
         val price: Double = base * (1 + random.nextDouble(from = -SNAPSHOT_SPREAD, until = SNAPSHOT_SPREAD))
         val change: Double = price - base
         return Result.success(
-            value =
-                Quote(
-                    price = price,
-                    change = change,
-                    percentChange = change / base * 100,
-                    lastUpdated = clock.instant(),
-                    isStale = false,
-                ),
+            value = Quote(
+                price = price,
+                change = change,
+                percentChange = change / base * 100,
+                lastUpdated = clock.instant(),
+                isStale = false,
+                isUnsupported = false,
+            ),
         )
     }
 

@@ -18,6 +18,7 @@ data class WatchlistRowUiModel(
     val change: String?,
     val isGain: Boolean?,
     val isStale: Boolean,
+    val isUnsupported: Boolean = false,
     val staleAsOf: String? = null,
     val movement: PriceMovement? = null,
     val sparkline: List<Double> = emptyList(),
