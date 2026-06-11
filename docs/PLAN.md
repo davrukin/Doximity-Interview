@@ -102,6 +102,11 @@ watchlist item is cheaply reversible, which favors undo (lossless — the cached
 restored via a repository-level restore, not a fresh re-add). A custom accessibility action
 and a remove affordance in the detail dialog would keep non-swipe paths available.
 
+**Search result type tagging.** Display the instrument's type (e.g., Stock, ETF, Crypto) as a visual tag
+alongside the description in the search results. The `InstrumentType` is already modeled in the domain
+and populated by the data layer, but currently not surfaced in the search UI. This would help users
+distinguish identically named symbols across different asset classes.
+
 ## Deviations log
 
 | Date       | Change                                                                            | Why                                                                                                                                                                                     |
