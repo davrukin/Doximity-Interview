@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -136,7 +137,9 @@ class PriceRepositoryImpl(
             }
 
             // Previous-close baselines derived from snapshots let ticks carry day change too.
-            val previousCloses = mutableMapOf<String, Double>()
+            // ConcurrentHashMap ensures thread-safe updates across background coroutines
+            // (appScope / Dispatchers.Default).
+            val previousCloses = ConcurrentHashMap<String, Double>()
             val snapshots: Map<String, Quote> = fetchSnapshots(source = source, instruments = instruments)
             recordPreviousCloses(
                 snapshots = snapshots,
