@@ -1,5 +1,6 @@
 package com.davrukin.watchlist.data
 
+import androidx.lifecycle.Lifecycle
 import app.cash.turbine.test
 import com.davrukin.watchlist.data.local.WatchlistDao
 import com.davrukin.watchlist.data.local.WatchlistItemEntity
@@ -169,6 +170,7 @@ class PriceRepositoryImplTest {
                     ),
                 modeRepository = FakeModeRepository(initial = mode),
                 dao = dao,
+                appLifecycleState = MutableStateFlow(value = Lifecycle.State.RESUMED),
                 appScope = scope.backgroundScope,
             )
     }

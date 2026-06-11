@@ -1,5 +1,7 @@
 package com.davrukin.watchlist.data
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.davrukin.watchlist.data.local.WatchlistDao
 import com.davrukin.watchlist.data.stream.PriceStreamEvent
 import com.davrukin.watchlist.domain.model.ConnectionState
@@ -22,7 +24,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -49,6 +53,7 @@ class PriceRepositoryImpl(
     private val selector: MarketDataSelector,
     private val modeRepository: MarketDataModeRepository,
     private val dao: WatchlistDao,
+    appLifecycleState: Flow<Lifecycle.State>,
     appScope: CoroutineScope,
 ) : PriceRepository {
     private val watchedSymbols = MutableStateFlow(value = emptySet<String>())
@@ -57,8 +62,15 @@ class PriceRepositoryImpl(
     private val events: SharedFlow<PriceStreamEvent> =
         selector
             .observe()
-            .flatMapLatest { source ->
-                source.priceStream.events(symbols = watchedSymbols)
+            .combine(appLifecycleState) { source, state ->
+                source to state
+            }
+            .flatMapLatest { (source, state) ->
+                if (state.isAtLeast(Lifecycle.State.STARTED)) {
+                    source.priceStream.events(symbols = watchedSymbols)
+                } else {
+                    emptyFlow()
+                }
             }.shareIn(
                 scope = appScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = SOCKET_LINGER_MILLIS),

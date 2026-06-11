@@ -12,6 +12,7 @@ navigation3 = "1.1.2"
 
 koin = "4.2.1"
 room = "2.8.4"
+lifecycle = "2.10.0"
 retrofit = "3.0.0"
 okhttp = "5.4.0"
 kotlinxSerialization = "1.11.0"
@@ -39,6 +40,8 @@ compose-runtime-saveable = { group = "androidx.compose.runtime", name = "runtime
 
 navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "navigation3" }
 navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
+
+lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycle" }
 
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }

@@ -1,6 +1,8 @@
 package com.davrukin.watchlist.app.di
 
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
+
 import com.davrukin.watchlist.BuildConfig
 import com.davrukin.watchlist.data.InstrumentSearchRepositoryImpl
 import com.davrukin.watchlist.data.MarketDataModeRepositoryImpl
@@ -121,6 +123,7 @@ val dataModule: Module =
                 selector = get(),
                 modeRepository = get(),
                 dao = get(),
+                appLifecycleState = ProcessLifecycleOwner.get().lifecycle.currentStateFlow,
                 appScope = get(),
             )
         }

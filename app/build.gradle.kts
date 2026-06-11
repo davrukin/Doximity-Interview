@@ -81,6 +81,8 @@ dependencies {
     implementation(libs.navigation3.runtime)
     implementation(libs.navigation3.ui)
 
+    implementation(libs.lifecycle.process)
+
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
 
