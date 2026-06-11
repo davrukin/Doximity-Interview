@@ -55,8 +55,8 @@ price (em dash, e.g. crypto before its first tick), stale (cached or disconnecte
 network loss and reconnecting (banner; automatic resubscribe + snapshot re-fetch on recovery).
 Day change renders green/red against the previous close.
 
-**UI Polish:** Includes price movement indicators (▲/▼), a custom `WatchlistDesignSystem` for chips,
-`animateItem()` list transitions, and a modal deletion confirmation.
+**UI Polish:** Price movement indicators (▲/▼), per-row sparklines, themed gain/loss colors with
+dark-mode palettes, animated banner/list/state transitions, and a deletion confirmation dialog.
 
 **Data Integrity:** The repository layer includes defensive pre-validation and row ID verification
 to catch SQLite constraint violations (like `NaN` mapping) and throw loudly during development
