@@ -94,4 +94,5 @@ demo-source determinism with seeded randomness. Details in [ARCHITECTURE.md](doc
 - [ARCHITECTURE.md](docs/ARCHITECTURE.md) — pattern rationale, data flow, tradeoffs, **AI usage**.
 - [REQUIREMENTS.md](docs/REQUIREMENTS.md) — requirement → implementation → test traceability.
 - [PLAN.md](docs/PLAN.md) — the living development plan the commit history follows.
+- [TESTING.md](docs/TESTING.md) — manual test scenarios with expected results.
 - [CLAUDE.md](CLAUDE.md) — engineering conventions all code in this repo follows.
