@@ -13,7 +13,13 @@ ktlint_code_style = ktlint_official
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_allow_trailing_comma_on_call_site = true
 ktlint_function_naming_ignore_when_annotated_with = Composable
+compose_allowed_composition_locals = LocalExtendedColors
 max_line_length = 120
+
+[**/presentation/core/LaunchUseCase.kt]
+# launchUseCase deliberately collects once per composition; restarting on lambda change is
+# exactly what it exists to prevent.
+ktlint_compose_lambda-param-in-effect = disabled
 
 [*.{yml,yaml,json,toml}]
 indent_size = 2

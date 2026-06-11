@@ -1,0 +1,57 @@
+# Machine-enforced subset of the conventions in CLAUDE.md. Built upon detekt's defaults;
+# only deviations are listed here.
+
+style:
+  BracesOnIfStatements:
+    active: true
+    singleLine: 'always'
+    multiLine: 'always'
+  ForbiddenComment:
+    active: true
+    comments:
+      - reason: 'Resolve the question or track it in PLAN.md instead of leaving a marker.'
+        value: 'TODO'
+      - reason: 'Resolve the question or track it in PLAN.md instead of leaving a marker.'
+        value: 'FIXME'
+      - reason: 'Resolve the question or track it in PLAN.md instead of leaving a marker.'
+        value: 'STOPSHIP'
+  ForbiddenImport:
+    active: true
+    imports:
+      - reason: 'No logging in production code; failures must propagate, not hide in logcat.'
+        value: 'android.util.Log'
+  MagicNumber:
+    active: false
+  ReturnCount:
+    active: false
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated:
+      - 'Preview'
+      - 'PreviewParameter'
+
+potential-bugs:
+  UnsafeCallOnNullableType:
+    active: true
+
+complexity:
+  LongMethod:
+    active: false
+  LongParameterList:
+    active: false
+  TooManyFunctions:
+    active: false
+  CyclomaticComplexMethod:
+    active: false
+
+naming:
+  FunctionNaming:
+    active: true
+    ignoreAnnotated:
+      - 'Composable'
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+  SwallowedException:
+    active: true

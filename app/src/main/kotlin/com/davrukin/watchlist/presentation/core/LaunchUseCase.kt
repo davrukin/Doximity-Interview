@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.Flow
  * Collects the flow returned by [useCase] into [State], starting once per composition.
  *
  * The collection is keyed to the composition (not the flow instance), so recompositions do not
- * re-invoke [useCase] or restart the collection.
+ * re-invoke [useCase] or restart the collection. That once-only contract is what the
+ * lambda-param-in-effect lint rule warns about; it is disabled for this file in .editorconfig
+ * because here the behavior is the point.
  */
 @Composable
 fun <T> launchUseCase(

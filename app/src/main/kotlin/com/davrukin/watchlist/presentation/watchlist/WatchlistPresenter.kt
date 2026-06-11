@@ -194,7 +194,11 @@ class WatchlistPresenter(
                     val quote: Quote? = quotes[item.instrument.symbol] ?: item.cachedQuote
                     val percent: Double = quote?.percentChange ?: Double.NaN
                     // NaN poisons comparators; unknown changes sort to the bottom.
-                    if (percent.isNaN()) Double.NEGATIVE_INFINITY else percent
+                    if (percent.isNaN()) {
+                        Double.NEGATIVE_INFINITY
+                    } else {
+                        percent
+                    }
                 }
             }
         }

@@ -47,13 +47,18 @@ This project uses the Composable Presenter pattern, as described in Doximity's e
 - One composable per file. Exception: a screen file may contain that screen's own private content composables.
 - Every composable has multiple `@Preview` functions covering its meaningful states, in the same file, using `PreviewParameterProvider` where the state space warrants it. Preview fixtures are clearly named and preview-only.
 - No narrating comments. Comment only non-obvious constraints or rationale. KDoc only on the core pattern interfaces and public data-layer API.
-- Formatting is mechanical: `./gradlew ktlintCheck` must pass before every commit.
+- Style enforcement is mechanical wherever a check exists: ktlint (formatting, trailing commas,
+  composable naming) + compose-rules (modifier/remember/CompositionLocal conventions) + detekt
+  (`config/detekt/detekt.yml`: braces on all if/else, no `!!`, no TODO/FIXME comments, no
+  `android.util.Log`, no swallowed exceptions). Rules with no off-the-shelf check remain
+  conventions enforced by review: block bodies, named arguments everywhere (including trailing
+  `content` lambdas), no nullable primitives, explicit public types, no extension functions.
 
 ## Testing
 
 - Presenters are unit-tested with Molecule (`moleculeFlow { presenter.present(...) }`) and Turbine, asserting emitted `UiModel`s and event handling.
 - Key screens have Compose UI tests (interaction → state change → assertion).
-- `./gradlew ktlintCheck assembleDebug testDebugUnitTest` must be green before every commit.
+- `./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest` must be green before every commit.
 
 ## Commits
 

@@ -35,15 +35,25 @@ fun WatchlistTheme(
         when {
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 val context = LocalContext.current
-                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+                if (darkTheme) {
+                    dynamicDarkColorScheme(context)
+                } else {
+                    dynamicLightColorScheme(context)
+                }
             }
 
             darkTheme -> DarkColors
             else -> LightColors
         }
 
+    val extendedColors: ExtendedColors =
+        if (darkTheme) {
+            DarkExtendedColors
+        } else {
+            LightExtendedColors
+        }
     CompositionLocalProvider(
-        LocalExtendedColors provides if (darkTheme) DarkExtendedColors else LightExtendedColors,
+        LocalExtendedColors provides extendedColors,
         content = {
             MaterialTheme(
                 colorScheme = colorScheme,

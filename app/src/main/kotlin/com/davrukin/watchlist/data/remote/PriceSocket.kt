@@ -5,7 +5,8 @@ import kotlinx.coroutines.flow.Flow
 /**
  * One raw socket session per collection of [connect]. Implementations complete the flow when the
  * server closes the connection and emit [PriceSocketEvent.Failed] on transport errors; reconnect
- * policy lives above this interface in [com.davrukin.watchlist.data.stream.ReconnectingPriceStream] so it can be tested with a fake.
+ * policy lives above this interface in [com.davrukin.watchlist.data.stream.ReconnectingPriceStream]
+ * so it can be tested with a fake.
  */
 interface PriceSocket {
     fun connect(): Flow<PriceSocketEvent>
