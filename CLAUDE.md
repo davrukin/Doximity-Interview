@@ -46,7 +46,7 @@ This project uses the Composable Presenter pattern, as described in Doximity's e
 
 ## Data Layer & Persistence
 
-- Room Database schemas must strictly roll forward. Never decrement the Room version number or revert schema changes directly. If you need to revert a change, increment the version number to the next highest integer and provide a reverting migration. This ensures users who already upgraded to the broken schema do not experience destructive downgrades or crashes.
+- The database ships at version 1 with no migrations. Room schemas must strictly roll forward: never decrement the version number or revert schema changes directly. If a schema change is needed in the future, increment the version to the next highest integer and provide a forward migration. If a change needs to be reverted, increment again and provide a reverting migration — this ensures users who already upgraded do not experience destructive downgrades or crashes.
 
 ## Kotlin / Compose style
 
