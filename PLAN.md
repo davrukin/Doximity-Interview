@@ -62,7 +62,8 @@ Key design points:
 - [x] O3 sparkline
 
 ### Phase 3 — hardening and developer additions
-- [x] Compiler warnings resolved (safe call, v2 compose test rule)
+- [x] Compiler warnings resolved (safe call, v2 compose test rule, unused imports)
+- [x] Defensive DB operations: check row ID and exists-on-fail to prevent silent SQLite drops
 - [x] Defensive round-trip regression tests for the silent-persistence bug class
 - [x] D3 strings.xml extraction
 - [x] D1 delete confirmation dialog

@@ -36,12 +36,19 @@ With a key configured, the app starts in live mode and the **Live/Demo chip** in
 toggles modes at runtime. Crypto pairs (Binance) tick 24/7 in live mode, so real-time updates are
 visible even outside US market hours.
 
-## State handling
+## State handling & Polish
 
 Loading (initial watchlist read), empty (watchlist and search), error with retry (search), missing
 price (em dash, e.g. crypto before its first tick), stale (cached or disconnected values, labeled),
 network loss and reconnecting (banner; automatic resubscribe + snapshot re-fetch on recovery).
 Day change renders green/red against the previous close.
+
+**UI Polish:** Includes price movement indicators (▲/▼), a custom `WatchlistDesignSystem` for chips, 
+`animateItem()` list transitions, and a modal deletion confirmation.
+
+**Data Integrity:** The repository layer includes defensive pre-validation and row ID verification 
+to catch SQLite constraint violations (like `NaN` mapping) and throw loudly during development 
+rather than failing silently.
 
 ## Tests
 
