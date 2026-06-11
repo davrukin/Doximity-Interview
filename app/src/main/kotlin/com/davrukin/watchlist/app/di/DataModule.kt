@@ -2,7 +2,6 @@ package com.davrukin.watchlist.app.di
 
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
-
 import com.davrukin.watchlist.BuildConfig
 import com.davrukin.watchlist.data.InstrumentSearchRepositoryImpl
 import com.davrukin.watchlist.data.MarketDataModeRepositoryImpl

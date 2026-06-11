@@ -1,7 +1,6 @@
 package com.davrukin.watchlist.data
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ProcessLifecycleOwner
 import com.davrukin.watchlist.data.local.WatchlistDao
 import com.davrukin.watchlist.data.stream.PriceStreamEvent
 import com.davrukin.watchlist.domain.model.ConnectionState
@@ -64,8 +63,7 @@ class PriceRepositoryImpl(
             .observe()
             .combine(appLifecycleState) { source, state ->
                 source to state
-            }
-            .flatMapLatest { (source, state) ->
+            }.flatMapLatest { (source, state) ->
                 if (state.isAtLeast(Lifecycle.State.STARTED)) {
                     source.priceStream.events(symbols = watchedSymbols)
                 } else {

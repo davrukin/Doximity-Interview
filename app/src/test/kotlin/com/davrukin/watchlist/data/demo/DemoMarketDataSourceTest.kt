@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Clock
@@ -54,7 +53,7 @@ class DemoMarketDataSourceTest {
         }
 
     @Test
-    fun `snapshot for an unknown instrument is null`() =
+    fun `snapshot for an unknown instrument is marked unsupported with no price`() =
         runTest {
             val unknown =
                 Instrument(
@@ -64,7 +63,10 @@ class DemoMarketDataSourceTest {
                     type = InstrumentType.STOCK,
                 )
 
-            assertNull(source.quoteSnapshot(instrument = unknown).getOrThrow())
+            val quote = requireNotNull(source.quoteSnapshot(instrument = unknown).getOrThrow())
+
+            assertTrue(quote.isUnsupported)
+            assertTrue(quote.price.isNaN())
         }
 
     private class NoOpStream : PriceStreamSource {

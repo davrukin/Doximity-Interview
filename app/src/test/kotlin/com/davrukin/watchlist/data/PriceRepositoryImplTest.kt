@@ -227,8 +227,7 @@ class PriceRepositoryImplTest {
 
         override fun observeAll(): Flow<List<WatchlistItemEntity>> = items
 
-        override suspend fun exists(symbol: String): Boolean =
-            items.value.any { entity -> entity.symbol == symbol }
+        override suspend fun exists(symbol: String): Boolean = items.value.any { entity -> entity.symbol == symbol }
 
         override suspend fun insert(entity: WatchlistItemEntity): Long {
             items.update { current ->
