@@ -33,7 +33,9 @@ handled explicitly:
 - **The socket lifecycle** is owned by the data layer: tick/connection flows are shared with
   `shareIn(appScope, WhileSubscribed(5s))`, so the WebSocket connects when the UI starts
   collecting, survives configuration changes (the 5s linger bridges the recreation), and tears
-  down shortly after the UI stops observing. No background battery drain, no lifecycle plumbing.
+  down shortly after the UI stops observing. `PriceRepositoryImpl` additionally gates the upstream
+  on `ProcessLifecycleOwner` foreground state, so the socket is also suspended while the app is
+  in the background — no background battery or data drain.
 - **Rotation-survivable UI state** (the search query) uses `rememberSaveable`; everything else is
   derived from persistent or remote state and simply re-collects.
 
