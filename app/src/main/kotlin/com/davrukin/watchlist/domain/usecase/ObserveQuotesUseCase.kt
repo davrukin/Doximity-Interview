@@ -5,6 +5,7 @@ import com.davrukin.watchlist.domain.repository.PriceRepository
 import com.davrukin.watchlist.domain.repository.WatchlistRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -21,7 +22,8 @@ class ObserveQuotesUseCase(
                 items.map { item ->
                     item.instrument
                 }
-            }.flatMapLatest { instruments ->
+            }.distinctUntilChanged()
+            .flatMapLatest { instruments ->
                 if (instruments.isEmpty()) {
                     flowOf(emptyMap())
                 } else {

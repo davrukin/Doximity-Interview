@@ -6,7 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.davrukin.watchlist.domain.model.ConnectionState
@@ -39,9 +40,27 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
                 (quote.isStale || params.connectionState != ConnectionState.CONNECTED)
 
         val livePrice: Double = params.liveQuote?.price ?: Double.NaN
-        var previousPrice: Double by remember { mutableDoubleStateOf(value = Double.NaN) }
-        var movement: WatchlistRowUiModel.PriceMovement? by remember { mutableStateOf(value = null) }
-        val recentPrices: SnapshotStateList<Double> = remember { mutableStateListOf() }
+        var previousPrice: Double by rememberSaveable { mutableDoubleStateOf(value = Double.NaN) }
+        var movement: WatchlistRowUiModel.PriceMovement? by rememberSaveable {
+            mutableStateOf(value = null)
+        }
+        // Use rememberSaveable to preserve sparkline history and state across rotations and screen transitions (Nav3).
+        val recentPrices: SnapshotStateList<Double> =
+            rememberSaveable(
+                saver =
+                    Saver(
+                        save = { list: SnapshotStateList<Double> ->
+                            list.toDoubleArray()
+                        },
+                        restore = { array: DoubleArray ->
+                            mutableStateListOf<Double>().apply {
+                                addAll(elements = array.toList())
+                            }
+                        },
+                    ),
+            ) {
+                mutableStateListOf()
+            }
         LaunchedEffect(key1 = livePrice) {
             val previous: Double = previousPrice
             previousPrice = livePrice

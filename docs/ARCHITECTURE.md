@@ -58,6 +58,10 @@ Room (watchlist + cached quotes) ──┴──> WatchlistRepository ───�
   update prices and recompute day change against those baselines.
 - **Reconnect protocol**: after every reconnect the snapshots are re-fetched (covering ticks
   missed while down) and all symbols are resubscribed.
+- **Deduplicated subscriptions**: `ObserveQuotesUseCase` applies `.distinctUntilChanged()` to the
+  watchlist flow. This ensures that database writes (persisting ticks every 5s) do not restart the
+  `flatMapLatest` quotes stream when the set of watched symbols is unchanged, preventing redundant
+  socket reconnection overhead and flashing "Stale" labels.
 - **Staleness**: a quote is stale when it comes from the Room cache and has not been refreshed
   this session, or when the connection is down — never merely because a market is quiet
   (US stocks legitimately stop ticking after hours while connected).
