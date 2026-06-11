@@ -107,6 +107,11 @@ alongside the description in the search results. The `InstrumentType` is already
 and populated by the data layer, but currently not surfaced in the search UI. This would help users
 distinguish identically named symbols across different asset classes.
 
+**Manual drag-and-drop sorting.** Allow users to manually reorder their watchlist items via drag-and-drop.
+This requires persisting a `sortIndex` integer column in the Room database so the custom order survives
+app restarts. The custom order would be preserved even if the user temporarily switches to a canned sort
+like "A-Z" or "Day Change", allowing them to switch back to "Custom" seamlessly.
+
 ## Deviations log
 
 | Date       | Change                                                                            | Why                                                                                                                                                                                     |
