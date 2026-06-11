@@ -43,6 +43,10 @@ This project uses the Composable Presenter pattern, as described in Doximity's e
   State is hoisted; data flows down, events flow up (unidirectional data flow). Components are
   self-contained black boxes.
 
+## Data Layer & Persistence
+
+- Room Database schemas must strictly roll forward. Never decrement the Room version number or revert schema changes directly. If you need to revert a change, increment the version number to the next highest integer and provide a reverting migration. This ensures users who already upgraded to the broken schema do not experience destructive downgrades or crashes.
+
 ## Kotlin / Compose style
 
 - Use block body for functions instead of expression body (e.g., `fun getX(): T { return x }`

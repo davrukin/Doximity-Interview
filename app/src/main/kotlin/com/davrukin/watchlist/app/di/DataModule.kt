@@ -67,7 +67,10 @@ val dataModule: Module =
                     context = androidContext(),
                     klass = WatchlistDatabase::class.java,
                     name = "watchlist.db",
-                ).fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
+                )
+                // Intentionally omitting fallbackToDestructiveMigrationOnDowngrade() here.
+                // If a developer locally checks out an older branch (downgrade), the app will loudly
+                // crash instead of silently wiping their local test data.
                 .build()
         }
         single {
