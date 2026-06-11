@@ -18,6 +18,7 @@ prices), with Room persistence and a demo/fake-data mode.
 - Optional enhancements (O1–O7) are tackled only after every required row (R1–R11) is done.
 - The Finnhub API key lives in `local.properties` as `FINNHUB_API_KEY` and is never committed.
   When no key is configured the app runs in demo mode.
+- **Git Hook Vigilance:** Never blindly trust that a commit succeeded safely. Always verify that pre-commit hooks actually executed by checking for their expected `stdout` output in the commit logs. If a heavy hook finishes instantly, assume it silently bypassed (due to pathing, naming, or environment issues) and investigate immediately.
 
 ## Architecture: Composable Presenter
 
