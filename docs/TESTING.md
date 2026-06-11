@@ -13,11 +13,23 @@
 ./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest
 ```
 
-| Suite | Count | Location |
-|-------|-------|----------|
-| Unit — presenters | 25 | `app/src/test/.../presentation/` |
-| Unit — data layer | 15 | `app/src/test/.../data/` |
-| Compose UI tests | 10 | `app/src/androidTest/` |
+| Suite | Count | Location / Files | Description |
+|-------|-------|------------------|-------------|
+| **Unit — Presenters** | **18** | `app/src/test/.../presentation/` | Molecule + Turbine tests for UI state flows & events |
+| ↳ *WatchlistPresenterTest* | 12 | | Watchlist state, stale quotes, sorting, dialogs, pull-to-refresh |
+| ↳ *SearchPresenterTest* | 6 | | Search query debounce, empty state, errors, retry logic |
+| **Unit — Data & Infrastructure** | **27** | `app/src/test/.../data/` | Repository, streaming, caching, DB, & serialization |
+| ↳ *ReconnectingPriceStreamTest* | 6 | | Virtual-time connection lifecycle & exponential backoff |
+| ↳ *PriceRepositoryImplTest* | 4 | | Snapshot + tick merging, background pause/resume |
+| ↳ *WatchlistRepositoryRoundTripTest* | 3 | | End-to-end repository flows & SQLite NaN safety check |
+| ↳ *DemoMarketDataSourceTest* | 4 | | Seeded random catalog & deterministic mock behavior |
+| ↳ *WatchlistDaoTest* | 4 | | Robolectric Room DAO CRUD & upsert conflict strategies |
+| ↳ *MarketDataModeRepositoryImplTest* | 2 | | Live vs. Demo mode toggle reactive switching |
+| ↳ *DemoPriceStreamSourceTest* | 2 | | Simulating connection blips in demo mode |
+| ↳ *QuoteDtoTest* | 2 | | Finnhub trade payload serialization & safety constraints |
+| **Compose UI Tests** | **10** | `app/src/androidTest/...` | On-device UI interaction, layouts, & navigation |
+| ↳ *WatchlistScreenTest* | 6 | | Watchlist lists, banners, dialogs, item removal |
+| ↳ *SearchScreenTest* | 4 | | Query entry, FAB navigation, adding instruments |
 
 ---
 

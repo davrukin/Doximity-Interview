@@ -90,15 +90,13 @@ so the reconnecting state is observable without touching the network.
 
 ## Testing
 
-- **Presenters**: `moleculeFlow { presenter.present(params) }` + Turbine, asserting emitted
-  `UiModel`s and event handling against in-memory fakes.
-- **Reconnect policy**: `ReconnectingPriceStream` is a plain class over a `PriceSocket` interface,
-  tested with a scripted fake socket and virtual time (drop → reconnect → resubscribe → offline
-  after repeated failures).
-- **Quote merging**: snapshot/tick merge, reconnect refetch, and live-only persistence in
-  `PriceRepositoryImpl`, with virtual time for the persistence throttle.
-- **Room**: DAO tests run on the JVM via Robolectric, including the conflict strategy that
-  preserves cached quotes on re-insert.
+The project has **55 automated tests** (45 JVM Unit Tests + 10 Compose UI Tests) verifying components in isolation and end-to-end:
+
+- **Presenters (18 tests)**: `moleculeFlow { presenter.present(params) }` + Turbine, asserting emitted `UiModel`s and event handling against in-memory fakes.
+- **Reconnect policy (6 tests)**: `ReconnectingPriceStream` is a plain class over a `PriceSocket` interface, tested with a scripted fake socket and virtual time (drop → reconnect → resubscribe → offline after repeated failures).
+- **Quote merging (4 tests)**: snapshot/tick merge, reconnect refetch, and live-only persistence in `PriceRepositoryImpl`, with virtual time for the persistence throttle.
+- **Room DB (4 tests)**: DAO tests run on the JVM via Robolectric, including the conflict strategy that preserves cached quotes on re-insert.
+- **Compose UI (10 tests)**: Testing layout rendering, navigation, and user-initiated state changes (e.g. dialog interactions) on-device or emulator.
 
 ## AI usage
 

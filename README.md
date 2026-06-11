@@ -65,14 +65,19 @@ rather than failing silently.
 ## Tests
 
 ```bash
-./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest   # full gate (45 JVM tests)
-./gradlew connectedDebugAndroidTest                            # Compose UI tests (device/emulator)
+./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest   # full gate (45 JVM unit tests)
+./gradlew connectedDebugAndroidTest                            # Compose UI tests (10 tests, device/emulator)
 ```
 
-Coverage: presenter behavior via Molecule + Turbine (loading/content/error/retry, add/remove,
-debounce, mode toggling), WebSocket reconnect/resubscribe/offline policy with a fake socket and
-virtual time, snapshot⊕tick merging and live-only cache persistence, Room DAO via Robolectric, and
-demo-source determinism with seeded randomness. Details in [ARCHITECTURE.md](docs/ARCHITECTURE.md).
+The project has **55 automated tests** providing extensive coverage across layers:
+- **45 JVM Unit Tests**:
+  - Presenter behavior via Molecule + Turbine (loading/content/error/retry, add/remove, debounce, mode toggling)
+  - WebSocket reconnect/resubscribe/offline policy with a fake socket and virtual time; snapshot/tick merging and background pause/resume
+  - Room DB DAO via Robolectric; and serialization.
+- **10 Compose UI Tests**:
+  - Live layout verification, screen rendering, dialog flows, and navigation transitions.
+
+Detailed manual scenarios and the automated test breakdown are located in the [Testing Guide](docs/TESTING.md).
 
 ## Assumptions & limitations
 
