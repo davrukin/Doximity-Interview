@@ -14,7 +14,7 @@ no API key is configured, and can be toggled at runtime.
 
 Composable Presenter pattern (see [ARCHITECTURE.md](ARCHITECTURE.md) once written): presenters are
 `@Composable` functions returning immutable `UiModel`s; no ViewModels; Koin for injection; Room for
-persistence; Navigation 3 with an owned back stack. Conventions in [CLAUDE.md](CLAUDE.md).
+persistence; Navigation 3 with an owned back stack. Conventions in [CLAUDE.md](../CLAUDE.md).
 
 Key design points:
 

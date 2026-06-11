@@ -110,7 +110,7 @@ commit names its agent in a Co-Authored-By trailer. The split:
   Koin, Room, Navigation 3, the staleness semantics, the demo-mode design, requirement
   traceability workflow (REQUIREMENTS.md / PLAN.md), and final review of every commit.
 - **AI-generated under those constraints**: the bulk of the implementation code, tests, and these
-  documents, produced incrementally against the conventions in [CLAUDE.md](CLAUDE.md) with the
+  documents, produced incrementally against the conventions in [CLAUDE.md](../CLAUDE.md) with the
   build (`ktlintCheck assembleDebug testDebugUnitTest`) green before each commit, plus an
   on-device smoke test of the full search → add → live-tick → relaunch flow. Cross-review between
   agents was part of the workflow: a regression introduced in one session (NaN sentinels meeting
