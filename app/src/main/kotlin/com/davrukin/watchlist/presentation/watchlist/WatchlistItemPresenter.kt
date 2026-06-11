@@ -72,7 +72,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
                         WatchlistRowUiModel.PriceMovement.DOWN
                     }
             }
-            if (!livePrice.isNaN()) {
+            if (!livePrice.isNaN() && recentPrices.lastOrNull() != livePrice) {
                 recentPrices.add(livePrice)
                 if (recentPrices.size > SPARKLINE_CAPACITY) {
                     recentPrices.removeAt(0)

@@ -36,8 +36,11 @@ handled explicitly:
   down shortly after the UI stops observing. `PriceRepositoryImpl` additionally gates the upstream
   on `ProcessLifecycleOwner` foreground state, so the socket is also suspended while the app is
   in the background — no background battery or data drain.
-- **Rotation-survivable UI state** (the search query) uses `rememberSaveable`; everything else is
-  derived from persistent or remote state and simply re-collects.
+- **Rotation-survivable UI state**: Search queries use `rememberSaveable`. The individual row state
+  in `WatchlistItemPresenter` (sparkline buffer, previous price, and movement direction) also uses
+  `rememberSaveable` (with a custom `DoubleArray` Saver for the buffer to prevent boxing overhead) so
+  the chart history is preserved across rotations and backstack navigation, with deduplication checks
+  to prevent drawing flat baselines on re-entry.
 
 The tradeoff: state held in plain `remember` does not survive configuration changes. Here that
 costs one in-flight search (re-triggered automatically by the saved query) — an acceptable price
