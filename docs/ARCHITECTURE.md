@@ -113,13 +113,15 @@ majority, plus a brief session with Gemini CLI (Google) — directed and reviewe
 commit names its agent in a `Co-Authored-By` trailer. Commit breakdown (run
 `python3 scripts/authorCount.py`):
 
-| Person | Author | Co-author |
-|--------|-------:|----------:|
-| Daniel Avrukin | 73 | — |
-| Claude Fable 5 | — | 50 |
-| Gemini CLI † | 12 | 21 |
-| Claude Sonnet 4.6 | — | 4 |
-| Gemini 3.1 Pro | — | 2 |
+| Person            | Author | Co-author |
+|-------------------|-------:|----------:|
+| Daniel Avrukin    |     82 |         — |
+| Claude Fable 5    |      — |        50 |
+| Gemini CLI †      |     12 |        21 |
+| Claude Sonnet 4.6 |      — |         7 |
+| Gemini 3.5 Flash  |      — |         5 |
+| Gemini 3.1 Pro    |      — |         2 |
+| Claude Opus 4.6   |      — |         1 |
 
 † Gemini CLI can commit directly via its own tooling and did not always observe the
 `Co-Authored-By` convention — hence the 12 primary-author commits. Claude always
