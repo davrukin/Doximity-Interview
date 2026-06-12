@@ -115,7 +115,7 @@ commit names its agent in a `Co-Authored-By` trailer. Commit breakdown (run
 
 | Person            | Author | Co-author |
 |-------------------|-------:|----------:|
-| Daniel Avrukin    |     82 |         — |
+| Daniel Avrukin    |     85 |         — |
 | Claude Fable 5    |      — |        50 |
 | Gemini CLI †      |     12 |        21 |
 | Claude Sonnet 4.6 |      — |         7 |
