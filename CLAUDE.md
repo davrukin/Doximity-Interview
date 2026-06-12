@@ -56,7 +56,8 @@ This project uses the Composable Presenter pattern, as described in Doximity's e
 - Avoid nullable "primitive" data types (e.g., `Int?`, `Long?`, `Boolean?`, `Double?`, `Float?`) to
   prevent unnecessary object wrapping. Use meaningful default values or constants (e.g., `-1.0`,
   `Long.MIN_VALUE`) where appropriate, or use wrapper types only if essential for API compatibility.
-- Specify data types for all public values and functions.
+- Specify data types for all public values and functions. Avoid specifying redundant local variable
+  type annotations where they can be inferred by the compiler.
 - Specify parameter names explicitly when using annotations (e.g., `@SerialName(value = "name")`).
 - Do not use scoping functions (`let`, `run`, `apply`, `also`, `with`) on a single line.
 - Avoid placing the expression after an equals sign on a new line for assignments.
@@ -65,6 +66,12 @@ This project uses the Composable Presenter pattern, as described in Doximity's e
 - Use named arguments at every Compose call site, including trailing `content = { ... }` blocks.
 - Use trailing commas everywhere argument/parameter lists span multiple lines (enforced via
   `.editorconfig`).
+- Fluent operations (like `.map {}.filter {}`) must always have the dot on a new line
+  (e.g. `.map { ... }\n  .filter { ... }`).
+- Function parameters and arguments must be placed on separate lines (one parameter/argument per
+  line) when they span multiple lines, especially for Composable functions.
+- All Composable functions (even if used in one place) must accept a`modifier: Modifier = Modifier`
+  parameter as their first optional parameter and propagate it to their outermost layout component.
 - Avoid extension functions; prefer member functions on the owning class, or top-level private
   functions where no class fits. Exception: extensions that are part of the Composable Presenter
   pattern itself (e.g. a `launchUseCase()` helper) are allowed.
@@ -80,7 +87,9 @@ This project uses the Composable Presenter pattern, as described in Doximity's e
   (`config/detekt/detekt.yml`: braces on all if/else, no `!!`, no TODO/FIXME comments, no
   `android.util.Log`, no swallowed exceptions). Rules with no off-the-shelf check remain
   conventions enforced by review: block bodies, named arguments everywhere (including trailing
-  `content` lambdas), no nullable primitives, explicit public types, no extension functions.
+  `content` lambdas), no nullable primitives, explicit public types, no extension functions,
+  fluent operation dots on new lines, one function parameter per line (especially for Composables),
+  no unnecessary/redundant local type definitions, and modifiers on all Composables.
 
 ## Testing
 

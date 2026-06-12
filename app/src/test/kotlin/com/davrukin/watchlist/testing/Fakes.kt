@@ -47,7 +47,9 @@ class FakeWatchlistRepository(
 ) : WatchlistRepository {
     val items: MutableStateFlow<List<WatchlistItem>> = MutableStateFlow(value = initial)
 
-    override fun observeWatchlist(): Flow<List<WatchlistItem>> = items
+    override fun observeWatchlist(): Flow<List<WatchlistItem>> {
+        return items
+    }
 
     override suspend fun add(instrument: Instrument) {
         items.update { current ->
@@ -78,9 +80,13 @@ class FakePriceRepository : PriceRepository {
     var refreshCount: Int = 0
         private set
 
-    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> = quotes
+    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> {
+        return quotes
+    }
 
-    override fun observeConnectionState(): Flow<ConnectionState> = connectionState
+    override fun observeConnectionState(): Flow<ConnectionState> {
+        return connectionState
+    }
 
     override suspend fun refreshQuotes() {
         refreshCount++

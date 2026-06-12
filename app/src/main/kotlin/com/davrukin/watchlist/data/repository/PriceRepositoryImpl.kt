@@ -66,13 +66,15 @@ class PriceRepositoryImpl(
             .observe()
             .combine(appLifecycleState) { source, state ->
                 source to state
-            }.flatMapLatest { (source, state) ->
+            }
+            .flatMapLatest { (source, state) ->
                 if (state.isAtLeast(Lifecycle.State.STARTED)) {
                     source.priceStream.events(symbols = watchedSymbols)
                 } else {
                     emptyFlow()
                 }
-            }.shareIn(
+            }
+            .shareIn(
                 scope = appScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = SOCKET_LINGER_MILLIS),
                 replay = 0,
@@ -83,13 +85,16 @@ class PriceRepositoryImpl(
             .filterIsInstance<PriceStreamEvent.ConnectionChanged>()
             .map { connectionChanged ->
                 connectionChanged.state
-            }.stateIn(
+            }
+            .stateIn(
                 scope = appScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = SOCKET_LINGER_MILLIS),
                 initialValue = ConnectionState.CONNECTING,
             )
 
-    override fun observeConnectionState(): Flow<ConnectionState> = connectionState
+    override fun observeConnectionState(): Flow<ConnectionState> {
+        return connectionState
+    }
 
     override suspend fun refreshQuotes() {
         refreshRequests.emit(value = Unit)
@@ -111,7 +116,10 @@ class PriceRepositoryImpl(
         instruments: List<Instrument>,
     ): Flow<Map<String, Quote>> {
         return channelFlow {
-            val symbols: Set<String> = instruments.map { it.symbol }.toSet()
+            val symbols =
+                instruments
+                    .map { it.symbol }
+                    .toSet()
             watchedSymbols.value = symbols
             if (instruments.isEmpty()) {
                 send(element = emptyMap())
@@ -141,7 +149,7 @@ class PriceRepositoryImpl(
             // ConcurrentHashMap ensures thread-safe updates across background coroutines
             // (appScope / Dispatchers.Default).
             val previousCloses = ConcurrentHashMap<String, Double>()
-            val snapshots: Map<String, Quote> = fetchSnapshots(source = source, instruments = instruments)
+            val snapshots = fetchSnapshots(source = source, instruments = instruments)
             recordPreviousCloses(
                 snapshots = snapshots,
                 into = previousCloses,
@@ -150,7 +158,7 @@ class PriceRepositoryImpl(
 
             launch {
                 refreshRequests.collect {
-                    val fresh: Map<String, Quote> =
+                    val fresh =
                         fetchSnapshots(
                             source = source,
                             instruments = instruments,
@@ -184,7 +192,7 @@ class PriceRepositoryImpl(
                             connectedOnce = true
                             return@collect
                         }
-                        val fresh: Map<String, Quote> =
+                        val fresh =
                             fetchSnapshots(
                                 source = source,
                                 instruments = instruments,
@@ -212,12 +220,14 @@ class PriceRepositoryImpl(
                     async {
                         instrument.symbol to source.quoteSnapshot(instrument = instrument).getOrNull()
                     }
-                }.awaitAll()
-                .mapNotNull { (symbol: String, quote: Quote?) ->
+                }
+                .awaitAll()
+                .mapNotNull { (symbol, quote) ->
                     quote?.let { quoteValue ->
                         symbol to quoteValue
                     }
-                }.toMap()
+                }
+                .toMap()
         }
     }
 
@@ -239,20 +249,20 @@ class PriceRepositoryImpl(
         previousCloses: Map<String, Double>,
         symbols: Set<String>,
     ): Map<String, Quote> {
-        val updated: MutableMap<String, Quote> = current.toMutableMap()
+        val updated = current.toMutableMap()
         ticks.forEach { tick ->
             if (tick.symbol !in symbols) {
                 return@forEach
             }
-            val previousClose: Double? = previousCloses[tick.symbol]?.takeIf { it != 0.0 }
-            val change: Double =
-                if (previousClose != null) {
+            val previousClose = previousCloses[tick.symbol] ?: Double.NaN
+            val change =
+                if (!previousClose.isNaN() && previousClose != 0.0) {
                     tick.price - previousClose
                 } else {
                     Double.NaN
                 }
-            val percentChange: Double =
-                if (previousClose != null) {
+            val percentChange =
+                if (!previousClose.isNaN() && previousClose != 0.0) {
                     change / previousClose * 100
                 } else {
                     Double.NaN

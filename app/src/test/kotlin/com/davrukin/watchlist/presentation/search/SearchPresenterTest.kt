@@ -10,6 +10,7 @@ import com.davrukin.watchlist.domain.usecase.SearchInstrumentsUseCase
 import com.davrukin.watchlist.testing.FakeInstrumentSearchRepository
 import com.davrukin.watchlist.testing.FakeWatchlistRepository
 import com.davrukin.watchlist.testing.instrument
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -19,7 +20,7 @@ import org.junit.Test
 
 class SearchPresenterTest {
     @Test
-    fun `starts idle with a blank query`() =
+    fun `starts idle with a blank query`() {
         runTest {
             val fixture = Fixture(scope = this)
 
@@ -30,9 +31,10 @@ class SearchPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `debounced query produces results flagged with watchlist membership`() =
+    fun `debounced query produces results flagged with watchlist membership`() {
         runTest {
             val fixture = Fixture(scope = this)
             fixture.searchRepository.result =
@@ -55,9 +57,10 @@ class SearchPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `empty results surface the empty phase`() =
+    fun `empty results surface the empty phase`() {
         runTest {
             val fixture = Fixture(scope = this)
             fixture.searchRepository.result = Result.success(emptyList())
@@ -71,9 +74,10 @@ class SearchPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `failure surfaces the error phase and retry re-runs the search`() =
+    fun `failure surfaces the error phase and retry re-runs the search`() {
         runTest {
             val fixture = Fixture(scope = this)
             fixture.searchRepository.result = Result.failure(RuntimeException("boom"))
@@ -98,9 +102,10 @@ class SearchPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `toggle adds when absent and removes when present`() =
+    fun `toggle adds when absent and removes when present`() {
         runTest {
             val fixture = Fixture(scope = this)
             val aapl = instrument(symbol = "AAPL")
@@ -124,9 +129,10 @@ class SearchPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `back event invokes navigation callback`() =
+    fun `back event invokes navigation callback`() {
         runTest {
             var backed = false
             val fixture = Fixture(scope = this, onBack = { backed = true })
@@ -137,6 +143,7 @@ class SearchPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     private suspend fun app.cash.turbine.ReceiveTurbine<SearchUiModel>.expectMostRecentItemWith(
         predicate: (SearchUiModel) -> Boolean,
@@ -166,9 +173,10 @@ class SearchPresenterTest {
                 appScope = scope.backgroundScope,
             )
 
-        fun models() =
-            moleculeFlow(mode = RecompositionMode.Immediate) {
+        fun models(): Flow<SearchUiModel> {
+            return moleculeFlow(mode = RecompositionMode.Immediate) {
                 presenter.present(params = params)
             }.distinctUntilChanged()
+        }
     }
 }

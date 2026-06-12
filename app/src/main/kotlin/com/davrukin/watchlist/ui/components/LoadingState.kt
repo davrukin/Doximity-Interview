@@ -9,7 +9,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
-fun LoadingState(modifier: Modifier = Modifier) {
+fun LoadingState(
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center,

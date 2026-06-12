@@ -2,6 +2,7 @@ package com.davrukin.watchlist.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -20,10 +21,13 @@ data object WatchlistKey : NavKey
 data object SearchKey : NavKey
 
 @Composable
-fun WatchlistApp() {
+fun WatchlistApp(
+    modifier: Modifier = Modifier,
+) {
     val backStack = rememberNavBackStack(WatchlistKey)
     NavDisplay(
         backStack = backStack,
+        modifier = modifier,
         onBack = {
             backStack.removeLastOrNull()
         },

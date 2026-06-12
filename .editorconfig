@@ -19,6 +19,17 @@ max_line_length = 120
 # These two ktlint rules enforce the opposite — disable them so the mechanical check matches the convention.
 ktlint_standard_function-expression-body = disabled
 ktlint_standard_no-unit-return = disabled
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_chain-method-continuation = disabled
+ktlint_standard_function-signature = disabled
+ktlint_standard_class-signature = disabled
+ktlint_standard_parameter-list-wrapping = disabled
+
+# Kotlin Code Style parameters for IntelliJ / ktlint formatting
+ij_kotlin_method_parameters_wrap = on_every_item
+ij_kotlin_method_call_arguments_wrap = on_every_item
+ij_kotlin_class_constructor_parameters_wrap = on_every_item
+
 
 [**/presentation/core/LaunchUseCase.kt]
 # launchUseCase deliberately collects once per composition; restarting on lambda change is

@@ -43,7 +43,11 @@ fun WatchlistRow(
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         modifier = modifier,
         content = {
-            RowContent(row = row, onRemove = onRemove)
+            RowContent(
+                row = row,
+                onRemove = onRemove,
+                modifier = Modifier,
+            )
         },
     )
 }
@@ -52,11 +56,12 @@ fun WatchlistRow(
 private fun RowContent(
     row: WatchlistRowUiModel,
     onRemove: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            Modifier
+            modifier
                 .animateContentSize(animationSpec = tween(durationMillis = MotionTokens.STANDARD_MILLIS))
                 .padding(horizontal = Dimens.ScreenPadding, vertical = Dimens.RowPadding),
         content = {

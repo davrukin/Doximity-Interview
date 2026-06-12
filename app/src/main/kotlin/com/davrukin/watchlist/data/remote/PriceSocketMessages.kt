@@ -33,10 +33,11 @@ data class TradeDto(
     @SerialName(value = "t") val timestampEpochMillis: Long,
     @SerialName(value = "v") val volume: Double? = null,
 ) {
-    fun toPriceTick(): PriceTick =
-        PriceTick(
+    fun toPriceTick(): PriceTick {
+        return PriceTick(
             symbol = symbol,
             price = price,
             timestamp = Instant.ofEpochMilli(timestampEpochMillis),
         )
+    }
 }

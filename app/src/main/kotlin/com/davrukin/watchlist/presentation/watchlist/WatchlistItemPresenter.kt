@@ -9,9 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.davrukin.watchlist.domain.model.ConnectionState
-import com.davrukin.watchlist.domain.model.Instrument
 import com.davrukin.watchlist.domain.model.Quote
 import com.davrukin.watchlist.domain.model.WatchlistItem
 import com.davrukin.watchlist.presentation.core.Presenter
@@ -33,36 +31,36 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
 
     @Composable
     override fun present(params: Params): WatchlistRowUiModel {
-        val instrument: Instrument = params.item.instrument
-        val quote: Quote? = params.liveQuote ?: params.item.cachedQuote
-        val isStale: Boolean =
+        val instrument = params.item.instrument
+        val quote = params.liveQuote ?: params.item.cachedQuote
+        val isStale =
             quote != null &&
                 (quote.isStale || params.connectionState != ConnectionState.CONNECTED)
 
-        val livePrice: Double = params.liveQuote?.price ?: Double.NaN
-        var previousPrice: Double by rememberSaveable { mutableDoubleStateOf(value = Double.NaN) }
+        val livePrice = params.liveQuote?.price ?: Double.NaN
+        var previousPrice by rememberSaveable { mutableDoubleStateOf(value = Double.NaN) }
         var movement: WatchlistRowUiModel.PriceMovement? by rememberSaveable {
             mutableStateOf(value = null)
         }
         // Use rememberSaveable to preserve sparkline history and state across rotations and screen transitions (Nav3).
-        val recentPrices: SnapshotStateList<Double> =
+        val recentPrices =
             rememberSaveable(
                 saver =
                     Saver(
-                        save = { list: SnapshotStateList<Double> ->
+                        save = { list ->
                             list.toDoubleArray()
                         },
-                        restore = { array: DoubleArray ->
+                        restore = { array ->
                             mutableStateListOf<Double>().apply {
                                 addAll(elements = array.toList())
                             }
                         },
                     ),
             ) {
-                mutableStateListOf()
+                mutableStateListOf<Double>()
             }
         LaunchedEffect(key1 = livePrice) {
-            val previous: Double = previousPrice
+            val previous = previousPrice
             previousPrice = livePrice
             if (!livePrice.isNaN() && !previous.isNaN() && livePrice != previous) {
                 movement =
@@ -122,7 +120,7 @@ class WatchlistItemPresenter : Presenter<WatchlistRowUiModel, WatchlistItemPrese
         if (quote.change.isNaN()) {
             return null
         }
-        val sign: String =
+        val sign =
             if (quote.change >= 0) {
                 "+"
             } else {

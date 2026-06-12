@@ -14,8 +14,8 @@ class OkHttpPriceSocket(
     private val client: OkHttpClient,
     private val url: String,
 ) : PriceSocket {
-    override fun connect(): Flow<PriceSocketEvent> =
-        callbackFlow {
+    override fun connect(): Flow<PriceSocketEvent> {
+        return callbackFlow {
             val listener =
                 object : WebSocketListener() {
                     override fun onOpen(
@@ -69,4 +69,5 @@ class OkHttpPriceSocket(
                 webSocket.cancel()
             }
         }
+    }
 }

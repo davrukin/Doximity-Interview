@@ -25,9 +25,11 @@ import com.davrukin.watchlist.ui.theme.WatchlistTheme
 fun InstrumentDetailDialog(
     row: WatchlistRowUiModel,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        modifier = modifier,
         title = {
             Text(text = row.displaySymbol)
         },
@@ -114,9 +116,10 @@ fun InstrumentDetailDialog(
 private fun DetailField(
     label: String,
     value: String,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier.padding(top = 8.dp),
+        modifier = modifier.padding(top = 8.dp),
         content = {
             Text(
                 text = label,

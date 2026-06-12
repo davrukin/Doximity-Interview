@@ -20,7 +20,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveQuotesUseCaseTest {
     @Test
-    fun observeQuotesDoesNotRestartWhenInstrumentsAreUnchanged() =
+    fun observeQuotesDoesNotRestartWhenInstrumentsAreUnchanged() {
         runTest {
             val watchlistRepository = FakeWatchlistRepository()
             var observeQuotesCallCount = 0
@@ -41,7 +41,10 @@ class ObserveQuotesUseCaseTest {
                 )
 
             // Start collecting from the use case
-            val job = useCase().onEach {}.launchIn(scope = backgroundScope)
+            val job =
+                useCase()
+                    .onEach {}
+                    .launchIn(scope = backgroundScope)
             runCurrent()
 
             // 1. Initially watchlist is empty, observeQuotes shouldn't be called
@@ -79,4 +82,5 @@ class ObserveQuotesUseCaseTest {
 
             job.cancel()
         }
+    }
 }

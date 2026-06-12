@@ -27,8 +27,8 @@ class DemoPriceStreamSource(
     private val reconnectAfterTicks: Int = 50,
     private val reconnectPause: Duration = 3.seconds,
 ) : PriceStreamSource {
-    override fun events(symbols: Flow<Set<String>>): Flow<PriceStreamEvent> =
-        channelFlow {
+    override fun events(symbols: Flow<Set<String>>): Flow<PriceStreamEvent> {
+        return channelFlow {
             val latestSymbols = MutableStateFlow(emptySet<String>())
             launch {
                 symbols.collect { latestSymbols.value = it }
@@ -59,21 +59,22 @@ class DemoPriceStreamSource(
                 }
             }
         }
+    }
 
     private fun nextTick(
         symbol: String,
         prices: MutableMap<String, Double>,
     ): PriceTick? {
-        val base: Double = catalog.basePrice(symbol = symbol)
+        val base = catalog.basePrice(symbol = symbol)
         if (base.isNaN()) {
             return null
         }
-        val current: Double =
+        val current =
             prices.getOrPut(key = symbol) {
                 base
             }
-        val drift: Double = current * (random.nextDouble(from = -STEP_FRACTION, until = STEP_FRACTION))
-        val next: Double = (current + drift).coerceAtLeast(minimumValue = 0.01)
+        val drift = current * (random.nextDouble(from = -STEP_FRACTION, until = STEP_FRACTION))
+        val next = (current + drift).coerceAtLeast(minimumValue = 0.01)
         prices[symbol] = next
         return PriceTick(
             symbol = symbol,

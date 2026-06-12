@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.davrukin.watchlist.domain.model.Instrument
-import com.davrukin.watchlist.domain.model.WatchlistItem
 import com.davrukin.watchlist.domain.usecase.AddToWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.ObserveWatchlistUseCase
 import com.davrukin.watchlist.domain.usecase.RemoveFromWatchlistUseCase
@@ -48,11 +47,11 @@ class SearchPresenter(
 
     @Composable
     override fun present(params: Params): SearchUiModel {
-        var query: String by rememberSaveable { mutableStateOf(value = "") }
-        var retryToken: Int by remember { mutableIntStateOf(value = 0) }
-        var searchState: SearchState by remember { mutableStateOf(value = SearchState.Idle) }
+        var query by rememberSaveable { mutableStateOf(value = "") }
+        var retryToken by remember { mutableIntStateOf(value = 0) }
+        var searchState by remember { mutableStateOf<SearchState>(value = SearchState.Idle) }
 
-        val watchlist: List<WatchlistItem> by launchUseCase(initial = emptyList()) {
+        val watchlist by launchUseCase(initial = emptyList()) {
             observeWatchlist()
         }
 
@@ -81,7 +80,7 @@ class SearchPresenter(
                 }.toSet()
 
         val results =
-            when (val state: SearchState = searchState) {
+            when (val state = searchState) {
                 is SearchState.Loaded -> {
                     state.instruments.map { instrument ->
                         SearchUiModel.Result(
@@ -99,16 +98,16 @@ class SearchPresenter(
         // Remembered so the same instance is reused across recompositions and model equality
         // holds. Reading the `watchlist` State delegate inside the lambda is not a stale
         // capture: the delegate resolves to the current value at invocation time.
-        val eventHandler: EventHandler<SearchUiModel.Event> =
+        val eventHandler =
             remember(key1 = params) {
-                EventHandler { event ->
+                EventHandler<SearchUiModel.Event> { event ->
                     when (event) {
                         is SearchUiModel.Event.QueryChanged -> {
                             query = event.query
                         }
 
                         is SearchUiModel.Event.ToggleWatchlist -> {
-                            val onWatchlist: Boolean =
+                            val onWatchlist =
                                 watchlist.any { item ->
                                     item.instrument.symbol == event.instrument.symbol
                                 }

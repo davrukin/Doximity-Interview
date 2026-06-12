@@ -201,9 +201,11 @@ private fun RemoveConfirmationDialog(
     pendingRemoval: WatchlistUiModel.PendingRemoval,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        modifier = modifier,
         title = {
             Text(
                 text = stringResource(id = R.string.remove_dialog_title, pendingRemoval.displaySymbol),
@@ -261,8 +263,8 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
             ),
         )
 
-    private fun previewModel(): WatchlistUiModel =
-        WatchlistUiModel(
+    private fun previewModel(): WatchlistUiModel {
+        return WatchlistUiModel(
             items =
                 listOf(
                     WatchlistRowUiModel(
@@ -292,6 +294,7 @@ private class WatchlistPreviewProvider : PreviewParameterProvider<WatchlistUiMod
             isLiveAvailable = true,
             eventHandler = {},
         )
+    }
 }
 
 @Preview(showBackground = true)

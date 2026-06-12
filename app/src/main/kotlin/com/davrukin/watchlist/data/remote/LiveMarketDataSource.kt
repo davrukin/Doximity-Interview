@@ -51,13 +51,13 @@ class LiveMarketDataSource(
     }
 
     private suspend fun searchCrypto(query: String): List<Instrument> {
-        val catalog: List<Instrument> =
+        val catalog =
             cryptoCatalogMutex.withLock {
-                val cached: List<Instrument>? = cryptoCatalog
+                val cached = cryptoCatalog
                 if (cached != null) {
                     cached
                 } else {
-                    val instruments: List<Instrument> =
+                    val instruments =
                         api
                             .cryptoSymbols(exchange = BINANCE_EXCHANGE)
                             .map { symbol ->

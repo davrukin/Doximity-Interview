@@ -85,16 +85,16 @@ class WatchlistPresenter(
                 }
             }
 
-        val eventHandler: EventHandler<WatchlistUiModel.Event> =
+        val eventHandler =
             remember(key1 = params) {
-                EventHandler { event ->
+                EventHandler<WatchlistUiModel.Event> { event ->
                     when (event) {
                         is WatchlistUiModel.Event.RequestRemove -> {
                             pendingRemovalSymbol = event.symbol
                         }
 
                         WatchlistUiModel.Event.ConfirmRemoval -> {
-                            val symbol: String? = pendingRemovalSymbol
+                            val symbol = pendingRemovalSymbol
                             pendingRemovalSymbol = null
                             if (symbol != null) {
                                 appScope.launch {
@@ -191,8 +191,8 @@ class WatchlistPresenter(
 
             WatchlistUiModel.SortOrder.CHANGE -> {
                 items.sortedByDescending { item ->
-                    val quote: Quote? = quotes[item.instrument.symbol] ?: item.cachedQuote
-                    val percent: Double = quote?.percentChange ?: Double.NaN
+                    val quote = quotes[item.instrument.symbol] ?: item.cachedQuote
+                    val percent = quote?.percentChange ?: Double.NaN
                     // NaN poisons comparators; unknown changes sort to the bottom.
                     if (percent.isNaN()) {
                         Double.NEGATIVE_INFINITY

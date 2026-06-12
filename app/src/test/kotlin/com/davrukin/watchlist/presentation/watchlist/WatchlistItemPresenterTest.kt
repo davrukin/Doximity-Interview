@@ -22,7 +22,7 @@ import java.time.Instant
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class WatchlistItemPresenterTest {
     @Test
-    fun `presents items with live quotes override and connection status`() =
+    fun `presents items with live quotes override and connection status`() {
         runTest {
             val presenter = WatchlistItemPresenter()
             val item =
@@ -85,9 +85,10 @@ class WatchlistItemPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `accumulates live prices in sparkline without consecutive duplicates`() =
+    fun `accumulates live prices in sparkline without consecutive duplicates`() {
         runTest {
             val presenter = WatchlistItemPresenter()
             val item =
@@ -174,9 +175,10 @@ class WatchlistItemPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     @Test
-    fun `sparkline respects maximum capacity`() =
+    fun `sparkline respects maximum capacity`() {
         runTest {
             val presenter = WatchlistItemPresenter()
             val item =
@@ -223,6 +225,7 @@ class WatchlistItemPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+    }
 
     private suspend fun app.cash.turbine.ReceiveTurbine<WatchlistRowUiModel>.expectMostRecentItemWith(
         predicate: (WatchlistRowUiModel) -> Boolean,

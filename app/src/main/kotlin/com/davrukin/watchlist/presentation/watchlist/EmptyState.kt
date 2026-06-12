@@ -9,7 +9,9 @@ import com.davrukin.watchlist.ui.components.CenteredMessage
 import com.davrukin.watchlist.ui.theme.WatchlistTheme
 
 @Composable
-fun EmptyState(modifier: Modifier = Modifier) {
+fun EmptyState(
+    modifier: Modifier = Modifier,
+) {
     CenteredMessage(
         title = stringResource(id = R.string.watchlist_empty_title),
         subtitle = stringResource(id = R.string.watchlist_empty_subtitle),

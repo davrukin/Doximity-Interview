@@ -12,7 +12,9 @@ class MarketDataSelector(
     private val demo: MarketDataSource,
 ) {
     val current: MarketDataSource
-        get() = sourceFor(mode = modeRepository.mode.value)
+        get() {
+            return sourceFor(mode = modeRepository.mode.value)
+        }
 
     fun sourceFor(mode: MarketDataMode): MarketDataSource {
         return when (mode) {
