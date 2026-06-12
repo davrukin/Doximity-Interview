@@ -10,11 +10,12 @@ data class CryptoSymbolDto(
     val displaySymbol: String = symbol,
     val description: String = "",
 ) {
-    fun toInstrument(): Instrument =
-        Instrument(
+    fun toInstrument(): Instrument {
+        return Instrument(
             symbol = symbol,
             displaySymbol = displaySymbol,
             description = description,
             type = InstrumentType.CRYPTO,
         )
+    }
 }

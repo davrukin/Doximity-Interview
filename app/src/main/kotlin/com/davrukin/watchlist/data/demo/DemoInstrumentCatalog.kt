@@ -44,18 +44,19 @@ class DemoInstrumentCatalog {
             }
     }
 
-    fun basePrice(symbol: String): Double =
-        entries
+    fun basePrice(symbol: String): Double {
+        return entries
             .firstOrNull { entry ->
                 entry.instrument.symbol == symbol
             }?.basePrice ?: Double.NaN
+    }
 
     private fun stock(
         symbol: String,
         description: String,
         basePrice: Double,
-    ): Entry =
-        Entry(
+    ): Entry {
+        return Entry(
             instrument =
                 Instrument(
                     symbol = symbol,
@@ -65,14 +66,15 @@ class DemoInstrumentCatalog {
                 ),
             basePrice = basePrice,
         )
+    }
 
     private fun crypto(
         pair: String,
         display: String,
         description: String,
         basePrice: Double,
-    ): Entry =
-        Entry(
+    ): Entry {
+        return Entry(
             instrument =
                 Instrument(
                     symbol = "BINANCE:$pair",
@@ -82,4 +84,5 @@ class DemoInstrumentCatalog {
                 ),
             basePrice = basePrice,
         )
+    }
 }

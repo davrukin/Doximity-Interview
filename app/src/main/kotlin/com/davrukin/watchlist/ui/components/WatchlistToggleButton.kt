@@ -33,22 +33,23 @@ fun WatchlistToggleButton(
                     },
             ),
         modifier = modifier,
-    ) {
-        Icon(
-            imageVector =
-                if (isOnWatchlist) {
-                    Icons.Filled.Check
-                } else {
-                    Icons.Filled.Add
-                },
-            contentDescription =
-                if (isOnWatchlist) {
-                    stringResource(id = R.string.toggle_remove_from_watchlist, displaySymbol)
-                } else {
-                    stringResource(id = R.string.toggle_add_to_watchlist, displaySymbol)
-                },
-        )
-    }
+        content = {
+            Icon(
+                imageVector =
+                    if (isOnWatchlist) {
+                        Icons.Filled.Check
+                    } else {
+                        Icons.Filled.Add
+                    },
+                contentDescription =
+                    if (isOnWatchlist) {
+                        stringResource(id = R.string.toggle_remove_from_watchlist, displaySymbol)
+                    } else {
+                        stringResource(id = R.string.toggle_add_to_watchlist, displaySymbol)
+                    },
+            )
+        },
+    )
 }
 
 @Preview(showBackground = true)

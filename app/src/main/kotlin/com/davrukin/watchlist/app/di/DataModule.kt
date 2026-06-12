@@ -45,12 +45,14 @@ val dataModule: Module =
                 ignoreUnknownKeys = true
             }
         }
+
         single {
             OkHttpClient
                 .Builder()
                 .addInterceptor(interceptor = FinnhubAuthInterceptor(apiKey = BuildConfig.FINNHUB_API_KEY))
                 .build()
         }
+
         single<FinnhubApi> {
             Retrofit
                 .Builder()
@@ -69,6 +71,7 @@ val dataModule: Module =
                     name = "watchlist.db",
                 ).build()
         }
+
         single {
             get<WatchlistDatabase>().watchlistDao()
         }
@@ -87,6 +90,7 @@ val dataModule: Module =
                     ),
             )
         }
+
         single<MarketDataSource>(qualifier = named(name = DataConfig.DEMO_SOURCE)) {
             val catalog = DemoInstrumentCatalog()
             DemoMarketDataSource(
@@ -103,6 +107,7 @@ val dataModule: Module =
         single<MarketDataModeRepository> {
             MarketDataModeRepositoryImpl(apiKey = BuildConfig.FINNHUB_API_KEY)
         }
+
         single {
             MarketDataSelector(
                 modeRepository = get(),
@@ -110,12 +115,15 @@ val dataModule: Module =
                 demo = get(qualifier = named(name = DataConfig.DEMO_SOURCE)),
             )
         }
+
         single<InstrumentSearchRepository> {
             InstrumentSearchRepositoryImpl(selector = get())
         }
+
         single<WatchlistRepository> {
             WatchlistRepositoryImpl(dao = get(), clock = get())
         }
+
         single<PriceRepository> {
             PriceRepositoryImpl(
                 selector = get(),

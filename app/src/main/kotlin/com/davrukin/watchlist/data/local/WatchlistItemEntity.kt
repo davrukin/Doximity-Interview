@@ -58,13 +58,14 @@ data class WatchlistItemEntity(
         fun fromInstrument(
             instrument: Instrument,
             addedAt: Instant,
-        ): WatchlistItemEntity =
-            WatchlistItemEntity(
+        ): WatchlistItemEntity {
+            return WatchlistItemEntity(
                 symbol = instrument.symbol,
                 displaySymbol = instrument.displaySymbol,
                 description = instrument.description,
                 type = instrument.type,
                 addedAtEpochMillis = addedAt.toEpochMilli(),
             )
+        }
     }
 }

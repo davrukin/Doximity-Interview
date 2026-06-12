@@ -74,13 +74,13 @@ class SearchPresenter(
                 )
         }
 
-        val watchlistSymbols: Set<String> =
+        val watchlistSymbols =
             watchlist
                 .map { item ->
                     item.instrument.symbol
                 }.toSet()
 
-        val results: List<SearchUiModel.Result> =
+        val results =
             when (val state: SearchState = searchState) {
                 is SearchState.Loaded -> {
                     state.instruments.map { instrument ->

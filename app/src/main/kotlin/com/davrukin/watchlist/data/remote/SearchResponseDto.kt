@@ -17,11 +17,12 @@ data class SearchResultDto(
     val description: String = "",
     val type: String = "",
 ) {
-    fun toInstrument(): Instrument =
-        Instrument(
+    fun toInstrument(): Instrument {
+        return Instrument(
             symbol = symbol,
             displaySymbol = displaySymbol,
             description = description,
             type = InstrumentType.STOCK,
         )
+    }
 }

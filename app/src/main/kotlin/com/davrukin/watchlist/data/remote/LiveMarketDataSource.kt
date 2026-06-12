@@ -18,8 +18,8 @@ class LiveMarketDataSource(
     private val cryptoCatalogMutex: Mutex = Mutex()
     private var cryptoCatalog: List<Instrument>? = null
 
-    override suspend fun search(query: String): Result<List<Instrument>> =
-        resultOf {
+    override suspend fun search(query: String): Result<List<Instrument>> {
+        return resultOf {
             coroutineScope {
                 val stocks =
                     async {
@@ -34,9 +34,10 @@ class LiveMarketDataSource(
                 stocks.await().take(n = MAX_STOCK_RESULTS) + crypto.await().take(n = MAX_CRYPTO_RESULTS)
             }
         }
+    }
 
-    override suspend fun quoteSnapshot(instrument: Instrument): Result<Quote?> =
-        when (instrument.type) {
+    override suspend fun quoteSnapshot(instrument: Instrument): Result<Quote?> {
+        return when (instrument.type) {
             InstrumentType.STOCK -> {
                 resultOf {
                     api.quote(symbol = instrument.symbol).toQuote()
@@ -47,6 +48,7 @@ class LiveMarketDataSource(
                 Result.success(value = null)
             }
         }
+    }
 
     private suspend fun searchCrypto(query: String): List<Instrument> {
         val catalog: List<Instrument> =

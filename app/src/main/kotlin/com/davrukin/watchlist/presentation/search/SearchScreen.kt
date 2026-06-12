@@ -180,8 +180,8 @@ private class SearchPreviewProvider : PreviewParameterProvider<SearchUiModel> {
             previewModel().copy(results = emptyList(), phase = SearchUiModel.Phase.ERROR),
         )
 
-    private fun previewModel(): SearchUiModel =
-        SearchUiModel(
+    private fun previewModel(): SearchUiModel {
+        return SearchUiModel(
             query = "ap",
             results =
                 listOf(
@@ -209,6 +209,7 @@ private class SearchPreviewProvider : PreviewParameterProvider<SearchUiModel> {
             phase = SearchUiModel.Phase.RESULTS,
             eventHandler = {},
         )
+    }
 }
 
 @Preview(showBackground = true)

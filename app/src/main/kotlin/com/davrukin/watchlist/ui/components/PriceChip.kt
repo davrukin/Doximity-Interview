@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +26,7 @@ fun PriceChip(
     isStale: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val backgroundColor: Color by animateColorAsState(
+    val backgroundColor by animateColorAsState(
         targetValue =
             when {
                 isStale -> LocalExtendedColors.current.stale.copy(alpha = 0.1f)
@@ -39,7 +38,7 @@ fun PriceChip(
         label = "PriceChipBackground",
     )
 
-    val contentColor: Color by animateColorAsState(
+    val contentColor by animateColorAsState(
         targetValue =
             when {
                 isStale -> LocalExtendedColors.current.stale
@@ -57,14 +56,15 @@ fun PriceChip(
                 .clip(shape = RoundedCornerShape(size = 8.dp))
                 .background(color = backgroundColor)
                 .padding(horizontal = 8.dp, vertical = 4.dp),
-    ) {
-        Text(
-            text = price,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = contentColor,
-        )
-    }
+        content = {
+            Text(
+                text = price,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = contentColor,
+            )
+        },
+    )
 }
 
 @Preview(showBackground = true)

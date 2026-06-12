@@ -30,8 +30,8 @@ fun WatchlistApp() {
         entryProvider =
             entryProvider {
                 entry<WatchlistKey> {
-                    val presenter: WatchlistPresenter = koinInject<WatchlistPresenter>()
-                    val params: WatchlistPresenter.Params =
+                    val presenter = koinInject<WatchlistPresenter>()
+                    val params =
                         remember(key1 = backStack) {
                             WatchlistPresenter.Params(
                                 onOpenSearch = {
@@ -44,8 +44,8 @@ fun WatchlistApp() {
                     )
                 }
                 entry<SearchKey> {
-                    val presenter: SearchPresenter = koinInject<SearchPresenter>()
-                    val params: SearchPresenter.Params =
+                    val presenter = koinInject<SearchPresenter>()
+                    val params =
                         remember(key1 = backStack) {
                             SearchPresenter.Params(
                                 onBack = {

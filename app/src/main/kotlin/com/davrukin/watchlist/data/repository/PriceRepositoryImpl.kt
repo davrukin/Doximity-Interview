@@ -95,14 +95,15 @@ class PriceRepositoryImpl(
         refreshRequests.emit(value = Unit)
     }
 
-    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> =
-        modeRepository.mode.flatMapLatest { mode ->
+    override fun observeQuotes(instruments: List<Instrument>): Flow<Map<String, Quote>> {
+        return modeRepository.mode.flatMapLatest { mode ->
             quotes(
                 source = selector.sourceFor(mode = mode),
                 persistFreshQuotes = mode == MarketDataMode.LIVE,
                 instruments = instruments,
             )
         }
+    }
 
     private fun quotes(
         source: MarketDataSource,
@@ -204,8 +205,8 @@ class PriceRepositoryImpl(
     private suspend fun fetchSnapshots(
         source: MarketDataSource,
         instruments: List<Instrument>,
-    ): Map<String, Quote> =
-        coroutineScope {
+    ): Map<String, Quote> {
+        return coroutineScope {
             instruments
                 .map { instrument ->
                     async {
@@ -218,6 +219,7 @@ class PriceRepositoryImpl(
                     }
                 }.toMap()
         }
+    }
 
     private fun recordPreviousCloses(
         snapshots: Map<String, Quote>,

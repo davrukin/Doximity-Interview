@@ -37,8 +37,8 @@ class ReconnectingPriceStream(
     private val random: Random = Random.Default,
     private val offlineAfterAttempts: Int = 3,
 ) : PriceStreamSource {
-    override fun events(symbols: Flow<Set<String>>): Flow<PriceStreamEvent> =
-        channelFlow {
+    override fun events(symbols: Flow<Set<String>>): Flow<PriceStreamEvent> {
+        return channelFlow {
             val latestSymbols = MutableStateFlow(value = emptySet<String>())
             launch {
                 symbols.collect {
@@ -81,13 +81,15 @@ class ReconnectingPriceStream(
                 delay(retryDelayFor(failedAttempts = failedAttempts))
             }
         }
+    }
 
-    private fun stateForFailedAttempts(failedAttempts: Int): ConnectionState =
-        if (failedAttempts < offlineAfterAttempts) {
+    private fun stateForFailedAttempts(failedAttempts: Int): ConnectionState {
+        return if (failedAttempts < offlineAfterAttempts) {
             ConnectionState.RECONNECTING
         } else {
             ConnectionState.OFFLINE
         }
+    }
 
     private fun retryDelayFor(failedAttempts: Int): Duration {
         val exponential = baseRetryDelay * 2.0.pow(n = failedAttempts - 1)
@@ -119,7 +121,9 @@ class ReconnectingPriceStream(
     private fun subscriptionMessage(
         type: String,
         symbol: String,
-    ): String = json.encodeToString(value = SubscriptionMessageDto(type = type, symbol = symbol))
+    ): String {
+        return json.encodeToString(value = SubscriptionMessageDto(type = type, symbol = symbol))
+    }
 
     private fun parseTicks(text: String): List<PriceTick> {
         val message =

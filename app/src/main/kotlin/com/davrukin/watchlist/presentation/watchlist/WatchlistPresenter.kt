@@ -45,29 +45,29 @@ class WatchlistPresenter(
 
     @Composable
     override fun present(params: Params): WatchlistUiModel {
-        val watchlist: List<WatchlistItem>? by launchUseCase(initial = null) {
+        val watchlist by launchUseCase(initial = null) {
             observeWatchlist()
         }
-        val quotes: Map<String, Quote> by launchUseCase(initial = emptyMap()) {
+        val quotes by launchUseCase(initial = emptyMap()) {
             observeQuotes()
         }
-        val connectionState: ConnectionState by launchUseCase(initial = ConnectionState.CONNECTING) {
+        val connectionState by launchUseCase(initial = ConnectionState.CONNECTING) {
             observeConnectionState()
         }
         // Match the repository's initial state (LIVE) to avoid test mismatch
-        val dataMode: MarketDataMode by observeMarketDataMode().collectAsState(initial = MarketDataMode.LIVE)
-        var isRefreshing: Boolean by remember { mutableStateOf(value = false) }
-        var sortOrder: WatchlistUiModel.SortOrder by rememberSaveable {
+        val dataMode by observeMarketDataMode().collectAsState(initial = MarketDataMode.LIVE)
+        var isRefreshing by remember { mutableStateOf(value = false) }
+        var sortOrder by rememberSaveable {
             mutableStateOf(value = WatchlistUiModel.SortOrder.ADDED)
         }
-        var pendingRemovalSymbol: String? by rememberSaveable {
-            mutableStateOf(value = null)
+        var pendingRemovalSymbol by rememberSaveable {
+            mutableStateOf<String?>(value = null)
         }
-        var detailSymbol: String? by rememberSaveable {
-            mutableStateOf(value = null)
+        var detailSymbol by rememberSaveable {
+            mutableStateOf<String?>(value = null)
         }
 
-        val items: List<WatchlistRowUiModel> =
+        val items =
             sortItems(
                 items = watchlist ?: emptyList(),
                 quotes = quotes,
@@ -142,7 +142,7 @@ class WatchlistPresenter(
                 }
             }
 
-        val pendingRemoval: WatchlistUiModel.PendingRemoval? =
+        val pendingRemoval =
             pendingRemovalSymbol?.let { symbol ->
                 items
                     .firstOrNull { it.symbol == symbol }
@@ -154,7 +154,7 @@ class WatchlistPresenter(
                     }
             }
 
-        val detail: WatchlistRowUiModel? =
+        val detail =
             detailSymbol?.let { symbol ->
                 items.firstOrNull { it.symbol == symbol }
             }
@@ -177,8 +177,8 @@ class WatchlistPresenter(
         items: List<WatchlistItem>,
         quotes: Map<String, Quote>,
         sortOrder: WatchlistUiModel.SortOrder,
-    ): List<WatchlistItem> =
-        when (sortOrder) {
+    ): List<WatchlistItem> {
+        return when (sortOrder) {
             WatchlistUiModel.SortOrder.ADDED -> {
                 items
             }
@@ -202,6 +202,7 @@ class WatchlistPresenter(
                 }
             }
         }
+    }
 
     companion object {
         private val REFRESH_SPINNER_MINIMUM: Duration = 400.milliseconds

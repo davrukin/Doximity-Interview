@@ -4,7 +4,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.davrukin.watchlist.presentation.watchlist.WatchlistRowUiModel
 import com.davrukin.watchlist.ui.theme.LocalExtendedColors
@@ -19,13 +18,13 @@ fun MovementIndicator(
         return
     }
 
-    val color: Color =
+    val color =
         when (movement) {
             WatchlistRowUiModel.PriceMovement.UP -> LocalExtendedColors.current.gain
             WatchlistRowUiModel.PriceMovement.DOWN -> LocalExtendedColors.current.loss
         }
 
-    val icon: String =
+    val icon =
         when (movement) {
             WatchlistRowUiModel.PriceMovement.UP -> "▲"
             WatchlistRowUiModel.PriceMovement.DOWN -> "▼"

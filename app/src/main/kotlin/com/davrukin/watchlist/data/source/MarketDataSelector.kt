@@ -14,15 +14,17 @@ class MarketDataSelector(
     val current: MarketDataSource
         get() = sourceFor(mode = modeRepository.mode.value)
 
-    fun sourceFor(mode: MarketDataMode): MarketDataSource =
-        when (mode) {
+    fun sourceFor(mode: MarketDataMode): MarketDataSource {
+        return when (mode) {
             MarketDataMode.LIVE -> live
             MarketDataMode.DEMO -> demo
         }
+    }
 
-    fun observe(): Flow<MarketDataSource> =
-        modeRepository.mode
+    fun observe(): Flow<MarketDataSource> {
+        return modeRepository.mode
             .map { mode ->
                 sourceFor(mode = mode)
             }.distinctUntilChanged()
+    }
 }

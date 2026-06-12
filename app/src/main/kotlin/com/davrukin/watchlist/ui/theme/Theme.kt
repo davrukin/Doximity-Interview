@@ -46,14 +46,14 @@ fun WatchlistTheme(
             else -> LightColors
         }
 
-    val extendedColors: ExtendedColors =
+    val extendedColors =
         if (darkTheme) {
             DarkExtendedColors
         } else {
             LightExtendedColors
         }
     CompositionLocalProvider(
-        LocalExtendedColors provides extendedColors,
+        value = LocalExtendedColors provides extendedColors,
         content = {
             MaterialTheme(
                 colorScheme = colorScheme,

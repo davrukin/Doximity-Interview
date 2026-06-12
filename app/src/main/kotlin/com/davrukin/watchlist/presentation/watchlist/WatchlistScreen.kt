@@ -105,69 +105,70 @@ fun WatchlistScreen(
                             },
                         animationSpec = tween(durationMillis = MotionTokens.STANDARD_MILLIS),
                         label = "WatchlistContent",
-                    ) { phase ->
-                        when (phase) {
-                            ContentPhase.LOADING -> {
-                                LoadingState(modifier = Modifier.fillMaxSize())
-                            }
+                        content = { phase ->
+                            when (phase) {
+                                ContentPhase.LOADING -> {
+                                    LoadingState(modifier = Modifier.fillMaxSize())
+                                }
 
-                            ContentPhase.EMPTY -> {
-                                EmptyState(modifier = Modifier.fillMaxSize())
-                            }
+                                ContentPhase.EMPTY -> {
+                                    EmptyState(modifier = Modifier.fillMaxSize())
+                                }
 
-                            ContentPhase.LIST -> {
-                                PullToRefreshBox(
-                                    isRefreshing = model.isRefreshing,
-                                    onRefresh = {
-                                        model.eventHandler.onEvent(
-                                            event = WatchlistUiModel.Event.Refresh,
-                                        )
-                                    },
-                                    modifier = Modifier.fillMaxSize(),
-                                    content = {
-                                        LazyColumn(
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentPadding = PaddingValues(all = Dimens.RowPadding),
-                                            verticalArrangement = Arrangement.spacedBy(space = Dimens.ItemSpacing),
-                                            content = {
-                                                items(
-                                                    items = model.items,
-                                                    key = { row ->
-                                                        row.symbol
-                                                    },
-                                                    itemContent = { row ->
-                                                        WatchlistRow(
-                                                            row = row,
-                                                            onClick = {
-                                                                model.eventHandler.onEvent(
-                                                                    event =
-                                                                        WatchlistUiModel.Event.RowClicked(
-                                                                            symbol = row.symbol,
-                                                                        ),
-                                                                )
-                                                            },
-                                                            onRemove = {
-                                                                model.eventHandler.onEvent(
-                                                                    event =
-                                                                        WatchlistUiModel.Event.RequestRemove(
-                                                                            symbol = row.symbol,
-                                                                        ),
-                                                                )
-                                                            },
-                                                            modifier =
-                                                                Modifier
-                                                                    .fillMaxWidth()
-                                                                    .animateItem(),
-                                                        )
-                                                    },
-                                                )
-                                            },
-                                        )
-                                    },
-                                )
+                                ContentPhase.LIST -> {
+                                    PullToRefreshBox(
+                                        isRefreshing = model.isRefreshing,
+                                        onRefresh = {
+                                            model.eventHandler.onEvent(
+                                                event = WatchlistUiModel.Event.Refresh,
+                                            )
+                                        },
+                                        modifier = Modifier.fillMaxSize(),
+                                        content = {
+                                            LazyColumn(
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentPadding = PaddingValues(all = Dimens.RowPadding),
+                                                verticalArrangement = Arrangement.spacedBy(space = Dimens.ItemSpacing),
+                                                content = {
+                                                    items(
+                                                        items = model.items,
+                                                        key = { row ->
+                                                            row.symbol
+                                                        },
+                                                        itemContent = { row ->
+                                                            WatchlistRow(
+                                                                row = row,
+                                                                onClick = {
+                                                                    model.eventHandler.onEvent(
+                                                                        event =
+                                                                            WatchlistUiModel.Event.RowClicked(
+                                                                                symbol = row.symbol,
+                                                                            ),
+                                                                    )
+                                                                },
+                                                                onRemove = {
+                                                                    model.eventHandler.onEvent(
+                                                                        event =
+                                                                            WatchlistUiModel.Event.RequestRemove(
+                                                                                symbol = row.symbol,
+                                                                            ),
+                                                                    )
+                                                                },
+                                                                modifier =
+                                                                    Modifier
+                                                                        .fillMaxWidth()
+                                                                        .animateItem(),
+                                                            )
+                                                        },
+                                                    )
+                                                },
+                                            )
+                                        },
+                                    )
+                                }
                             }
-                        }
-                    }
+                        },
+                    )
                 },
             )
         },
@@ -204,16 +205,22 @@ private fun RemoveConfirmationDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = stringResource(id = R.string.remove_dialog_title, pendingRemoval.displaySymbol))
+            Text(
+                text = stringResource(id = R.string.remove_dialog_title, pendingRemoval.displaySymbol),
+            )
         },
         text = {
-            Text(text = stringResource(id = R.string.remove_dialog_message))
+            Text(
+                text = stringResource(id = R.string.remove_dialog_message),
+            )
         },
         confirmButton = {
             TextButton(
                 onClick = onConfirm,
                 content = {
-                    Text(text = stringResource(id = R.string.remove_dialog_confirm))
+                    Text(
+                        text = stringResource(id = R.string.remove_dialog_confirm),
+                    )
                 },
             )
         },
@@ -221,7 +228,9 @@ private fun RemoveConfirmationDialog(
             TextButton(
                 onClick = onDismiss,
                 content = {
-                    Text(text = stringResource(id = R.string.remove_dialog_cancel))
+                    Text(
+                        text = stringResource(id = R.string.remove_dialog_cancel),
+                    )
                 },
             )
         },

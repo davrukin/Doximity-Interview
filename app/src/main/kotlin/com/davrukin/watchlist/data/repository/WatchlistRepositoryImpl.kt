@@ -13,14 +13,15 @@ class WatchlistRepositoryImpl(
     private val dao: WatchlistDao,
     private val clock: Clock,
 ) : WatchlistRepository {
-    override fun observeWatchlist(): Flow<List<WatchlistItem>> =
-        dao
+    override fun observeWatchlist(): Flow<List<WatchlistItem>> {
+        return dao
             .observeAll()
             .map { entities ->
                 entities.map { entity ->
                     entity.toWatchlistItem()
                 }
             }
+    }
 
     override suspend fun add(instrument: Instrument) {
         val entity: WatchlistItemEntity =

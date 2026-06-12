@@ -26,7 +26,9 @@ data class WatchlistUiModel(
         CHANGE,
         ;
 
-        fun next(): SortOrder = entries[(ordinal + 1) % entries.size]
+        fun next(): SortOrder {
+            return entries[(ordinal + 1) % entries.size]
+        }
     }
 
     @Immutable

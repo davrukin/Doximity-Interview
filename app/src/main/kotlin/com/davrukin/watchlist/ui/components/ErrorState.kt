@@ -39,7 +39,9 @@ fun ErrorState(
                 onClick = onRetry,
                 modifier = Modifier.padding(top = 12.dp),
                 content = {
-                    Text(text = stringResource(id = R.string.search_retry))
+                    Text(
+                        text = stringResource(id = R.string.search_retry),
+                    )
                 },
             )
         },
