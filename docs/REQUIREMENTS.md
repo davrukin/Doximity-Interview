@@ -18,7 +18,7 @@ Status legend: ⬜ planned · 🔄 in progress · ✅ done
 | R7  | Documented demo/fake-data mode (auto when no API key, runtime toggle) | `data/demo/`, `MarketDataModeRepositoryImpl`, `MarketDataSelector`; documented in README | `DemoMarketDataSourceTest`, `DemoPriceStreamSourceTest`, `MarketDataModeRepositoryImplTest` | ✅ |
 | R8  | Screen state exposed safely for Compose observation (UDF, immutable models) | `presentation/core/`, `WatchlistPresenter`, `SearchPresenter` | `WatchlistPresenterTest`, `SearchPresenterTest` (Molecule + Turbine) | ✅ |
 | R9  | Dependency injection (Koin) | `app/WatchlistApplication`, `app/di/` (4 modules) | exercised by all presenter/data tests | ✅ |
-| R10 | Relevant unit tests | `app/src/test/` (45 tests: data layer + presenters) | `./gradlew testDebugUnitTest` | ✅ |
+| R10 | Relevant unit tests | `app/src/test/` (49 tests: data + domain + presenters) | `./gradlew testDebugUnitTest` | ✅ |
 | R11 | README with setup, architecture notes, tradeoffs, and AI/tooling assistance | `README.md`, `ARCHITECTURE.md` (incl. AI usage section) | — | ✅ |
 
 ## Optional enhancements (tackled only after all required rows are ✅)

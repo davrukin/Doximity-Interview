@@ -97,9 +97,10 @@ so the reconnecting state is observable without touching the network.
 
 ## Testing
 
-The project has **55 automated tests** (45 JVM Unit Tests + 10 Compose UI Tests) verifying components in isolation and end-to-end:
+The project has **59 automated tests** (49 JVM Unit Tests + 10 Compose UI Tests) verifying components in isolation and end-to-end:
 
-- **Presenters (18 tests)**: `moleculeFlow { presenter.present(params) }` + Turbine, asserting emitted `UiModel`s and event handling against in-memory fakes.
+- **Presenters (21 tests)**: `moleculeFlow { presenter.present(params) }` + Turbine, asserting emitted `UiModel`s and event handling against in-memory fakes. Includes `WatchlistPresenterTest` and `WatchlistItemPresenterTest`.
+- **Domain / Use Cases (1 test)**: `ObserveQuotesUseCaseTest` verifying distinctUntilChanged stream-deduplication to block redundant WebSocket restarts during DB updates.
 - **Reconnect policy (6 tests)**: `ReconnectingPriceStream` is a plain class over a `PriceSocket` interface, tested with a scripted fake socket and virtual time (drop → reconnect → resubscribe → offline after repeated failures).
 - **Quote merging (4 tests)**: snapshot/tick merge, reconnect refetch, and live-only persistence in `PriceRepositoryImpl`, with virtual time for the persistence throttle.
 - **Room DB (4 tests)**: DAO tests run on the JVM via Robolectric, including the conflict strategy that preserves cached quotes on re-insert.

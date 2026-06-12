@@ -65,12 +65,12 @@ rather than failing silently.
 ## Tests
 
 ```bash
-./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest   # full gate (45 JVM unit tests)
+./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest   # full gate (49 JVM unit tests)
 ./gradlew connectedDebugAndroidTest                            # Compose UI tests (10 tests, device/emulator)
 ```
 
-The project has **55 automated tests** providing extensive coverage across layers:
-- **45 JVM Unit Tests**:
+The project has **59 automated tests** providing extensive coverage across layers:
+- **49 JVM Unit Tests**:
   - Presenter behavior via Molecule + Turbine (loading/content/error/retry, add/remove, debounce, mode toggling)
   - WebSocket reconnect/resubscribe/offline policy with a fake socket and virtual time; snapshot/tick merging and background pause/resume
   - Room DB DAO via Robolectric; and serialization.

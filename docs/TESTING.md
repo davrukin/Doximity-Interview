@@ -15,9 +15,12 @@
 
 | Suite | Count | Location / Files | Description |
 |-------|-------|------------------|-------------|
-| **Unit — Presenters** | **18** | `app/src/test/.../presentation/` | Molecule + Turbine tests for UI state flows & events |
+| **Unit — Presenters** | **21** | `app/src/test/.../presentation/` | Molecule + Turbine tests for UI state flows & events |
 | ↳ *WatchlistPresenterTest* | 12 | | Watchlist state, stale quotes, sorting, dialogs, pull-to-refresh |
 | ↳ *SearchPresenterTest* | 6 | | Search query debounce, empty state, errors, retry logic |
+| ↳ *WatchlistItemPresenterTest* | 3 | | Sparkline accumulation, capacity, and consecutive duplicate prevention |
+| **Unit — Domain / Use Cases** | **1** | `app/src/test/.../domain/` | Business logic and stream orchestration rules |
+| ↳ *ObserveQuotesUseCaseTest* | 1 | | Stream deduplication via distinctUntilChanged during db writes |
 | **Unit — Data & Infrastructure** | **27** | `app/src/test/.../data/` | Repository, streaming, caching, DB, & serialization |
 | ↳ *ReconnectingPriceStreamTest* | 6 | | Virtual-time connection lifecycle & exponential backoff |
 | ↳ *PriceRepositoryImplTest* | 4 | | Snapshot + tick merging, background pause/resume |
